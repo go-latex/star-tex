@@ -7,7 +7,13 @@
 
 ## cmd/star-tex
 
-_TODO_
+`star-tex` provides a `TeX` to `DVI` typesetter.
+
+```
+$> star-tex ./testdata/hello.tex out.div
+$> dvipdf out.dvi
+$> pdf out.pdf
+```
 
 ## cmd/tfm2pl
 
