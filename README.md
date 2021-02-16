@@ -1,10 +1,13 @@
 # star-tex
 
-[![builds.sr.ht status](https://builds.sr.ht/~sbinet/star-tex.svg)](https://builds.sr.ht/~sbinet/star-tex?)
+[![Build status](https://builds.sr.ht/~sbinet/star-tex.svg)](https://builds.sr.ht/~sbinet/star-tex?)
+[![GoDoc](https://pkg.go.dev/badge/git.sr.ht/~sbinet/star-tex)](https://pkg.go.dev/git.sr.ht/~sbinet/star-tex)
 
 `star-tex` (or `*TeX`) is a TeX engine in Go.
 
 ## cmd/star-tex
+
+_TODO_
 
 ## cmd/tfm2pl
 
