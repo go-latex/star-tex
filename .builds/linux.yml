@@ -9,9 +9,9 @@ environment:
  GOFLAGS: -mod=readonly
  PATH: /home/build/sdk/go/bin:/usr/bin:/home/build/go/bin
 tasks:
- - install_go1_15: |
+ - install_go1_16: |
      mkdir -p /home/build/sdk
-     curl https://dl.google.com/go/go1.15.linux-amd64.tar.gz | tar -C /home/build/sdk -xzf -
+     curl -L https://golang.org/dl/go1.16.linux-amd64.tar.gz | tar -C /home/build/sdk -xzf -
  - test_project: |
      cd star-tex
      go test -race ./...
