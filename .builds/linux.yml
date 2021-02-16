@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: Unlicense OR MIT
+image: debian/testing
+packages:
+ - curl
+ - unzip
+sources:
+ - https://git.sr.ht/~sbinet/star-tex
+environment:
+ GOFLAGS: -mod=readonly
+ PATH: /home/build/sdk/go/bin:/usr/bin:/home/build/go/bin
+tasks:
+ - install_go1_15: |
+     mkdir -p /home/build/sdk
+     curl https://dl.google.com/go/go1.15.linux-amd64.tar.gz | tar -C /home/build/sdk -xzf -
+ - test_project: |
+     cd star-tex
+     go test -race ./...
+ - check_gofmt: |
+     cd star-tex
+     test -z "$(gofmt -s -l .)"
+ - check_sign_off: |
+     set +x -e
+     cd star-tex
+     for hash in $(git log -n 20 --format="%H"); do
+        message=$(git log -1 --format=%B $hash)
+        if [[ ! "$message" =~ "Signed-off-by: " ]]; then
+            echo "Missing 'Signed-off-by' in commit $hash"
+            exit 1
+        fi
+     done
