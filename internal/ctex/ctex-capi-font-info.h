@@ -13,20 +13,30 @@ extern "C" {
 
 typedef struct {
   four_quarters font_check[font_max + 1];
-  scaled font_size[font_max + 1], font_dsize[font_max + 1];
+  scaled font_size[font_max + 1];
+  scaled font_dsize[font_max + 1];
   font_index font_params[font_max + 1];
-  str_number font_name[font_max + 1], font_area[font_max + 1];
-  eight_bits font_bc[font_max + 1], font_ec[font_max + 1];
+  str_number font_name[font_max + 1];
+  str_number font_area[font_max + 1];
+  uint8_t font_bc[font_max + 1];
+  uint8_t font_ec[font_max + 1];
   halfword font_glue[font_max + 1];
   bool font_used[font_max + 1];
-  integer hyphen_char[font_max + 1], skew_char[font_max + 1];
+  integer hyphen_char[font_max + 1];
+  integer skew_char[font_max + 1];
   font_index bchar_label[font_max + 1];
-  short font_bchar[font_max + 1], font_false_bchar[font_max + 1];
-  integer char_base[font_max + 1], width_base[font_max + 1],
-      height_base[font_max + 1], depth_base[font_max + 1],
-      italic_base[font_max + 1], lig_kern_base[font_max + 1],
-      kern_base[font_max + 1], exten_base[font_max + 1],
-      param_base[font_max + 1];
+  short font_bchar[font_max + 1];
+  short font_false_bchar[font_max + 1];
+
+  integer char_base[font_max + 1];
+  integer width_base[font_max + 1];
+  integer height_base[font_max + 1];
+  integer depth_base[font_max + 1];
+  integer italic_base[font_max + 1];
+  integer lig_kern_base[font_max + 1];
+  integer kern_base[font_max + 1];
+  integer exten_base[font_max + 1];
+  integer param_base[font_max + 1];
 
 } ctex_font_info_t;
 

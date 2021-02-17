@@ -13,7 +13,7 @@ namespace tex {
     bool file_opened = false;
     halfword lf, lh, bc, ec, nw, nh, nd, ni, nl, nk, ne, np;
     internal_font_number f, g = 0;
-    eight_bits a, b, c, d;
+    uint8_t a, b, c, d;
     four_quarters qw;
     scaled sw, z;
     integer bch_label = 32767, alpha = 16;
@@ -252,9 +252,9 @@ namespace tex {
     alpha *= z;
     for (N = fnt_infos.lig_kern_base[f], k = fnt_infos.width_base[f]; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-	  fread(&a, sizeof(eight_bits), 1, tfm_file);
-	  fread(&b, sizeof(eight_bits), 1, tfm_file);
-	  fread(&c, sizeof(eight_bits), 1, tfm_file);
+	  fread(&a, sizeof(uint8_t), 1, tfm_file);
+	  fread(&b, sizeof(uint8_t), 1, tfm_file);
+	  fread(&c, sizeof(uint8_t), 1, tfm_file);
       d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
       sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
       if (!a) {
@@ -321,9 +321,9 @@ namespace tex {
     }
     for (N = fnt_infos.exten_base[f], k = fnt_infos.kern_base[f] + 32768; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-	  fread(&a, sizeof(eight_bits), 1, tfm_file);
-	  fread(&b, sizeof(eight_bits), 1, tfm_file);
-	  fread(&c, sizeof(eight_bits), 1, tfm_file);
+	  fread(&a, sizeof(uint8_t), 1, tfm_file);
+	  fread(&b, sizeof(uint8_t), 1, tfm_file);
+	  fread(&c, sizeof(uint8_t), 1, tfm_file);
       d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
       sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
       if (!a) {
@@ -393,9 +393,9 @@ namespace tex {
              16);
       } else {
         loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-		fread(&a, sizeof(eight_bits), 1, tfm_file);
-		fread(&b, sizeof(eight_bits), 1, tfm_file);
-		fread(&c, sizeof(eight_bits), 1, tfm_file);
+		fread(&a, sizeof(uint8_t), 1, tfm_file);
+		fread(&b, sizeof(uint8_t), 1, tfm_file);
+		fread(&c, sizeof(uint8_t), 1, tfm_file);
         d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
         sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
         if (!a) {

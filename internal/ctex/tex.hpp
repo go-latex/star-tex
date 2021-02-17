@@ -144,7 +144,7 @@ protected:
   quarterword cur_level;
   group_code cur_group;
   int cur_boundary;
-  eight_bits cur_cmd;
+  uint8_t cur_cmd;
   halfword cur_chr, cur_cs, cur_tok;
   in_state_record input_stack[stack_size + 1];
   int input_ptr, max_in_stack;
@@ -187,7 +187,7 @@ protected:
   bool doing_leaders;
   quarterword c, f;
   halfword g;
-  std::vector<eight_bits> dvi_buf;
+  std::vector<uint8_t> dvi_buf;
   dvi_index half_buf, dvi_limit, dvi_ptr;
   halfword down_ptr, right_ptr;
   internal_font_number dvi_f;
@@ -263,18 +263,18 @@ protected:
   halfword write_loc;
 
 
-	void loadU8(FILE *r, int &mode, eight_bits *v) {
+	void loadU8(FILE *r, int &mode, uint8_t *v) {
 		if (mode==1) {
-			fread(v, sizeof(eight_bits), 1, r);
+			fread(v, sizeof(uint8_t), 1, r);
 		} else {
 			mode = 1;
 		}
 	}
 
-	eight_bits &readU8(FILE *r, int &mode, eight_bits *v) {
+	uint8_t &readU8(FILE *r, int &mode, uint8_t *v) {
 		if (mode == 1) {
 			mode = 2;
-			fread(v, sizeof(eight_bits), 1, r);
+			fread(v, sizeof(uint8_t), 1, r);
 		}
 		return *v;
 	}
@@ -749,7 +749,7 @@ protected:
     }
     slow_print(s);
   }
-  void print_the_digs(eight_bits k) {
+  void print_the_digs(uint8_t k) {
     while (k > 0) {
       --k;
       if (dig[k] < 10)
@@ -7322,7 +7322,7 @@ protected:
   internal_font_number read_font_info(halfword u, str_number nom,
                                       str_number aire, scaled s);
 
- void char_warning(internal_font_number f, eight_bits c) {
+ void char_warning(internal_font_number f, uint8_t c) {
     if (eqtb[12198].int_ <= 0)
       return;
     begin_diagnostic();
@@ -7333,7 +7333,7 @@ protected:
     print_char(33);
     end_diagnostic(false);
   }
-  halfword new_character(internal_font_number f, eight_bits c) {
+  halfword new_character(internal_font_number f, uint8_t c) {
     halfword result, p;
     if (fnt_infos.font_bc[f] <= c) {
       if (fnt_infos.font_ec[f] >= c) {
@@ -7458,7 +7458,7 @@ protected:
         dvi_swap();
     }
   }
-  void movement(scaled w, eight_bits o) {
+  void movement(scaled w, uint8_t o) {
     small_number mstate = 0;
     halfword p;
     integer k;
@@ -8367,7 +8367,7 @@ protected:
     glue_ord o;
     internal_font_number f;
     four_quarters i;
-    eight_bits hd;
+    uint8_t hd;
     last_badness = 0;
     r = get_node(7);
     mem[r - mem_min].hh.U2.b0 = 0;
@@ -8831,7 +8831,7 @@ protected:
   halfword char_box(internal_font_number f, quarterword c) {
     halfword p;
     four_quarters q = font_info[fnt_infos.char_base[f] + c].qqqq;
-    eight_bits hd = q.b1;
+    uint8_t hd = q.b1;
     halfword b = new_null_box();
     mem[b - mem_min + 1].int_ = font_info[fnt_infos.width_base[f] + q.b0].int_ +
                                 font_info[fnt_infos.italic_base[f] + (q.b2 / 4)].int_;
@@ -8851,7 +8851,7 @@ protected:
   }
   scaled height_plus_depth(internal_font_number f, quarterword c) {
     four_quarters q = font_info[fnt_infos.char_base[f] + c].qqqq;
-    eight_bits hd = q.b1;
+    uint8_t hd = q.b1;
     return font_info[fnt_infos.height_base[f] + (hd / 16)].int_ +
            font_info[fnt_infos.depth_base[f] + (hd & 15)].int_;
   }
@@ -8862,7 +8862,7 @@ protected:
     integer m, n;
     scaled u, w = 0;
     four_quarters q;
-    eight_bits hd;
+    uint8_t hd;
     four_quarters r;
     bool large_attempt = false;
     small_number z = mem[d - mem_min].qqqq.b0;
@@ -12885,7 +12885,7 @@ protected:
   _L30:
     return best_place;
   }
-  halfword vsplit(eight_bits n, scaled h) {
+  halfword vsplit(uint8_t n, scaled h) {
     halfword result, p, q;
     halfword v = eqtb[n + 10578].hh.rh;
     if (cur_mark[3] != (-1073741824)) {
@@ -12987,7 +12987,7 @@ protected:
     page_so_far[6] = 0;
     least_page_cost = 1073741823;
   }
-  void box_error(eight_bits n) {
+  void box_error(uint8_t n) {
     error();
     begin_diagnostic();
     print_nl(835);
@@ -12996,7 +12996,7 @@ protected:
     flush_node_list(eqtb[n + 10578].hh.rh);
     eqtb[n + 10578].hh.rh = -1073741824;
   }
-  void ensure_vbox(eight_bits n) {
+  void ensure_vbox(uint8_t n) {
     halfword p = eqtb[n + 10578].hh.rh;
     if (p == (-1073741824))
       return;
@@ -13745,7 +13745,7 @@ protected:
     halfword p, q;
     quarterword m;
     halfword k;
-    eight_bits n;
+    uint8_t n;
     quarterword N1;
     switch (cur_chr) {
     case 0:
@@ -15281,7 +15281,7 @@ protected:
       insert_penalties = cur_val;
   }
   void alter_box_dimen() {
-    eight_bits b;
+    uint8_t b;
     small_number c = cur_chr;
     scan_eight_bit_int();
     b = cur_val;
@@ -15895,7 +15895,7 @@ protected:
   }
   void shift_case() {
     halfword t;
-    eight_bits c;
+    uint8_t c;
     halfword b = cur_chr;
     halfword p = scan_toks(false, false);
     p = mem[def_ref - mem_min].hh.rh;
