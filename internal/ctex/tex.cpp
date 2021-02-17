@@ -1,11 +1,12 @@
-//
-//
+// Copyright ©2021 The star-tex Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
 #include "tex.hpp"
 
 namespace tex {
 
-	tex::internal_font_number 
+	internal_font_number
 	  tex::read_font_info(halfword u, str_number nom,
                                       str_number aire, scaled s) {
     font_index k;
