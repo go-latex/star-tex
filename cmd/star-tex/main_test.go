@@ -23,6 +23,8 @@ func TestProcess(t *testing.T) {
 				t.Fatalf("could not open TeX document: %+v", err)
 			}
 			defer r.Close()
+			oname := strings.Replace(name, ".tex", ".dvi", 1)
+			_ = os.RemoveAll(oname)
 
 			o := new(bytes.Buffer)
 			msg := new(bytes.Buffer)
@@ -38,6 +40,7 @@ func TestProcess(t *testing.T) {
 			}
 
 			if got, want := o.Bytes(), want; !bytes.Equal(got, want) {
+				_ = os.WriteFile(oname, got, 0644)
 				t.Fatalf("DVI files compare different")
 			}
 		})
