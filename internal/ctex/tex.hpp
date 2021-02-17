@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 
+#include "ctex-capi-consts.h"
 #include "ctex-capi-types.h"
 #include "ctex-capi-cgo.h"
 
@@ -87,27 +88,6 @@ protected:
      - 285 hentaigana
      - 3 additional Zanabazar Square characters */
   // Output from p2c 1.21alpha-07.Dec.93, the Pascal-to-C translator
-  constexpr static auto mem_max = 1000000;
-  constexpr static auto mem_min = 0;
-  constexpr static auto buf_size = 3000;
-  constexpr static auto error_line = 79;
-  constexpr static auto half_error_line = 50;
-  constexpr static auto max_print_line = 79;
-  constexpr static auto stack_size = 300;
-  constexpr static auto max_in_open = 15;
-  constexpr static auto font_max = 255;
-  constexpr static auto font_mem_size = 72000;
-  constexpr static auto param_size = 60;
-  constexpr static auto nest_size = 40;
-  constexpr static auto max_strings = 7500;
-  constexpr static auto string_vacancies = 74000;
-  constexpr static auto pool_size = 100000;
-  constexpr static auto save_size = 4000;
-  constexpr static auto trie_size = 24000;
-  constexpr static auto trie_op_size = 750;
-  constexpr static auto dvi_buf_size = 16384;
-  constexpr static auto file_name_size = FILENAME_MAX;
-  constexpr static auto pool_name = "tex/tex.pool";
   integer bad, tally, trick_count, first_count, interrupt, var_used, dyn_used,
       font_in_short_display, depth_threshold, breadth_max, cs_count, mag_set,
       line, max_param_stack, align_state, cur_val, if_line, skip_line,
