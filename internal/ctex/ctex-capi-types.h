@@ -66,7 +66,6 @@ typedef struct in_state_record {
 
 typedef int internal_font_number;
 typedef int font_index;
-typedef int dvi_index;
 typedef int trie_pointer;
 typedef short hyph_pointer;
 

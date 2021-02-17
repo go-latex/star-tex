@@ -6,9 +6,258 @@
 
 namespace tex {
 
-	internal_font_number
-	  tex::read_font_info(halfword u, str_number nom,
-                                      str_number aire, scaled s) {
+void 
+tex::initialize() {
+
+    integer k;
+    hyph_pointer z;
+    mem.resize(mem_max - mem_min + 1);
+    font_info.resize(font_mem_size + 1);
+    str_pool.resize(pool_size + 1);
+    str_start.resize(max_strings + 1);
+    buffer.resize(buf_size + 1);
+    std::iota(xchr, xchr + 255, 0);
+    std::iota(xord, xord + 255, 0);
+    interaction = 3;
+    deletions_allowed = true;
+    set_box_allowed = true;
+    error_count = 0;
+    help_ptr = 0;
+    use_err_help = false;
+    interrupt = 0;
+    OK_to_interrupt = true;
+    nest_ptr = 0;
+    max_nest_stack = 0;
+    cur_list.mode_field = 1;
+    cur_list.head_field = mem_max - 1;
+    cur_list.tail_field = mem_max - 1;
+    cur_list.aux_field.int_ = -65536000;
+    cur_list.ml_field = 0;
+    cur_list.pg_field = 0;
+    shown_mode = 0;
+    page_contents = 0;
+    page_tail = mem_max - 2;
+    mem[mem_max - mem_min - 2].hh.rh = -1073741824;
+    last_glue = 1073741824;
+    last_penalty = 0;
+    last_kern = 0;
+    page_so_far[7] = 0;
+    page_max_depth = 0;
+    for (k = 12163; k <= 13006; ++k)
+      xeq_level[k - 12163] = 1;
+    no_new_control_sequence = true;
+    hash[0].lh = 0;
+    hash[0].rh = 0;
+    for (k = 515; k <= 9780; ++k)
+      hash[k - 514] = hash[0];
+    save_ptr = 0;
+    cur_level = 1;
+    cur_group = 0;
+    cur_boundary = 0;
+    max_save_stack = 0;
+    mag_set = 0;
+    cur_mark[0] = -1073741824;
+    cur_mark[1] = -1073741824;
+    cur_mark[2] = -1073741824;
+    cur_mark[3] = -1073741824;
+    cur_mark[4] = -1073741824;
+    cur_val = 0;
+    cur_val_level = 0;
+    radix = 0;
+    cur_order = 0;
+    for (k = 0; k <= 16; ++k)
+      read_open[k] = 2;
+    cond_ptr = -1073741824;
+    if_limit = 0;
+    cur_if = 0;
+    if_line = 0;
+    memcpy(TEX_format_default, "tex/plain.fmt", 14);
+    null_character.b0 = 0;
+    null_character.b1 = 0;
+    null_character.b2 = 0;
+    null_character.b3 = 0;
+    max_v = 0;
+    max_h = 0;
+    max_push = 0;
+    last_bop = -1;
+    doing_leaders = false;
+    dead_cycles = 0;
+    cur_s = -1;
+    down_ptr = -1073741824;
+    right_ptr = -1073741824;
+    adjust_tail = -1073741824;
+    last_badness = 0;
+    pack_begin_line = 0;
+    empty_field.rh = 0;
+    empty_field.lh = -1073741824;
+    null_delimiter.b0 = 0;
+    null_delimiter.b1 = 0;
+    null_delimiter.b2 = 0;
+    null_delimiter.b3 = 0;
+    align_ptr = -1073741824;
+    cur_align = -1073741824;
+    cur_span = -1073741824;
+    cur_loop = -1073741824;
+    cur_head = -1073741824;
+    cur_tail = -1073741824;
+    for (z = 0; z <= 307; ++z) {
+      hyph_word[z] = 0;
+      hyph_list[z] = -1073741824;
+    }
+    hyph_count = 0;
+    output_active = false;
+    insert_penalties = 0;
+    ligature_present = false;
+    cancel_boundary = false;
+    lft_hit = false;
+    rt_hit = false;
+    ins_disc = false;
+    after_token = 0;
+    long_help_seen = false;
+    format_ident = 0;
+    for (k = 0; k <= 17; ++k)
+      write_open[k] = false;
+    for (k = 1; k <= 19; ++k)
+      mem[k - mem_min].int_ = 0;
+    k = 0;
+    while (k <= 19) {
+      mem[k - mem_min].hh.rh = -1073741823;
+      mem[k - mem_min].hh.U2.b0 = 0;
+      mem[k - mem_min].hh.U2.b1 = 0;
+      k += 4;
+    }
+    mem[6 - mem_min].int_ = 65536;
+    mem[4 - mem_min].hh.U2.b0 = 1;
+    mem[10 - mem_min].int_ = 65536;
+    mem[8 - mem_min].hh.U2.b0 = 2;
+    mem[14 - mem_min].int_ = 65536;
+    mem[12 - mem_min].hh.U2.b0 = 1;
+    mem[15 - mem_min].int_ = 65536;
+    mem[12 - mem_min].hh.U2.b1 = 1;
+    mem[18 - mem_min].int_ = -65536;
+    mem[16 - mem_min].hh.U2.b0 = 1;
+    rover = 20;
+    mem[rover - mem_min].hh.rh = 1073741824;
+    mem[rover - mem_min].hh.lh = 1000;
+    mem[rover - mem_min + 1].hh.lh = rover;
+    mem[rover - mem_min + 1].hh.rh = rover;
+    lo_mem_max = rover + 1000;
+    mem[lo_mem_max - mem_min].hh.rh = -1073741824;
+    mem[lo_mem_max - mem_min].hh.lh = -1073741824;
+    for (k = mem_max - 13; k <= mem_max; ++k)
+      mem[k - mem_min] = mem[lo_mem_max - mem_min];
+    mem[mem_max - mem_min - 10].hh.lh = 13614;
+    mem[mem_max - mem_min - 9].hh.rh = 65536;
+    mem[mem_max - mem_min - 9].hh.lh = -1073741824;
+    mem[mem_max - mem_min - 7].hh.U2.b0 = 1;
+    mem[mem_max - mem_min - 6].hh.lh = 1073741824;
+    mem[mem_max - mem_min - 7].hh.U2.b1 = 0;
+    mem[mem_max - mem_min].hh.U2.b1 = 255;
+    mem[mem_max - mem_min].hh.U2.b0 = 1;
+    mem[mem_max - mem_min].hh.rh = mem_max;
+    mem[mem_max - mem_min - 2].hh.U2.b0 = 10;
+    mem[mem_max - mem_min - 2].hh.U2.b1 = 0;
+    avail = -1073741824;
+    mem_end = mem_max;
+    hi_mem_min = mem_max - 13;
+    var_used = 20;
+    dyn_used = 14;
+    eqtb[9781].hh.U2.b0 = 101;
+    eqtb[9781].hh.rh = -1073741824;
+    eqtb[9781].hh.U2.b1 = 0;
+    for (k = 1; k <= 9780; ++k)
+      eqtb[k] = eqtb[9781];
+    eqtb[9782].hh.rh = 0;
+    eqtb[9782].hh.U2.b1 = 1;
+    eqtb[9782].hh.U2.b0 = 117;
+    for (k = 9783; k <= 10311; ++k)
+      eqtb[k] = eqtb[9782];
+    mem[-mem_min].hh.rh += 530;
+    eqtb[10312].hh.rh = -1073741824;
+    eqtb[10312].hh.U2.b0 = 118;
+    eqtb[10312].hh.U2.b1 = 1;
+    for (k = 10313; k <= 10577; ++k)
+      eqtb[k] = eqtb[9781];
+    eqtb[10578].hh.rh = -1073741824;
+    eqtb[10578].hh.U2.b0 = 119;
+    eqtb[10578].hh.U2.b1 = 1;
+    for (k = 10579; k <= 10833; ++k)
+      eqtb[k] = eqtb[10578];
+    eqtb[10834].hh.rh = 0;
+    eqtb[10834].hh.U2.b0 = 120;
+    eqtb[10834].hh.U2.b1 = 1;
+    for (k = 10835; k <= 10882; ++k)
+      eqtb[k] = eqtb[10834];
+    eqtb[10883].hh.rh = 0;
+    eqtb[10883].hh.U2.b0 = 120;
+    eqtb[10883].hh.U2.b1 = 1;
+    for (k = 10884; k <= 12162; ++k)
+      eqtb[k] = eqtb[10883];
+    for (k = 0; k <= 255; ++k) {
+      eqtb[k + 10883].hh.rh = 12;
+      eqtb[k + 11907].hh.rh = k - 1073741824;
+      eqtb[k + 11651].hh.rh = 1000;
+    }
+    eqtb[10896].hh.rh = 5;
+    eqtb[10915].hh.rh = 10;
+    eqtb[10975].hh.rh = 0;
+    eqtb[10920].hh.rh = 14;
+    eqtb[11010].hh.rh = 15;
+    eqtb[10883].hh.rh = 9;
+    for (k = 48; k <= 57; ++k)
+      eqtb[k + 11907].hh.rh = k - 1073713152;
+    for (k = 65; k <= 90; ++k) {
+      eqtb[k + 10883].hh.rh = 11;
+      eqtb[k + 10915].hh.rh = 11;
+      eqtb[k + 11907].hh.rh = k - 1073712896;
+      eqtb[k + 11939].hh.rh = k - 1073712864;
+      eqtb[k + 11139].hh.rh = k + 32;
+      eqtb[k + 11171].hh.rh = k + 32;
+      eqtb[k + 11395].hh.rh = k;
+      eqtb[k + 11427].hh.rh = k;
+      eqtb[k + 11651].hh.rh = 999;
+    }
+    for (k = 12163; k <= 12473; ++k)
+      eqtb[k].int_ = 0;
+    eqtb[12180].int_ = 1000;
+    eqtb[12164].int_ = 10000;
+    eqtb[12204].int_ = 1;
+    eqtb[12203].int_ = 25;
+    eqtb[12208].int_ = 92;
+    eqtb[12211].int_ = 13;
+    for (k = 0; k <= 255; ++k)
+      eqtb[k + 12474].int_ = -1;
+    eqtb[12520].int_ = 0;
+    for (k = 12730; k <= 13006; ++k)
+      eqtb[k].int_ = 0;
+    hash_used = 9514;
+    cs_count = 0;
+    eqtb[9523].hh.U2.b0 = 116;
+    hash[9009].rh = 502;
+    font_ptr = 0;
+    fmem_ptr = 7;
+	ctex_font_info_init(&fnt_infos);
+    for (k = 0; k <= 6; ++k)
+      font_info[k].int_ = 0;
+    for (k = -trie_op_size; k <= trie_op_size; ++k)
+      trie_op_hash[k + trie_op_size] = 0;
+    for (k = 0; k <= 255; ++k)
+      trie_used[k] = 0;
+    trie_op_ptr = 0;
+    trie_not_ready = true;
+    trie_l[0] = 0;
+    trie_c[0] = 0;
+    trie_ptr = 0;
+    hash[9000].rh = 1189;
+    format_ident = 1256;
+    hash[9008].rh = 1295;
+    eqtb[9522].hh.U2.b1 = 1;
+    eqtb[9522].hh.U2.b0 = 113;
+    eqtb[9522].hh.rh = -1073741824;
+}
+
+internal_font_number
+tex::read_font_info(halfword u, str_number nom, str_number aire, scaled s) {
     font_index k;
     bool file_opened = false;
     halfword lf, lh, bc, ec, nw, nh, nd, ni, nl, nk, ne, np;
@@ -477,6 +726,6 @@ namespace tex {
 		}
 	}
     return g;
-  }
+}
 
 } // namespace tex
