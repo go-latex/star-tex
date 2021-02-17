@@ -11,6 +11,8 @@
 extern "C" {
 #endif
 
+typedef uint8_t bool_t;
+
 typedef uint8_t ASCII_code;
 typedef int pool_pointer;
 typedef int str_number;

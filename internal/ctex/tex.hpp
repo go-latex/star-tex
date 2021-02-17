@@ -395,8 +395,6 @@ protected:
     cur_if = 0;
     if_line = 0;
     memcpy(TEX_format_default, "tex/plain.fmt", 14);
-    for (k = 0; k <= font_max; ++k)
-      fnt_infos.font_used[k] = false;
     null_character.b0 = 0;
     null_character.b1 = 0;
     null_character.b2 = 0;
@@ -567,28 +565,7 @@ protected:
     hash[9009].rh = 502;
     font_ptr = 0;
     fmem_ptr = 7;
-    fnt_infos.font_name[0] = 800;
-    fnt_infos.font_area[0] = 338;
-    fnt_infos.hyphen_char[0] = 45;
-    fnt_infos.skew_char[0] = -1;
-    fnt_infos.bchar_label[0] = 0;
-    fnt_infos.font_bchar[0] = 256;
-    fnt_infos.font_false_bchar[0] = 256;
-    fnt_infos.font_bc[0] = 1;
-    fnt_infos.font_ec[0] = 0;
-    fnt_infos.font_size[0] = 0;
-    fnt_infos.font_dsize[0] = 0;
-    fnt_infos.char_base[0] = 0;
-    fnt_infos.width_base[0] = 0;
-    fnt_infos.height_base[0] = 0;
-    fnt_infos.depth_base[0] = 0;
-    fnt_infos.italic_base[0] = 0;
-    fnt_infos.lig_kern_base[0] = 0;
-    fnt_infos.kern_base[0] = 0;
-    fnt_infos.exten_base[0] = 0;
-    fnt_infos.font_glue[0] = -1073741824;
-    fnt_infos.font_params[0] = 7;
-    fnt_infos.param_base[0] = -1;
+	ctex_font_info_init(&fnt_infos);
     for (k = 0; k <= 6; ++k)
       font_info[k].int_ = 0;
     for (k = -trie_op_size; k <= trie_op_size; ++k)

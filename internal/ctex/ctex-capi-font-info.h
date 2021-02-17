@@ -21,7 +21,7 @@ typedef struct {
   uint8_t font_bc[font_max + 1];
   uint8_t font_ec[font_max + 1];
   halfword font_glue[font_max + 1];
-  bool font_used[font_max + 1];
+  bool_t font_used[font_max + 1];
   integer hyphen_char[font_max + 1];
   integer skew_char[font_max + 1];
   font_index bchar_label[font_max + 1];
@@ -39,6 +39,9 @@ typedef struct {
   integer param_base[font_max + 1];
 
 } ctex_font_info_t;
+
+void
+ctex_font_info_init(ctex_font_info_t *fnt_infos);
 
 #ifdef __cplusplus
 } /* extern "C" */
