@@ -45,6 +45,7 @@
 
 #include "ctex-capi-consts.h"
 #include "ctex-capi-types.h"
+#include "ctex-capi-font-info.h"
 #include "ctex-capi-cgo.h"
 
 namespace tex {
@@ -176,24 +177,12 @@ protected:
   FILE *dvi_file;
   str_number output_file_name, log_name;
   FILE *tfm_file;
+
   std::vector<memory_word> font_info;
   font_index fmem_ptr;
   internal_font_number font_ptr;
-  four_quarters font_check[font_max + 1];
-  scaled font_size[font_max + 1], font_dsize[font_max + 1];
-  font_index font_params[font_max + 1];
-  str_number font_name[font_max + 1], font_area[font_max + 1];
-  eight_bits font_bc[font_max + 1], font_ec[font_max + 1];
-  halfword font_glue[font_max + 1];
-  bool font_used[font_max + 1];
-  integer hyphen_char[font_max + 1], skew_char[font_max + 1];
-  font_index bchar_label[font_max + 1];
-  short font_bchar[font_max + 1], font_false_bchar[font_max + 1];
-  integer char_base[font_max + 1], width_base[font_max + 1],
-      height_base[font_max + 1], depth_base[font_max + 1],
-      italic_base[font_max + 1], lig_kern_base[font_max + 1],
-      kern_base[font_max + 1], exten_base[font_max + 1],
-      param_base[font_max + 1];
+  ctex_font_info_t fnt_infos;
+
   four_quarters null_character;
   bool doing_leaders;
   quarterword c, f;
@@ -407,7 +396,7 @@ protected:
     if_line = 0;
     memcpy(TEX_format_default, "tex/plain.fmt", 14);
     for (k = 0; k <= font_max; ++k)
-      font_used[k] = false;
+      fnt_infos.font_used[k] = false;
     null_character.b0 = 0;
     null_character.b1 = 0;
     null_character.b2 = 0;
@@ -578,28 +567,28 @@ protected:
     hash[9009].rh = 502;
     font_ptr = 0;
     fmem_ptr = 7;
-    font_name[0] = 800;
-    font_area[0] = 338;
-    hyphen_char[0] = 45;
-    skew_char[0] = -1;
-    bchar_label[0] = 0;
-    font_bchar[0] = 256;
-    font_false_bchar[0] = 256;
-    font_bc[0] = 1;
-    font_ec[0] = 0;
-    font_size[0] = 0;
-    font_dsize[0] = 0;
-    char_base[0] = 0;
-    width_base[0] = 0;
-    height_base[0] = 0;
-    depth_base[0] = 0;
-    italic_base[0] = 0;
-    lig_kern_base[0] = 0;
-    kern_base[0] = 0;
-    exten_base[0] = 0;
-    font_glue[0] = -1073741824;
-    font_params[0] = 7;
-    param_base[0] = -1;
+    fnt_infos.font_name[0] = 800;
+    fnt_infos.font_area[0] = 338;
+    fnt_infos.hyphen_char[0] = 45;
+    fnt_infos.skew_char[0] = -1;
+    fnt_infos.bchar_label[0] = 0;
+    fnt_infos.font_bchar[0] = 256;
+    fnt_infos.font_false_bchar[0] = 256;
+    fnt_infos.font_bc[0] = 1;
+    fnt_infos.font_ec[0] = 0;
+    fnt_infos.font_size[0] = 0;
+    fnt_infos.font_dsize[0] = 0;
+    fnt_infos.char_base[0] = 0;
+    fnt_infos.width_base[0] = 0;
+    fnt_infos.height_base[0] = 0;
+    fnt_infos.depth_base[0] = 0;
+    fnt_infos.italic_base[0] = 0;
+    fnt_infos.lig_kern_base[0] = 0;
+    fnt_infos.kern_base[0] = 0;
+    fnt_infos.exten_base[0] = 0;
+    fnt_infos.font_glue[0] = -1073741824;
+    fnt_infos.font_params[0] = 7;
+    fnt_infos.param_base[0] = -1;
     for (k = 0; k <= 6; ++k)
       font_info[k].int_ = 0;
     for (k = -trie_op_size; k <= trie_op_size; ++k)
@@ -3949,10 +3938,10 @@ protected:
       break;
     case 87:
       print(1225);
-      slow_print(font_name[chr_code]);
-      if (font_size[chr_code] != font_dsize[chr_code]) {
+      slow_print(fnt_infos.font_name[chr_code]);
+      if (fnt_infos.font_size[chr_code] != fnt_infos.font_dsize[chr_code]) {
         print(741);
-        print_scaled(font_size[chr_code]);
+        print_scaled(fnt_infos.font_size[chr_code]);
         print(397);
       }
       break;
@@ -5711,11 +5700,11 @@ protected:
     if (n <= 0) {
       cur_val = fmem_ptr;
     } else {
-      if (writing && (n <= 4) && (n >= 2) && (font_glue[f] != (-1073741824))) {
-        delete_glue_ref(font_glue[f]);
-        font_glue[f] = -1073741824;
+      if (writing && (n <= 4) && (n >= 2) && (fnt_infos.font_glue[f] != (-1073741824))) {
+        delete_glue_ref(fnt_infos.font_glue[f]);
+        fnt_infos.font_glue[f] = -1073741824;
       }
-      if (n > font_params[f]) {
+      if (n > fnt_infos.font_params[f]) {
         if (f < font_ptr) {
           cur_val = fmem_ptr;
         } else {
@@ -5724,12 +5713,12 @@ protected:
               overflow(823, font_mem_size);
             font_info[fmem_ptr].int_ = 0;
             ++fmem_ptr;
-            ++font_params[f];
-          } while (n != font_params[f]);
+            ++fnt_infos.font_params[f];
+          } while (n != fnt_infos.font_params[f]);
           cur_val = fmem_ptr - 1;
         }
       } else {
-        cur_val = n + param_base[f];
+        cur_val = n + fnt_infos.param_base[f];
       }
     }
     if (cur_val != fmem_ptr)
@@ -5738,7 +5727,7 @@ protected:
     print(801);
     print_esc(hash[f + 9010].rh);
     print(819);
-    print_int(font_params[f]);
+    print_int(fnt_infos.font_params[f]);
     print(820);
     help_ptr = 2;
     help_line[1] = 821;
@@ -5893,10 +5882,10 @@ protected:
     case 78:
       scan_font_ident();
       if (!m) {
-        cur_val = hyphen_char[cur_val];
+        cur_val = fnt_infos.hyphen_char[cur_val];
         cur_val_level = 0;
       } else {
-        cur_val = skew_char[cur_val];
+        cur_val = fnt_infos.skew_char[cur_val];
         cur_val_level = 0;
       }
       break;
@@ -6233,9 +6222,9 @@ protected:
     if (mu)
       goto _L45;
     if (scan_keyword(708)) {
-      v = font_info[param_base[eqtb[10834].hh.rh] + 6].int_;
+      v = font_info[fnt_infos.param_base[eqtb[10834].hh.rh] + 6].int_;
     } else if (scan_keyword(709))
-      v = font_info[param_base[eqtb[10834].hh.rh] + 5].int_;
+      v = font_info[fnt_infos.param_base[eqtb[10834].hh.rh] + 5].int_;
     else
       goto _L45;
     get_x_token();
@@ -6542,10 +6531,10 @@ protected:
       print_meaning();
       break;
     case 4:
-      print(font_name[cur_val]);
-      if (font_size[cur_val] != font_dsize[cur_val]) {
+      print(fnt_infos.font_name[cur_val]);
+      if (fnt_infos.font_size[cur_val] != fnt_infos.font_dsize[cur_val]) {
         print(741);
-        print_scaled(font_size[cur_val]);
+        print_scaled(fnt_infos.font_size[cur_val]);
         print(397);
       }
       break;
@@ -7340,15 +7329,15 @@ protected:
     print_nl(824);
     print(c);
     print(825);
-    slow_print(font_name[f]);
+    slow_print(fnt_infos.font_name[f]);
     print_char(33);
     end_diagnostic(false);
   }
   halfword new_character(internal_font_number f, eight_bits c) {
     halfword result, p;
-    if (font_bc[f] <= c) {
-      if (font_ec[f] >= c) {
-        if (font_info[char_base[f] + c].qqqq.b0 > 0) {
+    if (fnt_infos.font_bc[f] <= c) {
+      if (fnt_infos.font_ec[f] >= c) {
+        if (font_info[fnt_infos.char_base[f] + c].qqqq.b0 > 0) {
           p = get_avail();
           mem[p - mem_min].hh.U2.b0 = f;
           mem[p - mem_min].hh.U2.b1 = c;
@@ -7428,40 +7417,40 @@ protected:
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_buf[dvi_ptr] = font_check[f].b0;
+    dvi_buf[dvi_ptr] = fnt_infos.font_check[f].b0;
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_buf[dvi_ptr] = font_check[f].b1;
+    dvi_buf[dvi_ptr] = fnt_infos.font_check[f].b1;
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_buf[dvi_ptr] = font_check[f].b2;
+    dvi_buf[dvi_ptr] = fnt_infos.font_check[f].b2;
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_buf[dvi_ptr] = font_check[f].b3;
+    dvi_buf[dvi_ptr] = fnt_infos.font_check[f].b3;
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_four(font_size[f]);
-    dvi_four(font_dsize[f]);
-    dvi_buf[dvi_ptr] = str_start[font_area[f] + 1] - str_start[font_area[f]];
+    dvi_four(fnt_infos.font_size[f]);
+    dvi_four(fnt_infos.font_dsize[f]);
+    dvi_buf[dvi_ptr] = str_start[fnt_infos.font_area[f] + 1] - str_start[fnt_infos.font_area[f]];
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    dvi_buf[dvi_ptr] = str_start[font_name[f] + 1] - str_start[font_name[f]];
+    dvi_buf[dvi_ptr] = str_start[fnt_infos.font_name[f] + 1] - str_start[fnt_infos.font_name[f]];
     ++dvi_ptr;
     if (dvi_ptr == dvi_limit)
       dvi_swap();
-    for (N = str_start[font_area[f] + 1], k = str_start[font_area[f]];
+    for (N = str_start[fnt_infos.font_area[f] + 1], k = str_start[fnt_infos.font_area[f]];
          k <= (N - 1); ++k) {
       dvi_buf[dvi_ptr] = str_pool[k];
       ++dvi_ptr;
       if (dvi_ptr == dvi_limit)
         dvi_swap();
     }
-    for (N = str_start[font_name[f] + 1], k = str_start[font_name[f]];
+    for (N = str_start[fnt_infos.font_name[f] + 1], k = str_start[fnt_infos.font_name[f]];
          k <= (N - 1); ++k) {
       dvi_buf[dvi_ptr] = str_pool[k];
       ++dvi_ptr;
@@ -7820,9 +7809,9 @@ protected:
           f = mem[p - mem_min].hh.U2.b0;
           c = mem[p - mem_min].hh.U2.b1;
           if (f != dvi_f) {
-            if (!font_used[f]) {
+            if (!fnt_infos.font_used[f]) {
               dvi_font_def(f);
-              font_used[f] = true;
+              fnt_infos.font_used[f] = true;
             }
             if (f <= 64) {
               dvi_buf[dvi_ptr] = f + 170;
@@ -7852,7 +7841,7 @@ protected:
           if (dvi_ptr == dvi_limit)
             dvi_swap();
           cur_h +=
-              font_info[width_base[f] + font_info[char_base[f] + c].qqqq.b0]
+              font_info[fnt_infos.width_base[f] + font_info[fnt_infos.char_base[f] + c].qqqq.b0]
                   .int_;
           p = mem[p - mem_min].hh.rh;
         } while (p >= hi_mem_min);
@@ -8398,13 +8387,13 @@ protected:
     _L21:
       while (p >= hi_mem_min) {
         f = mem[p - mem_min].hh.U2.b0;
-        i = font_info[char_base[f] + mem[p - mem_min].hh.U2.b1].qqqq;
+        i = font_info[fnt_infos.char_base[f] + mem[p - mem_min].hh.U2.b1].qqqq;
         hd = i.b1;
-        x += font_info[width_base[f] + i.b0].int_;
-        s = font_info[height_base[f] + (hd / 16)].int_;
+        x += font_info[fnt_infos.width_base[f] + i.b0].int_;
+        s = font_info[fnt_infos.height_base[f] + (hd / 16)].int_;
         if (s > h)
           h = s;
-        s = font_info[depth_base[f] + (hd & 15)].int_;
+        s = font_info[fnt_infos.depth_base[f] + (hd & 15)].int_;
         if (s > d)
           d = s;
         p = mem[p - mem_min].hh.rh;
@@ -8841,13 +8830,13 @@ protected:
   }
   halfword char_box(internal_font_number f, quarterword c) {
     halfword p;
-    four_quarters q = font_info[char_base[f] + c].qqqq;
+    four_quarters q = font_info[fnt_infos.char_base[f] + c].qqqq;
     eight_bits hd = q.b1;
     halfword b = new_null_box();
-    mem[b - mem_min + 1].int_ = font_info[width_base[f] + q.b0].int_ +
-                                font_info[italic_base[f] + (q.b2 / 4)].int_;
-    mem[b - mem_min + 3].int_ = font_info[height_base[f] + (hd / 16)].int_;
-    mem[b - mem_min + 2].int_ = font_info[depth_base[f] + (hd & 15)].int_;
+    mem[b - mem_min + 1].int_ = font_info[fnt_infos.width_base[f] + q.b0].int_ +
+                                font_info[fnt_infos.italic_base[f] + (q.b2 / 4)].int_;
+    mem[b - mem_min + 3].int_ = font_info[fnt_infos.height_base[f] + (hd / 16)].int_;
+    mem[b - mem_min + 2].int_ = font_info[fnt_infos.depth_base[f] + (hd & 15)].int_;
     p = get_avail();
     mem[p - mem_min].hh.U2.b1 = c;
     mem[p - mem_min].hh.U2.b0 = f;
@@ -8861,10 +8850,10 @@ protected:
     mem[b - mem_min + 3].int_ = mem[p - mem_min + 3].int_;
   }
   scaled height_plus_depth(internal_font_number f, quarterword c) {
-    four_quarters q = font_info[char_base[f] + c].qqqq;
+    four_quarters q = font_info[fnt_infos.char_base[f] + c].qqqq;
     eight_bits hd = q.b1;
-    return font_info[height_base[f] + (hd / 16)].int_ +
-           font_info[depth_base[f] + (hd & 15)].int_;
+    return font_info[fnt_infos.height_base[f] + (hd / 16)].int_ +
+           font_info[fnt_infos.depth_base[f] + (hd & 15)].int_;
   }
   halfword var_delimiter(halfword d, small_number s, scaled v) {
     halfword b;
@@ -8886,9 +8875,9 @@ protected:
           g = eqtb[z + 10835].hh.rh;
           if (g) {
             y = x;
-            if ((y >= font_bc[g]) && (y <= font_ec[g])) {
+            if ((y >= fnt_infos.font_bc[g]) && (y <= fnt_infos.font_ec[g])) {
             _L22:
-              q = font_info[char_base[g] + y].qqqq;
+              q = font_info[fnt_infos.char_base[g] + y].qqqq;
               if (q.b0 > 0) {
                 if ((q.b2 & 3) == 3) {
                   f = g;
@@ -8896,8 +8885,8 @@ protected:
                   goto _L40;
                 }
                 hd = q.b1;
-                u = font_info[height_base[g] + (hd / 16)].int_ +
-                    font_info[depth_base[g] + (hd & 15)].int_;
+                u = font_info[fnt_infos.height_base[g] + (hd / 16)].int_ +
+                    font_info[fnt_infos.depth_base[g] + (hd & 15)].int_;
                 if (u > w) {
                   f = g;
                   c = y;
@@ -8925,13 +8914,13 @@ protected:
       if ((q.b2 & 3) == 3) {
         b = new_null_box();
         mem[b - mem_min].hh.U2.b0 = 1;
-        r = font_info[exten_base[f] + q.b3].qqqq;
+        r = font_info[fnt_infos.exten_base[f] + q.b3].qqqq;
         c = r.b3;
         u = height_plus_depth(f, c);
         w = 0;
-        q = font_info[char_base[f] + c].qqqq;
-        mem[b - mem_min + 1].int_ = font_info[width_base[f] + q.b0].int_ +
-                                    font_info[italic_base[f] + (q.b2 / 4)].int_;
+        q = font_info[fnt_infos.char_base[f] + c].qqqq;
+        mem[b - mem_min + 1].int_ = font_info[fnt_infos.width_base[f] + q.b0].int_ +
+                                    font_info[fnt_infos.italic_base[f] + (q.b2 / 4)].int_;
         c = r.b2;
         if (c)
           w += height_plus_depth(f, c);
@@ -8976,7 +8965,7 @@ protected:
     }
     (mem[b - mem_min + 4].int_ =
          (half(mem[b - mem_min + 3].int_ - mem[b - mem_min + 2].int_) -
-          (font_info[(param_base[((eqtb[s + 10837].hh).rh)] + 22)].int_)));
+          (font_info[(fnt_infos.param_base[((eqtb[s + 10837].hh).rh)] + 22)].int_)));
     return b;
   }
   halfword rebox(halfword b, scaled w) {
@@ -8990,8 +8979,8 @@ protected:
       p = mem[b - mem_min + 5].hh.rh;
       if ((p >= hi_mem_min) && (mem[p - mem_min].hh.rh == (-1073741824))) {
         f = mem[p - mem_min].hh.U2.b0;
-        v = font_info[width_base[f] +
-                      font_info[char_base[f] + mem[p - mem_min].hh.U2.b1]
+        v = font_info[fnt_infos.width_base[f] +
+                      font_info[fnt_infos.char_base[f] + mem[p - mem_min].hh.U2.b1]
                           .qqqq.b0]
                 .int_;
         if (v != mem[b - mem_min + 1].int_)
@@ -9092,7 +9081,7 @@ protected:
     else
       cur_size = ((cur_style - 2) / 2) * 16;
     cur_mu = x_over_n(
-        font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
   _L40:
     if ((q >= hi_mem_min) || (q == (-1073741824))) {
       x = hpack(q, 0, 1);
@@ -9139,8 +9128,8 @@ protected:
       mem[a - mem_min].hh.rh = 0;
       return;
     }
-    if ((cur_c >= font_bc[cur_f]) && (cur_c <= font_ec[cur_f]))
-      cur_i = font_info[char_base[cur_f] + cur_c].qqqq;
+    if ((cur_c >= fnt_infos.font_bc[cur_f]) && (cur_c <= fnt_infos.font_ec[cur_f]))
+      cur_i = font_info[fnt_infos.char_base[cur_f] + cur_c].qqqq;
     else
       cur_i = null_character;
     if (cur_i.b0 <= 0) {
@@ -9151,8 +9140,8 @@ protected:
   void make_over(halfword q) {
     (mem[q - mem_min + 1].hh.lh = overbar(
          clean_box(q + 1, ((cur_style / 2) * 2) + 1),
-         font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3,
-         font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_));
+         font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3,
+         font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_));
     mem[q - mem_min + 1].hh.rh = 2;
   }
   void make_under(halfword q) {
@@ -9160,13 +9149,13 @@ protected:
     scaled delta;
     halfword x = clean_box(q + 1, cur_style);
     halfword p = new_kern(
-        font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3);
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3);
     mem[x - mem_min].hh.rh = p;
     mem[p - mem_min].hh.rh = fraction_rule(
-        font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_);
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_);
     y = vpackage(x, 0, 1, 1073741823);
     delta = mem[y - mem_min + 3].int_ + mem[y - mem_min + 2].int_ +
-            font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
     mem[y - mem_min + 3].int_ = mem[x - mem_min + 3].int_;
     mem[y - mem_min + 2].int_ = delta - mem[y - mem_min + 3].int_;
     mem[q - mem_min + 1].hh.lh = y;
@@ -9179,7 +9168,7 @@ protected:
       confusion(539);
     delta = mem[v - mem_min + 3].int_ + mem[v - mem_min + 2].int_;
     mem[v - mem_min + 3].int_ =
-        font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
         half(delta);
     mem[v - mem_min + 2].int_ = delta - mem[v - mem_min + 3].int_;
   }
@@ -9189,17 +9178,17 @@ protected:
     halfword x = clean_box(q + 1, ((cur_style / 2) * 2) + 1);
     if (cur_style < 2) {
       (clr =
-           (font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ +
-            (abs(font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_) /
+           (font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ +
+            (abs(font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_) /
              4)));
     } else {
-      clr = font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
+      clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
       clr += abs(clr) / 4;
     }
     (y = var_delimiter(
          q + 4, cur_size,
          (mem[x - mem_min + 3].int_ + mem[x - mem_min + 2].int_ + clr +
-          (font_info[(param_base[eqtb[cur_size + 10838].hh.rh] + 8)].int_))));
+          (font_info[(fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8)].int_))));
     delta = mem[y - mem_min + 2].int_ - mem[x - mem_min + 3].int_ -
             mem[x - mem_min + 2].int_ - clr;
     if (delta > 0)
@@ -9225,17 +9214,17 @@ protected:
     if (mem[q - mem_min + 1].hh.rh == 1) {
       fetch(q + 1);
       if ((cur_i.b2 & 3) == 1) {
-        a = lig_kern_base[cur_f] + cur_i.b3;
+        a = fnt_infos.lig_kern_base[cur_f] + cur_i.b3;
         cur_i = font_info[a].qqqq;
         if (cur_i.b0 > 128) {
-          a = lig_kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3;
+          a = fnt_infos.lig_kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3;
           cur_i = font_info[a].qqqq;
         }
         while (true) {
-          if (cur_i.b1 == skew_char[cur_f]) {
+          if (cur_i.b1 == fnt_infos.skew_char[cur_f]) {
             if (cur_i.b2 >= 128) {
               if (cur_i.b0 <= 128)
-                s = font_info[kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3]
+                s = font_info[fnt_infos.kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3]
                         .int_;
             }
             goto _L31;
@@ -9255,18 +9244,18 @@ protected:
       if ((i.b2 & 3) != 2)
         goto _L30;
       y = i.b3;
-      i = font_info[char_base[f] + y].qqqq;
+      i = font_info[fnt_infos.char_base[f] + y].qqqq;
       if (i.b0 <= 0)
         goto _L30;
-      if (font_info[width_base[f] + i.b0].int_ > w)
+      if (font_info[fnt_infos.width_base[f] + i.b0].int_ > w)
         goto _L30;
       c = y;
     }
   _L30:
-    if (h < font_info[param_base[f] + 5].int_)
+    if (h < font_info[fnt_infos.param_base[f] + 5].int_)
       delta = h;
     else
-      delta = font_info[param_base[f] + 5].int_;
+      delta = font_info[fnt_infos.param_base[f] + 5].int_;
     if (mem[q - mem_min + 2].hh.rh || mem[q - mem_min + 3].hh.rh) {
       if (mem[q - mem_min + 1].hh.rh == 1) {
         flush_node_list(x);
@@ -9305,7 +9294,7 @@ protected:
     scaled delta, delta1, delta2, shift_up, shift_down, clr;
     if (mem[q - mem_min + 1].int_ == 1073741824)
       mem[q - mem_min + 1].int_ =
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_;
     x = clean_box(q + 2, cur_style - ((cur_style / 6) * 2) + 2);
     z = clean_box(q + 3, ((cur_style / 2) * 2) - ((cur_style / 6) * 2) + 3);
     if (mem[x - mem_min + 1].int_ < mem[z - mem_min + 1].int_)
@@ -9313,23 +9302,23 @@ protected:
     else
       z = rebox(z, mem[x - mem_min + 1].int_);
     if (cur_style < 2) {
-      shift_up = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 8].int_;
+      shift_up = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 8].int_;
       shift_down =
-          font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 11].int_;
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 11].int_;
     } else {
       shift_down =
-          font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 12].int_;
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 12].int_;
       if (mem[q - mem_min + 1].int_)
-        shift_up = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 9].int_;
+        shift_up = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 9].int_;
       else
         shift_up =
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 10].int_;
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 10].int_;
     }
     if (!mem[q - mem_min + 1].int_) {
       if (cur_style < 2)
-        clr = font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 7;
+        clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 7;
       else
-        clr = font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3;
+        clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ * 3;
       delta = half(clr - shift_up + mem[x - mem_min + 2].int_ +
                    mem[z - mem_min + 3].int_ - shift_down);
       if (delta > 0) {
@@ -9343,10 +9332,10 @@ protected:
         clr = mem[q - mem_min + 1].int_;
       delta = half(mem[q - mem_min + 1].int_);
       (delta1 = (clr - shift_up + mem[x - mem_min + 2].int_ +
-                 font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
+                 font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
                  delta));
       (delta2 = (clr -
-                 font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
+                 font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ +
                  delta + mem[z - mem_min + 3].int_ - shift_down));
       if (delta1 > 0)
         shift_up += delta1;
@@ -9365,22 +9354,22 @@ protected:
     } else {
       y = fraction_rule(mem[q - mem_min + 1].int_);
       (p = new_kern(
-           font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ -
+           font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ -
            delta - mem[z - mem_min + 3].int_ + shift_down));
       mem[y - mem_min].hh.rh = p;
       mem[p - mem_min].hh.rh = z;
       p = new_kern(
           shift_up - mem[x - mem_min + 2].int_ -
-          font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ -
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_ -
           delta);
       mem[p - mem_min].hh.rh = y;
     }
     mem[x - mem_min].hh.rh = p;
     mem[v - mem_min + 5].hh.rh = x;
     if (cur_style < 2)
-      delta = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 20].int_;
+      delta = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 20].int_;
     else
-      delta = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 21].int_;
+      delta = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 21].int_;
     x = var_delimiter(q + 4, cur_size, delta);
     mem[x - mem_min].hh.rh = v;
     z = var_delimiter(q + 5, cur_size, delta);
@@ -9398,20 +9387,20 @@ protected:
       fetch(q + 1);
       if ((cur_style < 2) && ((cur_i.b2 & 3) == 2)) {
         c = cur_i.b3;
-        i = font_info[char_base[cur_f] + c].qqqq;
+        i = font_info[fnt_infos.char_base[cur_f] + c].qqqq;
         if (i.b0 > 0) {
           cur_c = c;
           cur_i = i;
           mem[q - mem_min + 1].hh.U2.b1 = c;
         }
       }
-      delta = font_info[italic_base[cur_f] + (cur_i.b2 / 4)].int_;
+      delta = font_info[fnt_infos.italic_base[cur_f] + (cur_i.b2 / 4)].int_;
       x = clean_box(q + 1, cur_style);
       if (mem[q - mem_min + 3].hh.rh && (mem[q - mem_min].hh.U2.b1 != 1))
         mem[x - mem_min + 1].int_ -= delta;
       (mem[x - mem_min + 4].int_ =
            (half(mem[x - mem_min + 3].int_ - mem[x - mem_min + 2].int_) -
-            (font_info[(param_base[((eqtb[cur_size + 10837].hh).rh)] + 22)]
+            (font_info[(fnt_infos.param_base[((eqtb[cur_size + 10837].hh).rh)] + 22)]
                  .int_)));
       mem[q - mem_min + 1].hh.rh = 2;
       mem[q - mem_min + 1].hh.lh = x;
@@ -9441,40 +9430,40 @@ protected:
       free_node(x, 7);
       mem[v - mem_min + 5].hh.rh = y;
     } else {
-      shift_up = font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 11].int_ -
+      shift_up = font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 11].int_ -
                  mem[x - mem_min + 2].int_;
       if (shift_up <
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 9].int_)
-        shift_up = font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 9].int_;
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 9].int_)
+        shift_up = font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 9].int_;
       p = new_kern(shift_up);
       mem[p - mem_min].hh.rh = y;
       mem[x - mem_min].hh.rh = p;
       p = new_kern(
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_);
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_);
       mem[p - mem_min].hh.rh = x;
       mem[v - mem_min + 5].hh.rh = p;
       (mem[v - mem_min + 3].int_ +=
-       (font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_ +
+       (font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_ +
         mem[x - mem_min + 3].int_ + (mem[(x - mem_min + 2)].int_) + shift_up));
     }
     if (!mem[q - mem_min + 3].hh.rh) {
       free_node(z, 7);
     } else {
       shift_down =
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 12].int_ -
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 12].int_ -
           mem[z - mem_min + 3].int_;
       if (shift_down <
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 10].int_)
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 10].int_)
         shift_down =
-            font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 10].int_;
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 10].int_;
       p = new_kern(shift_down);
       mem[y - mem_min].hh.rh = p;
       mem[p - mem_min].hh.rh = z;
       p = new_kern(
-          font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_);
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_);
       mem[z - mem_min].hh.rh = p;
       (mem[v - mem_min + 2].int_ +=
-       (font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_ +
+       (font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 13].int_ +
         mem[z - mem_min + 3].int_ + (mem[(z - mem_min + 2)].int_) +
         shift_down));
     }
@@ -9498,18 +9487,18 @@ protected:
                   mem[q - mem_min + 1].hh.rh = 4;
                   fetch(q + 1);
                   if ((cur_i.b2 & 3) == 1) {
-                    a = lig_kern_base[cur_f] + cur_i.b3;
+                    a = fnt_infos.lig_kern_base[cur_f] + cur_i.b3;
                     cur_c = mem[p - mem_min + 1].hh.U2.b1;
                     cur_i = font_info[a].qqqq;
                     if (cur_i.b0 > 128) {
-                      a = lig_kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3;
+                      a = fnt_infos.lig_kern_base[cur_f] + (cur_i.b2 * 256) + cur_i.b3;
                       cur_i = font_info[a].qqqq;
                     }
                     while (true) {
                       if (cur_i.b1 == cur_c) {
                         if (cur_i.b0 <= 128) {
                           if (cur_i.b2 >= 128) {
-                            p = new_kern(font_info[kern_base[cur_f] +
+                            p = new_kern(font_info[fnt_infos.kern_base[cur_f] +
                                                    (cur_i.b2 * 256) + cur_i.b3]
                                              .int_);
                             mem[p - mem_min].hh.rh = mem[q - mem_min].hh.rh;
@@ -9586,20 +9575,20 @@ protected:
       else
         t = 32;
       shift_up = mem[z - mem_min + 3].int_ -
-                 font_info[param_base[eqtb[t + 10837].hh.rh] + 18].int_;
+                 font_info[fnt_infos.param_base[eqtb[t + 10837].hh.rh] + 18].int_;
       shift_down = mem[z - mem_min + 2].int_ +
-                   font_info[param_base[eqtb[t + 10837].hh.rh] + 19].int_;
+                   font_info[fnt_infos.param_base[eqtb[t + 10837].hh.rh] + 19].int_;
       free_node(z, 7);
     }
     if (!mem[q - mem_min + 2].hh.rh) {
       x = clean_box(q + 3, ((cur_style / 4) * 2) + 5);
       mem[x - mem_min + 1].int_ += eqtb[12742].int_;
       if (shift_down <
-          font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 16].int_)
+          font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 16].int_)
         shift_down =
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 16].int_;
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 16].int_;
       clr = mem[x - mem_min + 3].int_ -
-            (abs(font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_ *
+            (abs(font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_ *
                  4) /
              5);
       if (shift_down < clr)
@@ -9609,15 +9598,15 @@ protected:
       x = clean_box(q + 2, ((cur_style / 4) * 2) + (cur_style & 1) + 4);
       mem[x - mem_min + 1].int_ += eqtb[12742].int_;
       if (cur_style & 1) {
-        clr = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 15].int_;
+        clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 15].int_;
       } else if (cur_style < 2)
-        clr = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 13].int_;
+        clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 13].int_;
       else
-        clr = font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 14].int_;
+        clr = font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 14].int_;
       if (shift_up < clr)
         shift_up = clr;
       clr = mem[x - mem_min + 2].int_ +
-            (abs(font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_) /
+            (abs(font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 5].int_) /
              4);
       if (shift_up < clr)
         shift_up = clr;
@@ -9627,16 +9616,16 @@ protected:
         y = clean_box(q + 3, ((cur_style / 4) * 2) + 5);
         mem[y - mem_min + 1].int_ += eqtb[12742].int_;
         if (shift_down <
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 17].int_)
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 17].int_)
           shift_down =
-              font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 17].int_;
-        (clr = ((font_info[param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ *
+              font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 17].int_;
+        (clr = ((font_info[fnt_infos.param_base[eqtb[cur_size + 10838].hh.rh] + 8].int_ *
                  4) -
                 shift_up + mem[x - mem_min + 2].int_ +
                 (mem[(y - mem_min + 3)].int_) - shift_down));
         if (clr > 0) {
           shift_down += clr;
-          (clr = ((abs(font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 5]
+          (clr = ((abs(font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 5]
                            .int_ *
                        4) /
                    5) -
@@ -9672,7 +9661,7 @@ protected:
     else
       cur_size = ((style - 2) / 2) * 16;
     delta2 =
-        max_d + font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_;
+        max_d + font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 22].int_;
     delta1 = max_h + max_d - delta2;
     if (delta2 > delta1)
       delta1 = delta2;
@@ -9700,7 +9689,7 @@ protected:
     else
       cur_size = ((cur_style - 2) / 2) * 16;
     cur_mu = x_over_n(
-        font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
     while (q != (-1073741824)) {
     _L21:
       delta = 0;
@@ -9770,7 +9759,7 @@ protected:
         else
           cur_size = ((cur_style - 2) / 2) * 16;
         cur_mu = x_over_n(
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
         goto _L81;
         break;
       case 15:
@@ -9857,10 +9846,10 @@ protected:
       case 4:
         fetch(q + 1);
         if (cur_i.b0 > 0) {
-          delta = font_info[italic_base[cur_f] + (cur_i.b2 / 4)].int_;
+          delta = font_info[fnt_infos.italic_base[cur_f] + (cur_i.b2 / 4)].int_;
           p = new_character(cur_f, cur_c);
           if ((mem[q - mem_min + 1].hh.rh == 4) &&
-              font_info[param_base[cur_f] + 2].int_)
+              font_info[fnt_infos.param_base[cur_f] + 2].int_)
             delta = 0;
           if ((!mem[q - mem_min + 3].hh.rh) && delta) {
             mem[p - mem_min].hh.rh = new_kern(delta);
@@ -9887,7 +9876,7 @@ protected:
         else
           cur_size = ((cur_style - 2) / 2) * 16;
         cur_mu = x_over_n(
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
         p = hpack(mem[mem_max - mem_min - 3].hh.rh, 0, 1);
         break;
       default:
@@ -9923,7 +9912,7 @@ protected:
     else
       cur_size = ((cur_style - 2) / 2) * 16;
     cur_mu = x_over_n(
-        font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+        font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
     while (q != (-1073741824)) {
       t = 16;
       s = 4;
@@ -9972,7 +9961,7 @@ protected:
         else
           cur_size = ((cur_style - 2) / 2) * 16;
         cur_mu = x_over_n(
-            font_info[param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
+            font_info[fnt_infos.param_base[eqtb[cur_size + 10837].hh.rh] + 6].int_, 18);
         goto _L83;
         break;
       case 8:
@@ -10799,8 +10788,8 @@ protected:
                   if (v >= hi_mem_min) {
                     f = mem[v - mem_min].hh.U2.b0;
                     (break_width[1] -=
-                     (font_info[(width_base[f] +
-                                 ((font_info[(char_base[f] +
+                     (font_info[(fnt_infos.width_base[f] +
+                                 ((font_info[(fnt_infos.char_base[f] +
                                               ((mem[v - mem_min].hh).U2.b1))]
                                        .qqqq)
                                       .b0))]
@@ -10812,8 +10801,8 @@ protected:
                     f = mem[v - mem_min + 1].hh.U2.b0;
                     (break_width[1] -=
                      (font_info
-                          [(width_base[f] +
-                            ((font_info[(char_base[f] +
+                          [(fnt_infos.width_base[f] +
+                            ((font_info[(fnt_infos.char_base[f] +
                                          ((mem[(v - mem_min + 1)].hh).U2.b1))]
                                   .qqqq)
                                  .b0))]
@@ -10834,8 +10823,8 @@ protected:
                   if (s >= hi_mem_min) {
                     f = mem[s - mem_min].hh.U2.b0;
                     (break_width[1] +=
-                     (font_info[(width_base[f] +
-                                 ((font_info[(char_base[f] +
+                     (font_info[(fnt_infos.width_base[f] +
+                                 ((font_info[(fnt_infos.char_base[f] +
                                               ((mem[s - mem_min].hh).U2.b1))]
                                        .qqqq)
                                       .b0))]
@@ -10846,8 +10835,8 @@ protected:
                       f = mem[s - mem_min + 1].hh.U2.b0;
                       (break_width[1] +=
                        (font_info
-                            [(width_base[f] +
-                              ((font_info[(char_base[f] +
+                            [(fnt_infos.width_base[f] +
+                              ((font_info[(fnt_infos.char_base[f] +
                                            ((mem[(s - mem_min + 1)].hh).U2.b1))]
                                     .qqqq)
                                    .b0))]
@@ -11322,18 +11311,18 @@ protected:
       cur_rh = 256;
   _L22:
     if (cur_l == 256) {
-      k = bchar_label[hf];
+      k = fnt_infos.bchar_label[hf];
       if (!k)
         goto _L30;
       q = font_info[k].qqqq;
     } else {
-      q = font_info[char_base[hf] + cur_l].qqqq;
+      q = font_info[fnt_infos.char_base[hf] + cur_l].qqqq;
       if ((q.b2 & 3) != 1)
         goto _L30;
-      k = lig_kern_base[hf] + q.b3;
+      k = fnt_infos.lig_kern_base[hf] + q.b3;
       q = font_info[k].qqqq;
       if (q.b0 > 128) {
-        k = lig_kern_base[hf] + (q.b2 * 256) + q.b3;
+        k = fnt_infos.lig_kern_base[hf] + (q.b2 * 256) + q.b3;
         q = font_info[k].qqqq;
       }
     }
@@ -11459,7 +11448,7 @@ protected:
               }
               goto _L22;
             }
-            w = font_info[kern_base[hf] + (q.b2 * 256) + q.b3].int_;
+            w = font_info[fnt_infos.kern_base[hf] + (q.b2 * 256) + q.b3].int_;
             goto _L30;
           }
         }
@@ -11697,7 +11686,7 @@ protected:
             avail = hyf_node;
           }
           while (l <= i) {
-            l = reconstitute(l, i, font_bchar[hf], 256) + 1;
+            l = reconstitute(l, i, fnt_infos.font_bchar[hf], 256) + 1;
             if (mem[mem_max - mem_min - 4].hh.rh <= (-1073741824))
               continue;
             if (minor_tail == (-1073741824))
@@ -11717,7 +11706,7 @@ protected:
           minor_tail = -1073741824;
           mem[r - mem_min + 1].hh.rh = -1073741824;
           c_loc = 0;
-          if (bchar_label[hf]) {
+          if (fnt_infos.bchar_label[hf]) {
             --l;
             c = hu[l];
             c_loc = l;
@@ -12240,8 +12229,8 @@ protected:
           do {
             f = mem[cur_p - mem_min].hh.U2.b0;
             (active_width[1] +=
-             (font_info[(width_base[f] +
-                         ((font_info[char_base[f] +
+             (font_info[(fnt_infos.width_base[f] +
+                         ((font_info[fnt_infos.char_base[f] +
                                      mem[cur_p - mem_min].hh.U2.b1]
                                .qqqq)
                               .b0))]
@@ -12319,7 +12308,7 @@ protected:
                 s = mem[prev_s - mem_min].hh.rh;
               }
             _L32:
-              hyf_char = hyphen_char[hf];
+              hyf_char = fnt_infos.hyphen_char[hf];
               if (hyf_char < 0)
                 goto _L31;
               if (hyf_char > 255)
@@ -12364,13 +12353,13 @@ protected:
                   hb = s;
                   hn = j;
                   if (mem[s - mem_min].hh.U2.b1 & 1)
-                    hyf_bchar = font_bchar[hf];
+                    hyf_bchar = fnt_infos.font_bchar[hf];
                   else
                     hyf_bchar = 256;
                 } else if ((mem[s - mem_min].hh.U2.b0 == 11) &&
                            (!mem[s - mem_min].hh.U2.b1)) {
                   hb = s;
-                  hyf_bchar = font_bchar[hf];
+                  hyf_bchar = fnt_infos.font_bchar[hf];
                 } else {
                   goto _L33;
                 }
@@ -12424,8 +12413,8 @@ protected:
         case 6:
           f = mem[cur_p - mem_min + 1].hh.U2.b0;
           (active_width[1] +=
-           (font_info[(width_base[f] +
-                       ((font_info[char_base[f] +
+           (font_info[(fnt_infos.width_base[f] +
+                       ((font_info[fnt_infos.char_base[f] +
                                    mem[cur_p - mem_min + 1].hh.U2.b1]
                              .qqqq)
                             .b0))]
@@ -12440,8 +12429,8 @@ protected:
             do {
               if (s >= hi_mem_min) {
                 f = mem[s - mem_min].hh.U2.b0;
-                (disc_width += (font_info[(width_base[f] +
-                                           (font_info[char_base[f] +
+                (disc_width += (font_info[(fnt_infos.width_base[f] +
+                                           (font_info[fnt_infos.char_base[f] +
                                                       mem[s - mem_min].hh.U2.b1]
                                                 .qqqq.b0))]
                                     .int_));
@@ -12450,8 +12439,8 @@ protected:
                 case 6:
                   f = mem[s - mem_min + 1].hh.U2.b0;
                   (disc_width +=
-                   (font_info[(width_base[f] +
-                               ((font_info[(char_base[f] +
+                   (font_info[(fnt_infos.width_base[f] +
+                               ((font_info[(fnt_infos.char_base[f] +
                                             (mem[s - mem_min + 1].hh.U2.b1))]
                                      .qqqq)
                                     .b0))]
@@ -12480,8 +12469,8 @@ protected:
             if (s >= hi_mem_min) {
               f = mem[s - mem_min].hh.U2.b0;
               (active_width[1] +=
-               (font_info[(width_base[f] +
-                           ((font_info[char_base[f] + mem[s - mem_min].hh.U2.b1]
+               (font_info[(fnt_infos.width_base[f] +
+                           ((font_info[fnt_infos.char_base[f] + mem[s - mem_min].hh.U2.b1]
                                  .qqqq)
                                 .b0))]
                     .int_));
@@ -12490,8 +12479,8 @@ protected:
               case 6:
                 f = mem[s - mem_min + 1].hh.U2.b0;
                 (active_width[1] +=
-                 (font_info[(width_base[f] +
-                             ((font_info[(char_base[f] +
+                 (font_info[(fnt_infos.width_base[f] +
+                             ((font_info[(fnt_infos.char_base[f] +
                                           (mem[s - mem_min + 1].hh.U2.b1))]
                                    .qqqq)
                                   .b0))]
@@ -13491,20 +13480,20 @@ protected:
       if (eqtb[9794].hh.rh) {
         main_p = eqtb[9794].hh.rh;
       } else {
-        main_p = font_glue[eqtb[10834].hh.rh];
+        main_p = fnt_infos.font_glue[eqtb[10834].hh.rh];
         if (main_p == (-1073741824)) {
           main_p = new_spec(0);
-          main_k = param_base[eqtb[10834].hh.rh] + 2;
+          main_k = fnt_infos.param_base[eqtb[10834].hh.rh] + 2;
           mem[main_p - mem_min + 1].int_ = font_info[main_k].int_;
           mem[main_p - mem_min + 2].int_ = font_info[main_k + 1].int_;
           mem[main_p - mem_min + 3].int_ = font_info[main_k + 2].int_;
-          font_glue[eqtb[10834].hh.rh] = main_p;
+          fnt_infos.font_glue[eqtb[10834].hh.rh] = main_p;
         }
       }
       main_p = new_spec(main_p);
       if (cur_list.aux_field.hh.lh >= 2000)
         mem[main_p - mem_min + 1].int_ +=
-            font_info[param_base[eqtb[10834].hh.rh] + 7].int_;
+            font_info[fnt_infos.param_base[eqtb[10834].hh.rh] + 7].int_;
       mem[main_p - mem_min + 2].int_ = xn_over_d(
           mem[main_p - mem_min + 2].int_, cur_list.aux_field.hh.lh, 1000);
       mem[main_p - mem_min + 3].int_ = xn_over_d(
@@ -14112,8 +14101,8 @@ protected:
         goto _L10;
       f = mem[p - mem_min].hh.U2.b0;
       (mem[cur_list.tail_field - mem_min].hh.rh = new_kern(
-           font_info[italic_base[f] +
-                     (font_info[char_base[f] + mem[p - mem_min].hh.U2.b1]
+           font_info[fnt_infos.italic_base[f] +
+                     (font_info[fnt_infos.char_base[f] + mem[p - mem_min].hh.U2.b1]
                           .qqqq.b2 /
                       4)]
                .int_));
@@ -14127,7 +14116,7 @@ protected:
     mem[cur_list.tail_field - mem_min].hh.rh = new_disc();
     cur_list.tail_field = mem[cur_list.tail_field - mem_min].hh.rh;
     if (cur_chr == 1) {
-      c = hyphen_char[eqtb[10834].hh.rh];
+      c = fnt_infos.hyphen_char[eqtb[10834].hh.rh];
       if (c >= 0) {
         if (c < 256)
           mem[cur_list.tail_field - mem_min + 1].hh.lh =
@@ -14233,10 +14222,10 @@ protected:
     p = new_character(f, cur_val);
     if (p == (-1073741824))
       return;
-    x = font_info[param_base[f] + 5].int_;
-    s = font_info[param_base[f] + 1].int_ / 65536.0;
-    a = font_info[width_base[f] +
-                  font_info[char_base[f] + mem[p - mem_min].hh.U2.b1].qqqq.b0]
+    x = font_info[fnt_infos.param_base[f] + 5].int_;
+    s = font_info[fnt_infos.param_base[f] + 1].int_ / 65536.0;
+    a = font_info[fnt_infos.width_base[f] +
+                  font_info[fnt_infos.char_base[f] + mem[p - mem_min].hh.U2.b1].qqqq.b0]
             .int_;
     do_assignments();
     f = eqtb[10834].hh.rh;
@@ -14249,10 +14238,10 @@ protected:
       back_input();
     }
     if (q != (-1073741824)) {
-      t = font_info[param_base[f] + 1].int_ / 65536.0;
-      i = font_info[char_base[f] + mem[q - mem_min].hh.U2.b1].qqqq;
-      w = font_info[width_base[f] + i.b0].int_;
-      h = font_info[height_base[f] + (i.b1 / 16)].int_;
+      t = font_info[fnt_infos.param_base[f] + 1].int_ / 65536.0;
+      i = font_info[fnt_infos.char_base[f] + mem[q - mem_min].hh.U2.b1].qqqq;
+      w = font_info[fnt_infos.width_base[f] + i.b0].int_;
+      h = font_info[fnt_infos.height_base[f] + (i.b1 / 16)].int_;
       if (h != x) {
         p = hpack(p, 0, 1);
         mem[p - mem_min + 4].int_ = x - h;
@@ -14377,15 +14366,15 @@ protected:
       } else {
         line_break(eqtb[12170].int_);
         v = mem[just_box - mem_min + 4].int_ +
-            (font_info[param_base[eqtb[10834].hh.rh] + 6].int_ * 2);
+            (font_info[fnt_infos.param_base[eqtb[10834].hh.rh] + 6].int_ * 2);
         w = -1073741823;
         p = mem[just_box - mem_min + 5].hh.rh;
         while (p != (-1073741824)) {
         _L21:
           if (p >= hi_mem_min) {
             f = mem[p - mem_min].hh.U2.b0;
-            d = font_info[width_base[f] +
-                          font_info[char_base[f] + mem[p - mem_min].hh.U2.b1]
+            d = font_info[fnt_infos.width_base[f] +
+                          font_info[fnt_infos.char_base[f] + mem[p - mem_min].hh.U2.b1]
                               .qqqq.b0]
                     .int_;
             goto _L40;
@@ -14838,9 +14827,9 @@ protected:
     scaled w, z, e, q, d, s;
     small_number g1, g2;
     halfword r, t;
-    if ((font_params[eqtb[10837].hh.rh] < 22) ||
-        (font_params[eqtb[10853].hh.rh] < 22) ||
-        (font_params[eqtb[10869].hh.rh] < 22)) {
+    if ((fnt_infos.font_params[eqtb[10837].hh.rh] < 22) ||
+        (fnt_infos.font_params[eqtb[10853].hh.rh] < 22) ||
+        (fnt_infos.font_params[eqtb[10869].hh.rh] < 22)) {
       print_nl(262);
       print(1157);
       help_ptr = 3;
@@ -14850,9 +14839,9 @@ protected:
       error();
       flush_math();
       danger = true;
-    } else if ((font_params[eqtb[10838].hh.rh] < 13) ||
-               (font_params[eqtb[10854].hh.rh] < 13) ||
-               (font_params[eqtb[10870].hh.rh] < 13)) {
+    } else if ((fnt_infos.font_params[eqtb[10838].hh.rh] < 13) ||
+               (fnt_infos.font_params[eqtb[10854].hh.rh] < 13) ||
+               (fnt_infos.font_params[eqtb[10870].hh.rh] < 13)) {
       print_nl(262);
       print(1161);
       help_ptr = 3;
@@ -14885,9 +14874,9 @@ protected:
       if (save_stack[save_ptr].int_ == 1)
         l = true;
       danger = false;
-      if ((font_params[eqtb[10837].hh.rh] < 22) ||
-          (font_params[eqtb[10853].hh.rh] < 22) ||
-          (font_params[eqtb[10869].hh.rh] < 22)) {
+      if ((fnt_infos.font_params[eqtb[10837].hh.rh] < 22) ||
+          (fnt_infos.font_params[eqtb[10853].hh.rh] < 22) ||
+          (fnt_infos.font_params[eqtb[10869].hh.rh] < 22)) {
         print_nl(262);
         print(1157);
         help_ptr = 3;
@@ -14897,9 +14886,9 @@ protected:
         error();
         flush_math();
         danger = true;
-      } else if ((font_params[eqtb[10838].hh.rh] < 13) ||
-                 (font_params[eqtb[10854].hh.rh] < 13) ||
-                 (font_params[eqtb[10870].hh.rh] < 13)) {
+      } else if ((fnt_infos.font_params[eqtb[10838].hh.rh] < 13) ||
+                 (fnt_infos.font_params[eqtb[10854].hh.rh] < 13) ||
+                 (fnt_infos.font_params[eqtb[10870].hh.rh] < 13)) {
         print_nl(262);
         print(1161);
         help_ptr = 3;
@@ -14961,7 +14950,7 @@ protected:
       q = 0;
     } else {
       e = mem[a - mem_min + 1].int_;
-      q = e + font_info[param_base[eqtb[10837].hh.rh] + 6].int_;
+      q = e + font_info[fnt_infos.param_base[eqtb[10837].hh.rh] + 6].int_;
     }
     if (w + q > z) {
       if (e && ((w - total_shrink[0] + q <= z) || total_shrink[1] ||
@@ -15368,17 +15357,17 @@ protected:
     name_in_progress = false;
     flushable_string = str_ptr - 1;
     for (N = font_ptr, f = 1; f <= N; ++f) {
-      if (str_eq_str(font_name[f], cur_name) &
-          str_eq_str(font_area[f], cur_area)) {
+      if (str_eq_str(fnt_infos.font_name[f], cur_name) &
+          str_eq_str(fnt_infos.font_area[f], cur_area)) {
         if (cur_name == flushable_string) {
           --str_ptr;
           pool_ptr = str_start[str_ptr];
-          cur_name = font_name[f];
+          cur_name = fnt_infos.font_name[f];
         }
         if (s > 0) {
-          if (s == font_size[f])
+          if (s == fnt_infos.font_size[f])
             goto _L50;
-        } else if (font_size[f] == xn_over_d(font_dsize[f], -s, 1000))
+        } else if (fnt_infos.font_size[f] == xn_over_d(fnt_infos.font_dsize[f], -s, 1000))
           goto _L50;
       }
     }
@@ -15805,9 +15794,9 @@ protected:
       scan_optional_equals();
       scan_int();
       if (!n)
-        hyphen_char[f] = cur_val;
+        fnt_infos.hyphen_char[f] = cur_val;
       else
-        skew_char[f] = cur_val;
+        fnt_infos.skew_char[f] = cur_val;
       break;
     case 88:
       new_font(a);
@@ -16231,81 +16220,81 @@ protected:
     writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
     for (N = font_ptr, k = 0; k <= N; ++k) {
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq =
-          font_check[k];
+          fnt_infos.font_check[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_size[k];
+          fnt_infos.font_size[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_dsize[k];
+          fnt_infos.font_dsize[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_params[k];
+          fnt_infos.font_params[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          hyphen_char[k];
+          fnt_infos.hyphen_char[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          skew_char[k];
+          fnt_infos.skew_char[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_name[k];
+          fnt_infos.font_name[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_area[k];
+          fnt_infos.font_area[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_bc[k];
+          fnt_infos.font_bc[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_ec[k];
+          fnt_infos.font_ec[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          char_base[k];
+          fnt_infos.char_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          width_base[k];
+          fnt_infos.width_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          height_base[k];
+          fnt_infos.height_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          depth_base[k];
+          fnt_infos.depth_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          italic_base[k];
+          fnt_infos.italic_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          lig_kern_base[k];
+          fnt_infos.lig_kern_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          kern_base[k];
+          fnt_infos.kern_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          exten_base[k];
+          fnt_infos.exten_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          param_base[k];
+          fnt_infos.param_base[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_glue[k];
+          fnt_infos.font_glue[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          bchar_label[k];
+          fnt_infos.bchar_label[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_bchar[k];
+          fnt_infos.font_bchar[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
-          font_false_bchar[k];
+          fnt_infos.font_false_bchar[k];
       writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
       print_nl(1264);
       print_esc(hash[k + 9010].rh);
       print_char(61);
-      print_file_name(font_name[k], font_area[k], 338);
-      if (font_size[k] != font_dsize[k]) {
+      print_file_name(fnt_infos.font_name[k], fnt_infos.font_area[k], 338);
+      if (fnt_infos.font_size[k] != fnt_infos.font_dsize[k]) {
         print(741);
-        print_scaled(font_size[k]);
+        print_scaled(fnt_infos.font_size[k]);
         print(397);
       }
     }
@@ -17227,8 +17216,8 @@ protected:
     else
       cur_list.aux_field.hh.lh = main_s;
     main_f = eqtb[10834].hh.rh;
-    bchar = font_bchar[main_f];
-    false_bchar = font_false_bchar[main_f];
+    bchar = fnt_infos.font_bchar[main_f];
+    false_bchar = fnt_infos.font_false_bchar[main_f];
     if (cur_list.mode_field > 0) {
       if (eqtb[12213].int_ != cur_list.aux_field.hh.rh)
         fix_language();
@@ -17248,7 +17237,7 @@ protected:
       cancel_boundary = false;
       main_k = 0;
     } else {
-      main_k = bchar_label[main_f];
+      main_k = fnt_infos.bchar_label[main_f];
     }
     if (!main_k)
       goto _L92;
@@ -17258,7 +17247,7 @@ protected:
   _L80:
     if (cur_l < 256) {
       if (mem[cur_q - mem_min].hh.rh > (-1073741824)) {
-        if (mem[cur_list.tail_field - mem_min].hh.U2.b1 == hyphen_char[main_f])
+        if (mem[cur_list.tail_field - mem_min].hh.U2.b1 == fnt_infos.hyphen_char[main_f])
           ins_disc = true;
       }
       if (ligature_present) {
@@ -17294,13 +17283,13 @@ protected:
     if (lig_stack < hi_mem_min)
       goto _L95;
   _L92:
-    if ((cur_chr < font_bc[main_f]) || (cur_chr > font_ec[main_f])) {
+    if ((cur_chr < fnt_infos.font_bc[main_f]) || (cur_chr > fnt_infos.font_ec[main_f])) {
       char_warning(main_f, cur_chr);
       mem[lig_stack - mem_min].hh.rh = avail;
       avail = lig_stack;
       goto _L60;
     }
-    main_i = font_info[char_base[main_f] + cur_l].qqqq;
+    main_i = font_info[fnt_infos.char_base[main_f] + cur_l].qqqq;
     if (main_i.b0 <= 0) {
       char_warning(main_f, cur_chr);
       mem[lig_stack - mem_min].hh.rh = avail;
@@ -17362,11 +17351,11 @@ protected:
       goto _L80;
     if (cur_r == 256)
       goto _L80;
-    main_k = lig_kern_base[main_f] + main_i.b3;
+    main_k = fnt_infos.lig_kern_base[main_f] + main_i.b3;
     main_j = font_info[main_k].qqqq;
     if (main_j.b0 <= 128)
       goto _L112;
-    main_k = lig_kern_base[main_f] + (main_j.b2 * 256) + main_j.b3;
+    main_k = fnt_infos.lig_kern_base[main_f] + (main_j.b2 * 256) + main_j.b3;
   _L111:
     main_j = font_info[main_k].qqqq;
   _L112:
@@ -17376,7 +17365,7 @@ protected:
           if (cur_l < 256) {
             if (mem[cur_q - mem_min].hh.rh > (-1073741824)) {
               if (mem[cur_list.tail_field - mem_min].hh.U2.b1 ==
-                  hyphen_char[main_f])
+                  fnt_infos.hyphen_char[main_f])
                 ins_disc = true;
             }
             if (ligature_present) {
@@ -17404,7 +17393,7 @@ protected:
             }
           }
           (mem[cur_list.tail_field - mem_min].hh.rh = new_kern(
-               font_info[kern_base[main_f] + (main_j.b2 * 256) + main_j.b3]
+               font_info[fnt_infos.kern_base[main_f] + (main_j.b2 * 256) + main_j.b3]
                    .int_));
           cur_list.tail_field = mem[cur_list.tail_field - mem_min].hh.rh;
           goto _L90;
@@ -17419,7 +17408,7 @@ protected:
         case 1:
         case 5:
           cur_l = main_j.b3;
-          main_i = font_info[char_base[main_f] + cur_l].qqqq;
+          main_i = font_info[fnt_infos.char_base[main_f] + cur_l].qqqq;
           ligature_present = true;
           break;
         case 2:
@@ -17447,7 +17436,7 @@ protected:
           if (cur_l < 256) {
             if (mem[cur_q - mem_min].hh.rh > (-1073741824)) {
               if (mem[cur_list.tail_field - mem_min].hh.U2.b1 ==
-                  hyphen_char[main_f])
+                  fnt_infos.hyphen_char[main_f])
                 ins_disc = true;
             }
             if (ligature_present) {
@@ -17470,7 +17459,7 @@ protected:
           }
           cur_q = cur_list.tail_field;
           cur_l = main_j.b3;
-          main_i = font_info[char_base[main_f] + cur_l].qqqq;
+          main_i = font_info[fnt_infos.char_base[main_f] + cur_l].qqqq;
           ligature_present = true;
           break;
         default:
@@ -17488,7 +17477,7 @@ protected:
         }
         if (cur_l < 256)
           goto _L110;
-        main_k = bchar_label[main_f];
+        main_k = fnt_infos.bchar_label[main_f];
         goto _L111;
       }
     }
@@ -17509,7 +17498,7 @@ protected:
     temp_ptr = lig_stack;
     lig_stack = mem[temp_ptr - mem_min].hh.rh;
     free_node(temp_ptr, 2);
-    main_i = font_info[char_base[main_f] + cur_l].qqqq;
+    main_i = font_info[fnt_infos.char_base[main_f] + cur_l].qqqq;
     ligature_present = true;
     if (lig_stack == (-1073741824)) {
       if (main_p > (-1073741824))
@@ -17521,14 +17510,14 @@ protected:
     goto _L110;
   _L120:
     if (!eqtb[9794].hh.rh) {
-      main_p = font_glue[eqtb[10834].hh.rh];
+      main_p = fnt_infos.font_glue[eqtb[10834].hh.rh];
       if (main_p == (-1073741824)) {
         main_p = new_spec(0);
-        main_k = param_base[eqtb[10834].hh.rh] + 2;
+        main_k = fnt_infos.param_base[eqtb[10834].hh.rh] + 2;
         mem[main_p - mem_min + 1].int_ = font_info[main_k].int_;
         mem[main_p - mem_min + 2].int_ = font_info[main_k + 1].int_;
         mem[main_p - mem_min + 3].int_ = font_info[main_k + 2].int_;
-        font_glue[eqtb[10834].hh.rh] = main_p;
+        fnt_infos.font_glue[eqtb[10834].hh.rh] = main_p;
       }
       temp_ptr = new_glue(main_p);
     } else {
@@ -17787,92 +17776,92 @@ protected:
     font_ptr = x;
     for (N = font_ptr, k = 0; k <= N; ++k) {
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      font_check[k] =
+      fnt_infos.font_check[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      font_size[k] =
+      fnt_infos.font_size[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      font_dsize[k] =
+      fnt_infos.font_dsize[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if ((x < (-1073741824)) || (x > 1073741824))
         goto _L6666;
-      font_params[k] = x;
+      fnt_infos.font_params[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      hyphen_char[k] =
+      fnt_infos.hyphen_char[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      skew_char[k] =
+      fnt_infos.skew_char[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > str_ptr)
         goto _L6666;
-      font_name[k] = x;
+      fnt_infos.font_name[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > str_ptr)
         goto _L6666;
-      font_area[k] = x;
+      fnt_infos.font_area[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > 255)
         goto _L6666;
-      font_bc[k] = x;
+      fnt_infos.font_bc[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > 255)
         goto _L6666;
-      font_ec[k] = x;
+      fnt_infos.font_ec[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      char_base[k] =
+      fnt_infos.char_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      width_base[k] =
+      fnt_infos.width_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      height_base[k] =
+      fnt_infos.height_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      depth_base[k] =
+      fnt_infos.depth_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      italic_base[k] =
+      fnt_infos.italic_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      lig_kern_base[k] =
+      fnt_infos.lig_kern_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      kern_base[k] =
+      fnt_infos.kern_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      exten_base[k] =
+      fnt_infos.exten_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      param_base[k] =
+      fnt_infos.param_base[k] =
           readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if ((x < (-1073741824)) || (x > lo_mem_max))
         goto _L6666;
-      font_glue[k] = x;
+      fnt_infos.font_glue[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) >= fmem_ptr)
         goto _L6666;
-      bchar_label[k] = x;
+      fnt_infos.bchar_label[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > 256)
         goto _L6666;
-      font_bchar[k] = x;
+      fnt_infos.font_bchar[k] = x;
       loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
       x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
       if (((unsigned)x) > 256)
         goto _L6666;
-      font_false_bchar[k] = x;
+      fnt_infos.font_false_bchar[k] = x;
     }
     loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
     x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
@@ -18030,7 +18019,7 @@ protected:
       if (dvi_ptr == dvi_limit)
         dvi_swap();
       while (font_ptr > 0) {
-        if (font_used[font_ptr])
+        if (fnt_infos.font_used[font_ptr])
           dvi_font_def(font_ptr);
         --font_ptr;
       }

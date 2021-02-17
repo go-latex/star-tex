@@ -148,15 +148,15 @@ namespace tex {
       goto _L30;
     }
     f = font_ptr + 1;
-    char_base[f] = fmem_ptr - bc;
-    width_base[f] = char_base[f] + ec + 1;
-    height_base[f] = width_base[f] + nw;
-    depth_base[f] = height_base[f] + nh;
-    italic_base[f] = depth_base[f] + nd;
-    lig_kern_base[f] = italic_base[f] + ni;
-    kern_base[f] = lig_kern_base[f] + nl - 32768;
-    exten_base[f] = kern_base[f] + nk + 32768;
-    param_base[f] = exten_base[f] + ne;
+    fnt_infos.char_base[f] = fmem_ptr - bc;
+    fnt_infos.width_base[f] = fnt_infos.char_base[f] + ec + 1;
+    fnt_infos.height_base[f] = fnt_infos.width_base[f] + nw;
+    fnt_infos.depth_base[f] = fnt_infos.height_base[f] + nh;
+    fnt_infos.italic_base[f] = fnt_infos.depth_base[f] + nd;
+    fnt_infos.lig_kern_base[f] = fnt_infos.italic_base[f] + ni;
+    fnt_infos.kern_base[f] = fnt_infos.lig_kern_base[f] + nl - 32768;
+    fnt_infos.exten_base[f] = fnt_infos.kern_base[f] + nk + 32768;
+    fnt_infos.param_base[f] = fnt_infos.exten_base[f] + ne;
     if (lh < 2)
       goto _L11;
     loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
@@ -171,7 +171,7 @@ namespace tex {
     loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
     d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
     qw.b3 = d;
-    font_check[f] = qw;
+    fnt_infos.font_check[f] = qw;
     loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
     z = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
     if (z > 127)
@@ -194,15 +194,15 @@ namespace tex {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
       --lh;
     }
-    font_dsize[f] = z;
+    fnt_infos.font_dsize[f] = z;
     if (s != (-1000)) {
       if (s >= 0)
         z = s;
       else
         z = xn_over_d(z, -s, 1000);
     }
-    font_size[f] = z;
-    for (N = width_base[f], k = fmem_ptr; k <= (N - 1); ++k) {
+    fnt_infos.font_size[f] = z;
+    for (N = fnt_infos.width_base[f], k = fmem_ptr; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
       a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
       qw.b0 = a;
@@ -231,7 +231,7 @@ namespace tex {
         if ((d < bc) || (d > ec))
           goto _L11;
         while (d < (k + bc - fmem_ptr)) {
-          qw = font_info[char_base[f] + d].qqqq;
+          qw = font_info[fnt_infos.char_base[f] + d].qqqq;
           if ((qw.b2 & 3) != 2)
             goto _L45;
           d = qw.b3;
@@ -250,7 +250,7 @@ namespace tex {
     }
     beta = 256 / alpha;
     alpha *= z;
-    for (N = lig_kern_base[f], k = width_base[f]; k <= (N - 1); ++k) {
+    for (N = fnt_infos.lig_kern_base[f], k = fnt_infos.width_base[f]; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
 	  fread(&a, sizeof(eight_bits), 1, tfm_file);
 	  fread(&b, sizeof(eight_bits), 1, tfm_file);
@@ -264,16 +264,16 @@ namespace tex {
       else
         goto _L11;
     }
-    if (font_info[width_base[f]].int_)
+    if (font_info[fnt_infos.width_base[f]].int_)
       goto _L11;
-    if (font_info[height_base[f]].int_)
+    if (font_info[fnt_infos.height_base[f]].int_)
       goto _L11;
-    if (font_info[depth_base[f]].int_)
+    if (font_info[fnt_infos.depth_base[f]].int_)
       goto _L11;
-    if (font_info[italic_base[f]].int_)
+    if (font_info[fnt_infos.italic_base[f]].int_)
       goto _L11;
     if (nl > 0) {
-      for (N = kern_base[f] + 32767, k = lig_kern_base[f]; k <= N; ++k) {
+      for (N = fnt_infos.kern_base[f] + 32767, k = fnt_infos.lig_kern_base[f]; k <= N; ++k) {
         loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
         a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
         qw.b0 = a;
@@ -291,27 +291,27 @@ namespace tex {
           if ((c * 256) + d >= nl)
             goto _L11;
           if (a == 255) {
-            if (k == lig_kern_base[f])
+            if (k == fnt_infos.lig_kern_base[f])
               bchar = b;
           }
         } else {
           if (b != bchar) {
             if ((b < bc) || (b > ec))
               goto _L11;
-            qw = font_info[char_base[f] + b].qqqq;
+            qw = font_info[fnt_infos.char_base[f] + b].qqqq;
             if (qw.b0 <= 0)
               goto _L11;
           }
           if (c < 128) {
             if ((d < bc) || (d > ec))
               goto _L11;
-            qw = font_info[char_base[f] + d].qqqq;
+            qw = font_info[fnt_infos.char_base[f] + d].qqqq;
             if (qw.b0 <= 0)
               goto _L11;
           } else if (((c - 128) * 256) + d >= nk)
             goto _L11;
           if (a < 128) {
-            if (k - lig_kern_base[f] + a + 1 >= nl)
+            if (k - fnt_infos.lig_kern_base[f] + a + 1 >= nl)
               goto _L11;
           }
         }
@@ -319,7 +319,7 @@ namespace tex {
       if (a == 255)
         bch_label = (c * 256) + d;
     }
-    for (N = exten_base[f], k = kern_base[f] + 32768; k <= (N - 1); ++k) {
+    for (N = fnt_infos.exten_base[f], k = fnt_infos.kern_base[f] + 32768; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
 	  fread(&a, sizeof(eight_bits), 1, tfm_file);
 	  fread(&b, sizeof(eight_bits), 1, tfm_file);
@@ -333,7 +333,7 @@ namespace tex {
       else
         goto _L11;
     }
-    for (N = param_base[f], k = exten_base[f]; k <= (N - 1); ++k) {
+    for (N = fnt_infos.param_base[f], k = fnt_infos.exten_base[f]; k <= (N - 1); ++k) {
       loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
       a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
       qw.b0 = a;
@@ -350,27 +350,27 @@ namespace tex {
       if (a) {
         if ((a < bc) || (a > ec))
           goto _L11;
-        qw = font_info[char_base[f] + a].qqqq;
+        qw = font_info[fnt_infos.char_base[f] + a].qqqq;
         if (qw.b0 <= 0)
           goto _L11;
       }
       if (b) {
         if ((b < bc) || (b > ec))
           goto _L11;
-        qw = font_info[char_base[f] + b].qqqq;
+        qw = font_info[fnt_infos.char_base[f] + b].qqqq;
         if (qw.b0 <= 0)
           goto _L11;
       }
       if (c) {
         if ((c < bc) || (c > ec))
           goto _L11;
-        qw = font_info[char_base[f] + c].qqqq;
+        qw = font_info[fnt_infos.char_base[f] + c].qqqq;
         if (qw.b0 <= 0)
           goto _L11;
       }
       if ((d < bc) || (d > ec))
         goto _L11;
-      qw = font_info[char_base[f] + d].qqqq;
+      qw = font_info[fnt_infos.char_base[f] + d].qqqq;
       if (qw.b0 <= 0)
         goto _L11;
     }
@@ -387,7 +387,7 @@ namespace tex {
         sw = (sw * 256) +
              readU8(tfm_file, tfm_file_mode, &tfm_file_value);
         loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-        font_info[param_base[f]].int_ =
+        font_info[fnt_infos.param_base[f]].int_ =
             (sw * 16) +
             (readU8(tfm_file, tfm_file_mode, &tfm_file_value) /
              16);
@@ -399,9 +399,9 @@ namespace tex {
         d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
         sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
         if (!a) {
-          font_info[param_base[f] + k - 1].int_ = sw;
+          font_info[fnt_infos.param_base[f] + k - 1].int_ = sw;
         } else if (a == 255)
-          font_info[param_base[f] + k - 1].int_ = sw - alpha;
+          font_info[fnt_infos.param_base[f] + k - 1].int_ = sw - alpha;
         else
           goto _L11;
       }
@@ -409,32 +409,32 @@ namespace tex {
     if (feof(tfm_file))
       goto _L11;
     for (k = np + 1; k <= 7; ++k)
-      font_info[param_base[f] + k - 1].int_ = 0;
+      font_info[fnt_infos.param_base[f] + k - 1].int_ = 0;
     if (np >= 7)
-      font_params[f] = np;
+      fnt_infos.font_params[f] = np;
     else
-      font_params[f] = 7;
-    hyphen_char[f] = eqtb[12209].int_;
-    skew_char[f] = eqtb[12210].int_;
+      fnt_infos.font_params[f] = 7;
+    fnt_infos.hyphen_char[f] = eqtb[12209].int_;
+    fnt_infos.skew_char[f] = eqtb[12210].int_;
     if (bch_label < nl)
-      bchar_label[f] = bch_label + lig_kern_base[f];
+      fnt_infos.bchar_label[f] = bch_label + fnt_infos.lig_kern_base[f];
     else
-      bchar_label[f] = 0;
-    font_bchar[f] = bchar;
-    font_false_bchar[f] = bchar;
+      fnt_infos.bchar_label[f] = 0;
+    fnt_infos.font_bchar[f] = bchar;
+    fnt_infos.font_false_bchar[f] = bchar;
     if (bchar <= ec) {
       if (bchar >= bc) {
-        qw = font_info[char_base[f] + bchar].qqqq;
+        qw = font_info[fnt_infos.char_base[f] + bchar].qqqq;
         if (qw.b0 > 0)
-          font_false_bchar[f] = 256;
+          fnt_infos.font_false_bchar[f] = 256;
       }
     }
-    font_name[f] = nom;
-    font_area[f] = aire;
-    font_bc[f] = bc;
-    font_ec[f] = ec;
-    font_glue[f] = -1073741824;
-    --param_base[f];
+    fnt_infos.font_name[f] = nom;
+    fnt_infos.font_area[f] = aire;
+    fnt_infos.font_bc[f] = bc;
+    fnt_infos.font_ec[f] = ec;
+    fnt_infos.font_glue[f] = -1073741824;
+    --fnt_infos.param_base[f];
     fmem_ptr += lf;
     font_ptr = f;
     g = f;
