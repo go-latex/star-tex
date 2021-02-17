@@ -31,11 +31,7 @@ ctex_context_typeset(context_t ctx,
 		const char* err_oname) {
 	auto ctex = to_tex(ctx);
 
-	auto tex_file = std::ifstream(tex_fname);
-	auto dvi_file = std::ofstream(dvi_oname);
-	auto err_file = std::ofstream(err_oname);
-
-	ctex->typeset(tex_file, dvi_file, search_dir, working_dir, err_file);
+	ctex->typeset(tex_fname, dvi_oname, search_dir, working_dir, err_oname);
 
 	return 0;
 }
