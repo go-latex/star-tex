@@ -39,8 +39,7 @@
 #include <string>
 #include <vector>
 
-extern "C"
-int cgo_load_tfm_file(const char*);
+#include "ctex-capi-cgo.h"
 
 namespace tex {
 
