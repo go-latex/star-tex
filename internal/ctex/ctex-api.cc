@@ -1,11 +1,7 @@
 #include "ctex-api.h"
 
 #include "tex.hpp"
-
-#include <istream>
-#include <ostream>
-#include <fstream>
-
+#include "plain_tex.hpp"
 
 tex::plain *to_tex(context_t ctx) {
 	return reinterpret_cast<tex::plain*>(ctx);
