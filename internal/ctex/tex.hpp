@@ -40,8 +40,6 @@
 #include <setjmp.h>
 
 #include <bitset>
-#include <memory>
-#include <numeric>
 #include <stdexcept>
 #include <string>
 

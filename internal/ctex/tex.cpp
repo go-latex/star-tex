@@ -26,8 +26,13 @@ void tex::initialize() {
     font_info[i].int_ = 0;
   }
 
-  std::iota(xchr, xchr + 255, 0);
-  std::iota(xord, xord + 255, 0);
+  for (int i = 0; i < 256; i++) {
+    xchr[i] = i;
+  }
+  for (int i = 0; i < 256; i++) {
+    xord[i] = i;
+  }
+
   interaction = 3;
   deletions_allowed = true;
   set_box_allowed = true;
