@@ -10,12 +10,22 @@ void tex::initialize() {
   integer k;
   hyph_pointer z;
 
-  mem.resize(mem_max - mem_min + 1);
-  font_info.resize(font_mem_size + 1);
-  str_pool.resize(pool_size + 1);
-  str_start.resize(max_strings + 1);
-  buffer.resize(buf_size + 1);
-  
+  for (int i = 0; i < buf_size + 1; i++) {
+    buffer[i] = 0;
+  }
+  for (int i = 0; i < pool_size + 1; i++) {
+    str_pool[i] = 0;
+  }
+  for (int i = 0; i < max_strings + 1; i++) {
+    str_start[i] = 0;
+  }
+  for (int i = 0; i < mem_max - mem_min + 1; i++) {
+    mem[i].int_ = 0;
+  }
+  for (int i = 0; i < font_mem_size + 1; i++) {
+    font_info[i].int_ = 0;
+  }
+
   std::iota(xchr, xchr + 255, 0);
   std::iota(xord, xord + 255, 0);
   interaction = 3;

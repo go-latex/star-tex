@@ -44,7 +44,6 @@
 #include <numeric>
 #include <stdexcept>
 #include <string>
-#include <vector>
 
 #include "ctex-capi-cgo.h"
 #include "ctex-capi-consts.h"
@@ -72,12 +71,13 @@ protected:
   char xchr[256], name_of_file[file_name_size];
   int name_length;
 
-  std::vector<ASCII_code> buffer;
+  ASCII_code buffer[buf_size + 1];
+  packed_ASCII_code str_pool[pool_size + 1];
+  pool_pointer str_start[max_strings + 1];
+
   int first, last, max_buf_stack;
   FILE *term_in;
   FILE *term_out;
-  std::vector<packed_ASCII_code> str_pool;
-  std::vector<pool_pointer> str_start;
   pool_pointer pool_ptr;
   str_number str_ptr;
   pool_pointer init_pool_ptr;
@@ -99,7 +99,7 @@ protected:
       second_indent, best_height_plus_depth, page_max_depth, best_size,
       last_kern;
   halfword temp_ptr;
-  std::vector<memory_word> mem;
+  memory_word mem[mem_max - mem_min + 1];
   halfword lo_mem_max, hi_mem_min, avail, mem_end, rover;
   list_state_record nest[nest_size + 1];
   int nest_ptr, max_nest_stack;
@@ -149,7 +149,7 @@ protected:
   str_number output_file_name, log_name;
   FILE *tfm_file;
 
-  std::vector<memory_word> font_info;
+  memory_word font_info[font_mem_size + 1];
   font_index fmem_ptr;
   internal_font_number font_ptr;
   ctex_font_info_t fnt_infos;
