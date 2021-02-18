@@ -12169,12 +12169,12 @@ void tex::first_fit(trie_pointer p) {
         overflow(950, trie_size);
       do {
         ++trie_max;
-        trie_taken[trie_max - 1] = 0;
+        CTEX_BITCLEAR(trie_taken, trie_max - 1);
         trie[trie_max].rh = trie_max + 1;
         trie[trie_max].lh = trie_max - 1;
       } while (trie_max != (h + 256));
     }
-    if (trie_taken[h - 1])
+    if (CTEX_BITTEST(trie_taken, h - 1))
       goto _L45;
     q = trie_r[p];
     while (q > 0) {
@@ -12187,7 +12187,7 @@ void tex::first_fit(trie_pointer p) {
     z = trie[z].rh;
   }
 _L40:
-  trie_taken[h - 1] = 1;
+  CTEX_BITSET(trie_taken, h - 1);
   trie_hash[p] = h;
   q = p;
   do {

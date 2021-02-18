@@ -7,6 +7,16 @@
 
 #include <stdint.h>
 
+// bitset implementation from http://c-faq.com/misc/bitsets.html
+#include <limits.h>		/* for CHAR_BIT */
+#define CTEX_BITMASK(b) (1 << ((b) % CHAR_BIT))
+#define CTEX_BITSLOT(b) ((b) / CHAR_BIT)
+#define CTEX_BITSET(a, b) ((a)[CTEX_BITSLOT(b)] |= CTEX_BITMASK(b))
+#define CTEX_BITCLEAR(a, b) ((a)[CTEX_BITSLOT(b)] &= ~CTEX_BITMASK(b))
+#define CTEX_BITTEST(a, b) ((a)[CTEX_BITSLOT(b)] & CTEX_BITMASK(b))
+#define CTEX_BITNSLOTS(nb) ((nb + CHAR_BIT - 1) / CHAR_BIT)
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif

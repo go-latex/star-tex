@@ -39,7 +39,6 @@
 #include <errno.h>
 #include <setjmp.h>
 
-#include <bitset>
 #include <stdexcept>
 #include <string>
 
@@ -206,7 +205,7 @@ protected:
   trie_pointer trie_l[trie_size + 1];
   trie_pointer trie_r[trie_size + 1], trie_ptr;
   trie_pointer trie_hash[trie_size + 1];
-  std::bitset<trie_size> trie_taken;
+  uint8_t trie_taken[CTEX_BITNSLOTS(trie_size)];
   trie_pointer trie_min[256], trie_max;
   bool trie_not_ready;
   halfword page_tail;
