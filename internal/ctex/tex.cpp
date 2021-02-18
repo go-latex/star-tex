@@ -7544,119 +7544,35 @@ _L10:
   return result;
 }
 
-void tex::write_dvi(dvi_index a, dvi_index b) {
-  dvi_index k;
-  for (k = a; k <= b; ++k)
-    fprintf(dvi_mgr.dvi_file, "%c", dvi_mgr.dvi_buf[k]);
-}
-
-void tex::dvi_swap() {
-  if (dvi_mgr.dvi_limit == dvi_buf_size) {
-    write_dvi(0, dvi_mgr.half_buf - 1);
-    dvi_mgr.dvi_limit = dvi_mgr.half_buf;
-    dvi_mgr.dvi_offset += dvi_buf_size;
-    dvi_mgr.dvi_ptr = 0;
-  } else {
-    write_dvi(dvi_mgr.half_buf, dvi_buf_size - 1);
-    dvi_mgr.dvi_limit = dvi_buf_size;
-  }
-  dvi_mgr.dvi_gone += dvi_mgr.half_buf;
-}
-
-void tex::dvi_four(integer x) {
-  if (x >= 0) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = x / 16777216;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-  } else {
-    x += 1073741824;
-    x += 1073741824;
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = (x / 16777216) + 128;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-  }
-  x &= 16777215;
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = x / 65536;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  x &= 65535;
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = x / 256;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = x & 255;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-}
-
-void tex::dvi_pop(integer l) {
-  if ((l == (dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr)) && (dvi_mgr.dvi_ptr > 0)) {
-    --dvi_mgr.dvi_ptr;
-    return;
-  }
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 142;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-}
-
 void tex::dvi_font_def(internal_font_number f) {
   pool_pointer k, N;
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 243;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = f - 1;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = fnt_infos.font_check[f].b0;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = fnt_infos.font_check[f].b1;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = fnt_infos.font_check[f].b2;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = fnt_infos.font_check[f].b3;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_four(fnt_infos.font_size[f]);
-  dvi_four(fnt_infos.font_dsize[f]);
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] =
-      str_start[fnt_infos.font_area[f] + 1] - str_start[fnt_infos.font_area[f]];
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] =
-      str_start[fnt_infos.font_name[f] + 1] - str_start[fnt_infos.font_name[f]];
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
+  uint8_t font_area;
+  uint8_t font_name;
+  integer font_area_id = fnt_infos.font_area[f];
+  integer font_name_id = fnt_infos.font_name[f];
+
+  font_area = str_start[font_area_id + 1] - str_start[font_area_id];
+  font_name = str_start[font_name_id + 1] - str_start[font_name_id];
+
+  ctex_dvi_wU8(&dvi_mgr, 243);
+  ctex_dvi_wU8(&dvi_mgr, f - 1);
+  ctex_dvi_wU8(&dvi_mgr, fnt_infos.font_check[f].b0);
+  ctex_dvi_wU8(&dvi_mgr, fnt_infos.font_check[f].b1);
+  ctex_dvi_wU8(&dvi_mgr, fnt_infos.font_check[f].b2);
+  ctex_dvi_wU8(&dvi_mgr, fnt_infos.font_check[f].b3);
+  ctex_dvi_four(&dvi_mgr, fnt_infos.font_size[f]);
+  ctex_dvi_four(&dvi_mgr, fnt_infos.font_dsize[f]);
+  ctex_dvi_wU8(&dvi_mgr, font_area);
+  ctex_dvi_wU8(&dvi_mgr, font_name);
   for (N = str_start[fnt_infos.font_area[f] + 1],
       k = str_start[fnt_infos.font_area[f]];
        k <= (N - 1); ++k) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = str_pool[k];
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, str_pool[k]);
   }
   for (N = str_start[fnt_infos.font_name[f] + 1],
       k = str_start[fnt_infos.font_name[f]];
        k <= (N - 1); ++k) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = str_pool[k];
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, str_pool[k]);
   }
 }
 
@@ -7666,7 +7582,7 @@ void tex::movement(scaled w, uint8_t o) {
   integer k;
   halfword q = get_node(3);
   mem[q - mem_min + 1].int_ = w;
-  mem[q - mem_min + 2].int_ = dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr;
+  mem[q - mem_min + 2].int_ = ctex_dvi_pos(&dvi_mgr);
   if (o == 157) {
     mem[q - mem_min].hh.rh = down_ptr;
     down_ptr = q;
@@ -7682,10 +7598,10 @@ void tex::movement(scaled w, uint8_t o) {
       case 4:
       case 15:
       case 16:
-        if (mem[p - mem_min + 2].int_ < dvi_mgr.dvi_gone) {
+        if (mem[p - mem_min + 2].int_ < ctex_dvi_gone(&dvi_mgr)) {
           goto _L45;
         } else {
-          k = mem[p - mem_min + 2].int_ - dvi_mgr.dvi_offset;
+          k = mem[p - mem_min + 2].int_ - ctex_dvi_offset(&dvi_mgr);
           if (k < 0)
             k += dvi_buf_size;
           dvi_mgr.dvi_buf[k] += 5;
@@ -7696,10 +7612,10 @@ void tex::movement(scaled w, uint8_t o) {
       case 5:
       case 9:
       case 11:
-        if (mem[p - mem_min + 2].int_ < dvi_mgr.dvi_gone) {
+        if (mem[p - mem_min + 2].int_ < ctex_dvi_gone(&dvi_mgr)) {
           goto _L45;
         } else {
-          k = mem[p - mem_min + 2].int_ - dvi_mgr.dvi_offset;
+          k = mem[p - mem_min + 2].int_ - ctex_dvi_offset(&dvi_mgr);
           if (k < 0)
             k += dvi_buf_size;
           dvi_mgr.dvi_buf[k] += 10;
@@ -7737,61 +7653,38 @@ void tex::movement(scaled w, uint8_t o) {
 _L45:
   mem[q - mem_min].hh.lh = 3;
   if (abs(w) >= 8388608) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o + 3;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_four(w);
+    ctex_dvi_wU8(&dvi_mgr, o + 3);
+    ctex_dvi_four(&dvi_mgr, w);
     goto _L10;
   }
   if (abs(w) >= 32768) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o + 2;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    if (w < 0)
+    ctex_dvi_wU8(&dvi_mgr, o + 2);
+    if (w < 0) {
       w += 16777216;
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = w / 65536;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    }
+    ctex_dvi_wU8(&dvi_mgr, w / 65536);
     w &= 65535;
     goto _L2;
   }
   if (abs(w) >= 128) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o + 1;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, o + 1);
     if (w < 0)
       w += 65536;
     goto _L2;
   }
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
+  ctex_dvi_wU8(&dvi_mgr, o);
   if (w < 0)
     w += 256;
   goto _L1;
 _L2:
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = w / 256;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
+  ctex_dvi_wU8(&dvi_mgr, w / 256);
 _L1:
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = w & 255;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
+  ctex_dvi_wU8(&dvi_mgr, w & 255);
   goto _L10;
 _L40:
   mem[q - mem_min].hh.lh = mem[p - mem_min].hh.lh;
   if (mem[q - mem_min].hh.lh == 1) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o + 4;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, o + 4);
     while (mem[q - mem_min].hh.rh != p) {
       q = mem[q - mem_min].hh.rh;
       switch (mem[q - mem_min].hh.lh) {
@@ -7806,10 +7699,7 @@ _L40:
       }
     }
   } else {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = o + 9;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, o + 9);
     while (mem[q - mem_min].hh.rh != p) {
       q = mem[q - mem_min].hh.rh;
       switch (mem[q - mem_min].hh.lh) {
@@ -7850,13 +7740,13 @@ _L10:;
 void tex::special_out(halfword p) {
   char old_setting;
   pool_pointer k, N;
-  if (cur_h != dvi_mgr.dvi_h) {
-    movement(cur_h - dvi_mgr.dvi_h, 143);
-    dvi_mgr.dvi_h = cur_h;
+  if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+    movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+    ctex_dvi_set_h(&dvi_mgr, cur_h);
   }
-  if (cur_v != dvi_mgr.dvi_v) {
-    movement(cur_v - dvi_mgr.dvi_v, 157);
-    dvi_mgr.dvi_v = cur_v;
+  if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+    movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+    ctex_dvi_set_v(&dvi_mgr, cur_v);
   }
   old_setting = selector;
   selector = 21;
@@ -7866,26 +7756,14 @@ void tex::special_out(halfword p) {
   if (pool_ptr + 1 > pool_size)
     overflow(257, pool_size - init_pool_ptr);
   if (pool_ptr - str_start[str_ptr] < 256) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 239;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = pool_ptr - str_start[str_ptr];
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, 239);
+    ctex_dvi_wU8(&dvi_mgr, pool_ptr - str_start[str_ptr]);
   } else {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 242;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_four(pool_ptr - str_start[str_ptr]);
+    ctex_dvi_wU8(&dvi_mgr, 242);
+    ctex_dvi_four(&dvi_mgr, pool_ptr - str_start[str_ptr]);
   }
   for (N = pool_ptr, k = str_start[str_ptr]; k <= (N - 1); ++k) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = str_pool[k];
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, str_pool[k]);
   }
   pool_ptr = str_start[str_ptr];
 }
@@ -7991,68 +7869,50 @@ void tex::hlist_out() {
   halfword p = mem[this_box - mem_min + 5].hh.rh;
   ++cur_s;
   if (cur_s > 0) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 141;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, 141);
   }
   if (cur_s > max_push)
     max_push = cur_s;
-  save_loc = dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr;
+  save_loc = ctex_dvi_pos(&dvi_mgr);
   base_line = cur_v;
   left_edge = cur_h;
   while (p != (-1073741824)) {
   _L21:
     if (p >= hi_mem_min) {
-      if (cur_h != dvi_mgr.dvi_h) {
-        movement(cur_h - dvi_mgr.dvi_h, 143);
-        dvi_mgr.dvi_h = cur_h;
+      if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+        movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+        ctex_dvi_set_h(&dvi_mgr, cur_h);
       }
-      if (cur_v != dvi_mgr.dvi_v) {
-        movement(cur_v - dvi_mgr.dvi_v, 157);
-        dvi_mgr.dvi_v = cur_v;
+      if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+        movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+        ctex_dvi_set_v(&dvi_mgr, cur_v);
       }
       do {
         f = mem[p - mem_min].hh.U2.b0;
         c = mem[p - mem_min].hh.U2.b1;
-        if (f != dvi_mgr.dvi_f) {
+        if (f != ctex_dvi_get_font(&dvi_mgr)) {
           if (!fnt_infos.font_used[f]) {
             dvi_font_def(f);
             fnt_infos.font_used[f] = true;
           }
           if (f <= 64) {
-            dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = f + 170;
-            ++dvi_mgr.dvi_ptr;
-            if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-              dvi_swap();
+            ctex_dvi_wU8(&dvi_mgr, f + 170);
           } else {
-            dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 235;
-            ++dvi_mgr.dvi_ptr;
-            if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-              dvi_swap();
-            dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = f - 1;
-            ++dvi_mgr.dvi_ptr;
-            if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-              dvi_swap();
+            ctex_dvi_wU8(&dvi_mgr, 235);
+            ctex_dvi_wU8(&dvi_mgr, f - 1);
           }
-          dvi_mgr.dvi_f = f;
+          ctex_dvi_set_font(&dvi_mgr, f);
         }
         if (c >= 128) {
-          dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 128;
-          ++dvi_mgr.dvi_ptr;
-          if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-            dvi_swap();
+          ctex_dvi_wU8(&dvi_mgr, 128);
         }
-        dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = c;
-        ++dvi_mgr.dvi_ptr;
-        if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-          dvi_swap();
+        ctex_dvi_wU8(&dvi_mgr, c);
         cur_h += font_info[fnt_infos.width_base[f] +
                            font_info[fnt_infos.char_base[f] + c].qqqq.b0]
                      .int_;
         p = mem[p - mem_min].hh.rh;
       } while (p >= hi_mem_min);
-      dvi_mgr.dvi_h = cur_h;
+      ctex_dvi_set_h(&dvi_mgr, cur_h);
       continue;
     }
     switch (mem[p - mem_min].hh.U2.b0) {
@@ -8061,8 +7921,8 @@ void tex::hlist_out() {
       if (mem[p - mem_min + 5].hh.rh == (-1073741824)) {
         cur_h += mem[p - mem_min + 1].int_;
       } else {
-        save_h = dvi_mgr.dvi_h;
-        save_v = dvi_mgr.dvi_v;
+        save_h = ctex_dvi_get_h(&dvi_mgr);
+        save_v = ctex_dvi_get_v(&dvi_mgr);
         cur_v = base_line + mem[p - mem_min + 4].int_;
         temp_ptr = p;
         edge = cur_h;
@@ -8070,8 +7930,8 @@ void tex::hlist_out() {
           vlist_out();
         else
           hlist_out();
-        dvi_mgr.dvi_h = save_h;
-        dvi_mgr.dvi_v = save_v;
+        ctex_dvi_set_h(&dvi_mgr, save_h);
+        ctex_dvi_set_v(&dvi_mgr, save_v);
         cur_h = edge + mem[p - mem_min + 1].int_;
         cur_v = base_line;
       }
@@ -8139,16 +7999,16 @@ void tex::hlist_out() {
           }
           while (cur_h + leader_wd <= edge) {
             cur_v = base_line + mem[leader_box - mem_min + 4].int_;
-            if (cur_v != dvi_mgr.dvi_v) {
-              movement(cur_v - dvi_mgr.dvi_v, 157);
-              dvi_mgr.dvi_v = cur_v;
+            if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+              movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+              ctex_dvi_set_v(&dvi_mgr, cur_v);
             }
-            save_v = dvi_mgr.dvi_v;
-            if (cur_h != dvi_mgr.dvi_h) {
-              movement(cur_h - dvi_mgr.dvi_h, 143);
-              dvi_mgr.dvi_h = cur_h;
+            save_v = ctex_dvi_get_v(&dvi_mgr);
+            if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+              movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+              ctex_dvi_set_h(&dvi_mgr, cur_h);
             }
-            save_h = dvi_mgr.dvi_h;
+            save_h = ctex_dvi_get_h(&dvi_mgr);
             temp_ptr = leader_box;
             outer_doing_leaders = doing_leaders;
             doing_leaders = true;
@@ -8157,8 +8017,8 @@ void tex::hlist_out() {
             else
               hlist_out();
             doing_leaders = outer_doing_leaders;
-            dvi_mgr.dvi_v = save_v;
-            dvi_mgr.dvi_h = save_h;
+            ctex_dvi_set_v(&dvi_mgr, save_v);
+            ctex_dvi_set_h(&dvi_mgr, save_h);
             cur_v = base_line;
             cur_h = save_h + leader_wd + lx;
           }
@@ -8189,23 +8049,20 @@ void tex::hlist_out() {
       rule_dp = mem[this_box - mem_min + 2].int_;
     rule_ht += rule_dp;
     if ((rule_ht > 0) && (rule_wd > 0)) {
-      if (cur_h != dvi_mgr.dvi_h) {
-        movement(cur_h - dvi_mgr.dvi_h, 143);
-        dvi_mgr.dvi_h = cur_h;
+      if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+        movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+        ctex_dvi_set_h(&dvi_mgr, cur_h);
       }
       cur_v = base_line + rule_dp;
-      if (cur_v != dvi_mgr.dvi_v) {
-        movement(cur_v - dvi_mgr.dvi_v, 157);
-        dvi_mgr.dvi_v = cur_v;
+      if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+        movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+        ctex_dvi_set_v(&dvi_mgr, cur_v);
       }
-      dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 132;
-      ++dvi_mgr.dvi_ptr;
-      if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-        dvi_swap();
-      dvi_four(rule_ht);
-      dvi_four(rule_wd);
+      ctex_dvi_wU8(&dvi_mgr, 132);
+      ctex_dvi_four(&dvi_mgr, rule_ht);
+      ctex_dvi_four(&dvi_mgr, rule_wd);
       cur_v = base_line;
-      dvi_mgr.dvi_h += rule_wd;
+      ctex_dvi_set_h(&dvi_mgr, ctex_dvi_get_h(&dvi_mgr) + rule_wd);
     }
   _L13:
     cur_h += rule_wd;
@@ -8214,7 +8071,7 @@ void tex::hlist_out() {
   }
   prune_movements(save_loc);
   if (cur_s > 0)
-    dvi_pop(save_loc);
+    ctex_dvi_pop(&dvi_mgr, save_loc);
   --cur_s;
 }
 
@@ -8230,14 +8087,11 @@ void tex::vlist_out() {
   halfword p = mem[this_box - mem_min + 5].hh.rh;
   ++cur_s;
   if (cur_s > 0) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 141;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, 141);
   }
   if (cur_s > max_push)
     max_push = cur_s;
-  save_loc = dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr;
+  save_loc = ctex_dvi_pos(&dvi_mgr);
   left_edge = cur_h;
   cur_v -= mem[this_box - mem_min + 3].int_;
   top_edge = cur_v;
@@ -8252,20 +8106,20 @@ void tex::vlist_out() {
           cur_v += mem[p - mem_min + 3].int_ + mem[p - mem_min + 2].int_;
         } else {
           cur_v += mem[p - mem_min + 3].int_;
-          if (cur_v != dvi_mgr.dvi_v) {
-            movement(cur_v - dvi_mgr.dvi_v, 157);
-            dvi_mgr.dvi_v = cur_v;
+          if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+            movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+            ctex_dvi_set_v(&dvi_mgr, cur_v);
           }
-          save_h = dvi_mgr.dvi_h;
-          save_v = dvi_mgr.dvi_v;
+          save_h = ctex_dvi_get_h(&dvi_mgr);
+          save_v = ctex_dvi_get_v(&dvi_mgr);
           cur_h = left_edge + mem[p - mem_min + 4].int_;
           temp_ptr = p;
           if (mem[p - mem_min].hh.U2.b0 == 1)
             vlist_out();
           else
             hlist_out();
-          dvi_mgr.dvi_h = save_h;
-          dvi_mgr.dvi_v = save_v;
+          ctex_dvi_set_h(&dvi_mgr, save_h);
+          ctex_dvi_set_v(&dvi_mgr, save_v);
           cur_v = save_v + mem[p - mem_min + 2].int_;
           cur_h = left_edge;
         }
@@ -8334,17 +8188,17 @@ void tex::vlist_out() {
             }
             while (cur_v + leader_ht <= edge) {
               cur_h = left_edge + mem[leader_box - mem_min + 4].int_;
-              if (cur_h != dvi_mgr.dvi_h) {
-                movement(cur_h - dvi_mgr.dvi_h, 143);
-                dvi_mgr.dvi_h = cur_h;
+              if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+                movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+                ctex_dvi_set_h(&dvi_mgr, cur_h);
               }
-              save_h = dvi_mgr.dvi_h;
+              save_h = ctex_dvi_get_h(&dvi_mgr);
               cur_v += mem[leader_box - mem_min + 3].int_;
-              if (cur_v != dvi_mgr.dvi_v) {
-                movement(cur_v - dvi_mgr.dvi_v, 157);
-                dvi_mgr.dvi_v = cur_v;
+              if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+                movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+                ctex_dvi_set_v(&dvi_mgr, cur_v);
               }
-              save_v = dvi_mgr.dvi_v;
+              save_v = ctex_dvi_get_v(&dvi_mgr);
               temp_ptr = leader_box;
               outer_doing_leaders = doing_leaders;
               doing_leaders = true;
@@ -8353,8 +8207,8 @@ void tex::vlist_out() {
               else
                 hlist_out();
               doing_leaders = outer_doing_leaders;
-              dvi_mgr.dvi_v = save_v;
-              dvi_mgr.dvi_h = save_h;
+              ctex_dvi_set_v(&dvi_mgr, save_v);
+              ctex_dvi_set_h(&dvi_mgr, save_h);
               cur_h = left_edge;
               cur_v =
                   save_v - mem[leader_box - mem_min + 3].int_ + leader_ht + lx;
@@ -8378,20 +8232,17 @@ void tex::vlist_out() {
       rule_ht += rule_dp;
       cur_v += rule_ht;
       if ((rule_ht > 0) && (rule_wd > 0)) {
-        if (cur_h != dvi_mgr.dvi_h) {
-          movement(cur_h - dvi_mgr.dvi_h, 143);
-          dvi_mgr.dvi_h = cur_h;
+        if (cur_h != ctex_dvi_get_h(&dvi_mgr)) {
+          movement(cur_h - ctex_dvi_get_h(&dvi_mgr), 143);
+          ctex_dvi_set_h(&dvi_mgr, cur_h);
         }
-        if (cur_v != dvi_mgr.dvi_v) {
-          movement(cur_v - dvi_mgr.dvi_v, 157);
-          dvi_mgr.dvi_v = cur_v;
+        if (cur_v != ctex_dvi_get_v(&dvi_mgr)) {
+          movement(cur_v - ctex_dvi_get_v(&dvi_mgr), 157);
+          ctex_dvi_set_v(&dvi_mgr, cur_v);
         }
-        dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 137;
-        ++dvi_mgr.dvi_ptr;
-        if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-          dvi_swap();
-        dvi_four(rule_ht);
-        dvi_four(rule_wd);
+        ctex_dvi_wU8(&dvi_mgr, 137);
+        ctex_dvi_four(&dvi_mgr, rule_ht);
+        ctex_dvi_four(&dvi_mgr, rule_wd);
       }
       goto _L15;
     _L13:
@@ -8402,7 +8253,7 @@ void tex::vlist_out() {
   }
   prune_movements(save_loc);
   if (cur_s > 0)
-    dvi_pop(save_loc);
+    ctex_dvi_pop(&dvi_mgr, save_loc);
   --cur_s;
 }
 
@@ -8463,10 +8314,10 @@ void tex::ship_out(halfword p) {
             eqtb[12749].int_;
   if (mem[p - mem_min + 1].int_ + eqtb[12748].int_ > max_h)
     max_h = mem[p - mem_min + 1].int_ + eqtb[12748].int_;
-  dvi_mgr.dvi_h = 0;
-  dvi_mgr.dvi_v = 0;
+  ctex_dvi_set_h(&dvi_mgr, 0);
+  ctex_dvi_set_v(&dvi_mgr, 0);
   cur_h = eqtb[12748].int_;
-  dvi_mgr.dvi_f = 0;
+  ctex_dvi_set_font(&dvi_mgr, 0);
   if (!output_file_name) {
     if (!job_name)
       open_log_file();
@@ -8475,19 +8326,13 @@ void tex::ship_out(halfword p) {
       prompt_file_name(794, 793);
     output_file_name = b_make_name_string(dvi_mgr.dvi_file);
   }
-  if (!dvi_mgr.total_pages) {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 247;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 2;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_four(25400000);
-    dvi_four(473628672);
+  if (!ctex_dvi_pages(&dvi_mgr)) {
+    ctex_dvi_wU8(&dvi_mgr, 247);
+    ctex_dvi_wU8(&dvi_mgr, 2);
+    ctex_dvi_four(&dvi_mgr, 25400000);
+    ctex_dvi_four(&dvi_mgr, 473628672);
     prepare_mag();
-    dvi_four(eqtb[12180].int_);
+    ctex_dvi_four(&dvi_mgr, eqtb[12180].int_);
     old_setting = selector;
     selector = 21;
     print(826);
@@ -8500,26 +8345,18 @@ void tex::ship_out(halfword p) {
     print_two(eqtb[12183].int_ / 60);
     print_two(eqtb[12183].int_ % 60);
     selector = old_setting;
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = pool_ptr - str_start[str_ptr];
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_wU8(&dvi_mgr, pool_ptr - str_start[str_ptr]);
     for (N = pool_ptr, s = str_start[str_ptr]; s <= (N - 1); ++s) {
-      dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = str_pool[s];
-      ++dvi_mgr.dvi_ptr;
-      if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-        dvi_swap();
+      ctex_dvi_wU8(&dvi_mgr, str_pool[s]);
     }
     pool_ptr = str_start[str_ptr];
   }
-  page_loc = dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr;
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 139;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  for (k = 0; k <= 9; ++k)
-    dvi_four(eqtb[k + 12218].int_);
-  dvi_four(last_bop);
+  page_loc = ctex_dvi_pos(&dvi_mgr);
+  ctex_dvi_wU8(&dvi_mgr, 139);
+  for (k = 0; k <= 9; ++k) {
+    ctex_dvi_four(&dvi_mgr, eqtb[k + 12218].int_);
+  }
+  ctex_dvi_four(&dvi_mgr, last_bop);
   last_bop = page_loc;
   cur_v = mem[p - mem_min + 3].int_ + eqtb[12749].int_;
   temp_ptr = p;
@@ -8527,11 +8364,8 @@ void tex::ship_out(halfword p) {
     vlist_out();
   else
     hlist_out();
-  dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 140;
-  ++dvi_mgr.dvi_ptr;
-  if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-    dvi_swap();
-  ++dvi_mgr.total_pages;
+  ctex_dvi_wU8(&dvi_mgr, 140);
+  ctex_dvi_add_page(&dvi_mgr);
   cur_s = -1;
 _L30:
   if (eqtb[12197].int_ <= 0)
@@ -18331,85 +18165,55 @@ void tex::close_files_and_terminate() {
   }
   while (cur_s > (-1)) {
     if (cur_s > 0) {
-      dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 142;
-      ++dvi_mgr.dvi_ptr;
-      if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-        dvi_swap();
+      ctex_dvi_wU8(&dvi_mgr, 142);
     } else {
-      dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 140;
-      ++dvi_mgr.dvi_ptr;
-      if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-        dvi_swap();
-      ++dvi_mgr.total_pages;
+      ctex_dvi_wU8(&dvi_mgr, 140);
+      ctex_dvi_add_page(&dvi_mgr);
     }
     --cur_s;
   }
-  if (!dvi_mgr.total_pages) {
+  integer npages = ctex_dvi_pages(&dvi_mgr);
+  if (!npages) {
     print_nl(836);
   } else {
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 248;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_four(last_bop);
-    last_bop = dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr - 5;
-    dvi_four(25400000);
-    dvi_four(473628672);
+    ctex_dvi_wU8(&dvi_mgr, 248);
+    ctex_dvi_four(&dvi_mgr, last_bop);
+    last_bop = ctex_dvi_pos(&dvi_mgr) - 5;
+    ctex_dvi_four(&dvi_mgr, 25400000);
+    ctex_dvi_four(&dvi_mgr, 473628672);
     prepare_mag();
-    dvi_four(eqtb[12180].int_);
-    dvi_four(max_v);
-    dvi_four(max_h);
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = max_push / 256;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = max_push & 255;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = (dvi_mgr.total_pages / 256) & 255;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = dvi_mgr.total_pages & 255;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
+    ctex_dvi_four(&dvi_mgr, eqtb[12180].int_);
+    ctex_dvi_four(&dvi_mgr, max_v);
+    ctex_dvi_four(&dvi_mgr, max_h);
+    ctex_dvi_wU8(&dvi_mgr, max_push / 256);
+    ctex_dvi_wU8(&dvi_mgr, max_push & 255);
+    ctex_dvi_wU8(&dvi_mgr, (npages / 256) & 255);
+    ctex_dvi_wU8(&dvi_mgr, npages & 255);
     while (font_ptr > 0) {
-      if (fnt_infos.font_used[font_ptr])
+      if (fnt_infos.font_used[font_ptr]) {
         dvi_font_def(font_ptr);
+      }
       --font_ptr;
     }
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 249;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    dvi_four(last_bop);
-    dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 2;
-    ++dvi_mgr.dvi_ptr;
-    if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-      dvi_swap();
-    k = ((dvi_buf_size - dvi_mgr.dvi_ptr) & 3) + 4;
+    ctex_dvi_wU8(&dvi_mgr, 249);
+    ctex_dvi_four(&dvi_mgr, last_bop);
+    ctex_dvi_wU8(&dvi_mgr, 2);
+    k = (ctex_dvi_cap(&dvi_mgr) & 3) + 4;
     while (k > 0) {
-      dvi_mgr.dvi_buf[dvi_mgr.dvi_ptr] = 223;
-      ++dvi_mgr.dvi_ptr;
-      if (dvi_mgr.dvi_ptr == dvi_mgr.dvi_limit)
-        dvi_swap();
+      ctex_dvi_wU8(&dvi_mgr, 223);
       --k;
     }
-    if (dvi_mgr.dvi_limit == dvi_mgr.half_buf)
-      write_dvi(dvi_mgr.half_buf, dvi_buf_size - 1);
-    if (dvi_mgr.dvi_ptr > 0)
-      write_dvi(0, dvi_mgr.dvi_ptr - 1);
+    ctex_dvi_flush(&dvi_mgr);
     print_nl(837);
     slow_print(output_file_name);
     print(286);
-    print_int(dvi_mgr.total_pages);
+    npages = ctex_dvi_pages(&dvi_mgr);
+    print_int(npages);
     print(838);
-    if (dvi_mgr.total_pages != 1)
+    if (npages != 1)
       print_char(115);
     print(839);
-    print_int(dvi_mgr.dvi_offset + dvi_mgr.dvi_ptr);
+    print_int(ctex_dvi_pos(&dvi_mgr));
     print(840);
     b_close(dvi_mgr.dvi_file);
   }
