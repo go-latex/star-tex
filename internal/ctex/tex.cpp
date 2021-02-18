@@ -10,21 +10,11 @@ void tex::initialize() {
   integer k;
   hyph_pointer z;
 
-  for (int i = 0; i < buf_size + 1; i++) {
-    buffer[i] = 0;
-  }
-  for (int i = 0; i < pool_size + 1; i++) {
-    str_pool[i] = 0;
-  }
-  for (int i = 0; i < max_strings + 1; i++) {
-    str_start[i] = 0;
-  }
-  for (int i = 0; i < mem_max - mem_min + 1; i++) {
-    mem[i].int_ = 0;
-  }
-  for (int i = 0; i < font_mem_size + 1; i++) {
-    font_info[i].int_ = 0;
-  }
+  memset(buffer, 0, (buf_size + 1) * sizeof(ASCII_code));
+  memset(str_pool, 0, (pool_size + 1) * sizeof(packed_ASCII_code));
+  memset(str_start, 0, (max_strings + 1) * sizeof(pool_pointer));
+  memset(mem, 0, (mem_max - mem_min + 1) * sizeof(memory_word));
+  memset(font_info, 0, (font_mem_size + 1) * sizeof(memory_word));
 
   for (int i = 0; i < 256; i++) {
     xchr[i] = i;
