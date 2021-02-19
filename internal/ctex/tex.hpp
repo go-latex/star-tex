@@ -39,9 +39,6 @@
 #include <errno.h>
 #include <setjmp.h>
 
-#include <stdexcept>
-#include <string>
-
 #include "ctex-capi-cgo.h"
 #include "ctex-capi-consts.h"
 #include "ctex-capi-dvi.h"
@@ -677,17 +674,17 @@ protected:
   void final_cleanup();
   void init_prim();
 
-  virtual void typeset(const std::initializer_list<const char *> &args);
+  virtual void typeset(int argc, const char **args);
 
   FILE *output_stream; // displays the logging messages
   char *input_stream_buf;
   size_t input_stream_len;
   FILE *input_stream; // stores the command line args
 
-  virtual void getopt(const std::initializer_list<const char *> &args) {
-    for (auto arg : args)
+  virtual void getopt(int argc, const char **args) {
+    for (int i = 0; i < argc; i++)
       // ' ' must come first, the first character is always skipped…
-      fprintf(input_stream, " %s", arg);
+      fprintf(input_stream, " %s", args[i]);
   }
 
   // inexplicably, p2c forgets these

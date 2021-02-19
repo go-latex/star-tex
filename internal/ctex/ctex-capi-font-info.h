@@ -9,6 +9,7 @@
 extern "C" {
 #endif
 
+#include "ctex-capi-consts.h"
 #include "ctex-capi-types.h"
 
 typedef struct {
@@ -40,12 +41,10 @@ typedef struct {
 
 } ctex_font_info_t;
 
-void
-ctex_font_info_init(ctex_font_info_t *fnt_infos);
+void ctex_font_info_init(ctex_font_info_t *fnt_infos);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
 #endif /* CTEX_CAPI_FONT_INFO_H */
-

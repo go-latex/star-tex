@@ -18640,8 +18640,8 @@ void tex::init_prim() {
   no_new_control_sequence = true;
 }
 
-void tex::typeset(const std::initializer_list<const char *> &args) {
-  getopt(args);
+void tex::typeset(int argc, const char **args) {
+  getopt(argc, args);
   if (setjmp(_JL9998))
     goto _L9998;
   if (setjmp(_JL9999))

@@ -11,7 +11,7 @@ bool plain::a_open_in(FILE *&ios) {
 
   if (found == false && strncmp("null.tex", name_of_file, 8) == 0) {
     fprintf(stderr, "invalid case input-stream-buffer!!n");
-    throw std::runtime_error("boo");
+    abort();
     found = true;
   }
 
@@ -93,14 +93,15 @@ void plain::typeset(const std::string &filename, const std::string &result,
 
   dvi_mgr.dvi_file = fopen(result.c_str(), "w");
 
-  tex::typeset({
+  const char *args[5] = {
       R"(\nonstopmode)", // omits all stops (\batchmode also omits terminal
                          // output)
       R"(\input plain)",
       R"(\input)",
       filename.c_str(),
       R"(\end)",
-  });
+  };
+  tex::typeset(5, args);
 }
 
 } // namespace tex

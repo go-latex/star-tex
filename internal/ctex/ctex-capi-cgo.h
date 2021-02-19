@@ -9,11 +9,10 @@
 extern "C" {
 #endif
 
-int cgo_load_tfm_file(const char*);
+int cgo_load_tfm_file(const char *);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
 #endif /* CTEX_CAPI_TYPES_H */
-
