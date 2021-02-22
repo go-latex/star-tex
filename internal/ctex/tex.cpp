@@ -525,6 +525,8 @@ void tex::print_write_whatsit(str_number s, halfword p) {
     print_char(45);
 }
 
+void tex::jump_out() { longjmp(_JL9998, 1); }
+
 void tex::error() {
   ASCII_code c;
   integer s1, s2, s3, s4;
@@ -749,6 +751,66 @@ void tex::confusion(str_number s) {
     error();
   history = 3;
   jump_out();
+}
+
+bool tex::a_open_in(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+bool tex::a_open_out(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+bool tex::b_open_in(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+bool tex::b_open_out(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+bool tex::w_open_in(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+bool tex::w_open_out(FILE *&f) {
+  f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!f)
+    io_error(errno, trim_name(name_of_file, file_name_size));
+  return erstat(f) == 0;
+}
+
+void tex::a_close(FILE *&f) {
+  if (f)
+    fclose(f);
+  f = nullptr;
+}
+
+void tex::b_close(FILE *&f) {
+  if (f)
+    fclose(f);
+  f = nullptr;
+}
+
+void tex::w_close(FILE *&f) {
+  if (f)
+    fclose(f);
+  f = nullptr;
 }
 
 bool tex::input_ln(FILE *f, bool bypass_eoln) {
@@ -6899,6 +6961,12 @@ str_number tex::make_name_string() {
     return make_string();
   }
 }
+
+str_number tex::a_make_name_string(FILE *f) { return make_name_string(); }
+
+str_number tex::b_make_name_string(FILE *f) { return make_name_string(); }
+
+str_number tex::w_make_name_string(FILE *f) { return make_name_string(); }
 
 void tex::scan_file_name() {
   name_in_progress = true;
@@ -18753,6 +18821,13 @@ _L9999:
   if (fmt_file)
     fclose(fmt_file);
   return;
+}
+
+void tex::getopt(int argc, const char **args) {
+  for (int i = 0; i < argc; i++) {
+    // ' ' must come first, the first character is always skipped…
+    fprintf(input_stream, " %s", args[i]);
+  }
 }
 
 } // namespace tex

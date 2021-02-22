@@ -99,14 +99,17 @@ protected:
 
   ctex_dvi_t dvi_mgr;
   ASCII_code xord[256];
-  char xchr[256], name_of_file[file_name_size];
+  char xchr[256];
+  char name_of_file[file_name_size];
   int name_length;
 
   ASCII_code buffer[buf_size + 1];
   packed_ASCII_code str_pool[pool_size + 1];
   pool_pointer str_start[max_strings + 1];
 
-  int first, last, max_buf_stack;
+  int first;
+  int last;
+  int max_buf_stack;
   FILE *term_in;
   FILE *term_out;
   pool_pointer pool_ptr;
@@ -115,25 +118,49 @@ protected:
   str_number init_str_ptr;
   FILE *pool_file;
   FILE *log_file;
-  char selector, dig[23];
-  int term_offset, file_offset;
+  char selector;
+  char dig[23];
+  int term_offset;
+  int file_offset;
   ASCII_code trick_buf[error_line + 1];
   char interaction;
-  bool deletions_allowed, set_box_allowed;
+  bool deletions_allowed;
+  bool set_box_allowed;
   char history;
   int8_t error_count;
   str_number help_line[6];
   char help_ptr;
-  bool use_err_help, OK_to_interrupt, arith_error;
-  scaled remainder_, max_v, max_h, rule_ht, rule_dp, rule_wd, cur_h, cur_v,
-      cur_mu, disc_width, first_width, second_width, first_indent,
-      second_indent, best_height_plus_depth, page_max_depth, best_size,
-      last_kern;
+  bool use_err_help;
+  bool OK_to_interrupt;
+  bool arith_error;
+  scaled remainder_;
+  scaled max_v;
+  scaled max_h;
+  scaled rule_ht;
+  scaled rule_dp;
+  scaled rule_wd;
+  scaled cur_h;
+  scaled cur_v;
+  scaled cur_mu;
+  scaled disc_width;
+  scaled first_width;
+  scaled second_width;
+  scaled first_indent;
+  scaled second_indent;
+  scaled best_height_plus_depth;
+  scaled page_max_depth;
+  scaled best_size;
+  scaled last_kern;
   halfword temp_ptr;
   memory_word mem[mem_max - mem_min + 1];
-  halfword lo_mem_max, hi_mem_min, avail, mem_end, rover;
+  halfword lo_mem_max;
+  halfword hi_mem_min;
+  halfword avail;
+  halfword mem_end;
+  halfword rover;
   list_state_record nest[nest_size + 1];
-  int nest_ptr, max_nest_stack;
+  int nest_ptr;
+  int max_nest_stack;
   list_state_record cur_list;
   short shown_mode;
   char old_setting;
@@ -143,22 +170,31 @@ protected:
   halfword hash_used;
   bool no_new_control_sequence;
   memory_word save_stack[save_size + 1];
-  int save_ptr, max_save_stack;
+  int save_ptr;
+  int max_save_stack;
   quarterword cur_level;
   group_code cur_group;
   int cur_boundary;
   uint8_t cur_cmd;
-  halfword cur_chr, cur_cs, cur_tok;
+  halfword cur_chr;
+  halfword cur_cs;
+  halfword cur_tok;
   in_state_record input_stack[stack_size + 1];
-  int input_ptr, max_in_stack;
+  int input_ptr;
+  int max_in_stack;
   in_state_record cur_input;
-  int in_open, open_parens;
+  int in_open;
+  int open_parens;
   FILE *(input_file[max_in_open + 1]);
   integer line_stack[max_in_open + 1];
   char scanner_status;
-  halfword warning_index, def_ref, param_stack[param_size + 1];
-  int param_ptr, base_ptr;
-  halfword par_loc, par_token;
+  halfword warning_index;
+  halfword def_ref;
+  halfword param_stack[param_size + 1];
+  int param_ptr;
+  int base_ptr;
+  halfword par_loc;
+  halfword par_token;
   bool force_eof;
   halfword cur_mark[5];
   char long_state;
@@ -171,13 +207,17 @@ protected:
   halfword cond_ptr;
   char if_limit;
   small_number cur_if;
-  str_number cur_name, cur_area, cur_ext;
-  pool_pointer area_delimiter, ext_delimiter;
+  str_number cur_name;
+  str_number cur_area;
+  str_number cur_ext;
+  pool_pointer area_delimiter;
+  pool_pointer ext_delimiter;
   char TEX_format_default[20];
   bool name_in_progress;
   str_number job_name;
   bool log_opened;
-  str_number output_file_name, log_name;
+  str_number output_file_name;
+  str_number log_name;
   FILE *tfm_file;
 
   memory_word font_info[font_mem_size + 1];
@@ -187,43 +227,72 @@ protected:
 
   four_quarters null_character;
   bool doing_leaders;
-  quarterword c, f;
+  quarterword c;
+  quarterword f;
   halfword g;
-  halfword down_ptr, right_ptr;
-  scaled total_stretch[4], total_shrink[4];
+  halfword down_ptr;
+  halfword right_ptr;
+  scaled total_stretch[4];
+  scaled total_shrink[4];
   halfword adjust_tail;
   two_halves empty_field;
   four_quarters null_delimiter;
   halfword cur_mlist;
-  small_number cur_style, cur_size;
+  small_number cur_style;
+  small_number cur_size;
   bool mlist_penalties;
   internal_font_number cur_f;
   quarterword cur_c;
   four_quarters cur_i;
-  halfword cur_align, cur_span, cur_loop, align_ptr, cur_head, cur_tail,
-      just_box, passive, printed_node, pass_number;
-  scaled active_width[7], cur_active_width[7], background[7], break_width[7];
+  halfword cur_align;
+  halfword cur_span;
+  halfword cur_loop;
+  halfword align_ptr;
+  halfword cur_head;
+  halfword cur_tail;
+  halfword just_box;
+  halfword passive;
+  halfword printed_node;
+  halfword pass_number;
+  scaled active_width[7];
+  scaled cur_active_width[7];
+  scaled background[7];
+  scaled break_width[7];
   bool no_shrink_error_yet;
   halfword cur_p;
-  bool second_pass, final_pass;
+  bool second_pass;
+  bool final_pass;
   integer minimal_demerits[4];
-  halfword best_place[4], best_pl_line[4], easy_line, last_special_line,
-      best_bet, best_line;
+  halfword best_place[4];
+  halfword best_pl_line[4];
+  halfword easy_line;
+  halfword last_special_line;
+  halfword best_bet;
+  halfword best_line;
   short hc[66];
   small_number hn;
-  halfword ha, hb;
+  halfword ha;
+  halfword hb;
   internal_font_number hf;
   short hu[64];
-  ASCII_code cur_lang, init_cur_lang;
+  ASCII_code cur_lang;
+  ASCII_code init_cur_lang;
   halfword hyf_bchar;
   char hyf[65];
   halfword init_list;
-  bool init_lig, init_lft;
+  bool init_lig;
+  bool init_lft;
   small_number hyphen_passed;
-  halfword cur_l, cur_r, cur_q, lig_stack;
-  bool ligature_present, lft_hit, rt_hit;
+  halfword cur_l;
+  halfword cur_r;
+  halfword cur_q;
+  halfword lig_stack;
+  bool ligature_present;
+  bool lft_hit;
+  bool rt_hit;
   two_halves trie[trie_size + 1];
-  small_number hyf_distance[trie_op_size + 1], hyf_num[trie_op_size + 1];
+  small_number hyf_distance[trie_op_size + 1];
+  small_number hyf_num[trie_op_size + 1];
   quarterword hyf_next[trie_op_size + 1];
   int op_start[256];
   str_number hyph_word[308];
@@ -237,10 +306,12 @@ protected:
   packed_ASCII_code trie_c[trie_size + 1];
   quarterword trie_o[trie_size + 1];
   trie_pointer trie_l[trie_size + 1];
-  trie_pointer trie_r[trie_size + 1], trie_ptr;
+  trie_pointer trie_r[trie_size + 1];
+  trie_pointer trie_ptr;
   trie_pointer trie_hash[trie_size + 1];
   uint8_t trie_taken[CTEX_BITNSLOTS(trie_size)];
-  trie_pointer trie_min[256], trie_max;
+  trie_pointer trie_min[256];
+  trie_pointer trie_max;
   bool trie_not_ready;
   halfword page_tail;
   char page_contents;
@@ -249,17 +320,38 @@ protected:
   halfword last_glue;
   bool output_active;
   internal_font_number main_f;
-  four_quarters main_i, main_j;
+  four_quarters main_i;
+  four_quarters main_j;
   font_index main_k;
-  halfword main_p, bchar, false_bchar;
-  bool cancel_boundary, ins_disc;
-  halfword cur_box, after_token;
+  halfword main_p;
+  halfword bchar;
+  halfword false_bchar;
+  bool cancel_boundary;
+  bool ins_disc;
+  halfword cur_box;
+  halfword after_token;
   bool long_help_seen;
   str_number format_ident;
   FILE *fmt_file;
   FILE *(write_file[16]);
   bool write_open[18];
   halfword write_loc;
+
+  FILE *output_stream; // displays the logging messages
+  char *input_stream_buf;
+  size_t input_stream_len;
+  FILE *input_stream; // stores the command line args
+
+  // inexplicably, p2c forgets these
+  int tfm_file_mode;
+  uint8_t tfm_file_value;
+  int fmt_file_mode;
+  memory_word fmt_file_value;
+
+  jmp_buf _JL9998;
+  jmp_buf _JL9999;
+
+  // methods.
 
   void loadU8(FILE *r, int &mode, uint8_t *v) {
     if (mode == 1) {
@@ -341,67 +433,23 @@ protected:
   void print_size(integer s);
   void print_write_whatsit(str_number s, halfword p);
 
-  jmp_buf _JL9998;
-  void jump_out() { longjmp(_JL9998, 1); }
+  void jump_out();
 
   void error();
   void fatal_error(str_number s);
   void overflow(str_number s, integer n);
   void confusion(str_number s);
 
-  virtual bool a_open_in(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "rb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual bool a_open_out(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "wb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual bool b_open_in(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "rb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual bool b_open_out(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "wb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual bool w_open_in(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "rb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual bool w_open_out(FILE *&f) {
-    f = fopen(trim_name(name_of_file, file_name_size), "wb");
-    if (!f)
-      io_error(errno, trim_name(name_of_file, file_name_size));
-    return erstat(f) == 0;
-  }
-  virtual void a_close(FILE *&f) {
-    if (f)
-      fclose(f);
-    f = nullptr;
-  }
-  virtual void b_close(FILE *&f) {
-    if (f)
-      fclose(f);
-    f = nullptr;
-  }
-  virtual void w_close(FILE *&f) {
-    if (f)
-      fclose(f);
-    f = nullptr;
-  }
+  virtual bool a_open_in(FILE *&f);
+  virtual bool a_open_out(FILE *&f);
+  virtual bool b_open_in(FILE *&f);
+  virtual bool b_open_out(FILE *&f);
+  virtual bool w_open_in(FILE *&f);
+  virtual bool w_open_out(FILE *&f);
+  virtual void a_close(FILE *&f);
+  virtual void b_close(FILE *&f);
+  virtual void w_close(FILE *&f);
 
-  jmp_buf _JL9999;
   bool input_ln(FILE *f, bool bypass_eoln);
   bool init_terminal();
   str_number make_string();
@@ -533,9 +581,9 @@ protected:
   void pack_file_name(str_number n, str_number a, str_number e);
   void pack_buffered_name(small_number n, integer a, integer b);
   str_number make_name_string();
-  str_number a_make_name_string(FILE *f) { return make_name_string(); }
-  str_number b_make_name_string(FILE *f) { return make_name_string(); }
-  str_number w_make_name_string(FILE *f) { return make_name_string(); }
+  str_number a_make_name_string(FILE *f);
+  str_number b_make_name_string(FILE *f);
+  str_number w_make_name_string(FILE *f);
   void scan_file_name();
   void pack_job_name(str_number s);
   void prompt_file_name(str_number s, str_number e);
@@ -713,22 +761,7 @@ protected:
 
   virtual void typeset(int argc, const char **args);
 
-  FILE *output_stream; // displays the logging messages
-  char *input_stream_buf;
-  size_t input_stream_len;
-  FILE *input_stream; // stores the command line args
-
-  virtual void getopt(int argc, const char **args) {
-    for (int i = 0; i < argc; i++)
-      // ' ' must come first, the first character is always skipped…
-      fprintf(input_stream, " %s", args[i]);
-  }
-
-  // inexplicably, p2c forgets these
-  int tfm_file_mode;
-  uint8_t tfm_file_value;
-  int fmt_file_mode;
-  memory_word fmt_file_value;
+  virtual void getopt(int argc, const char **args);
 
   tex()
       : fmt_file_value({0}), tfm_file_mode(0), tfm_file_value(0),
