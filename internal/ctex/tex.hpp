@@ -44,21 +44,58 @@
 #include "ctex-capi-dvi.h"
 #include "ctex-capi-font-info.h"
 #include "ctex-capi-types.h"
+#include "ctex.h"
 
 namespace tex {
 
 class tex {
 
 protected:
+  ctex_t *ctx;
+
   // Output from p2c 1.21alpha-07.Dec.93, the Pascal-to-C translator
-  integer bad, tally, trick_count, first_count, interrupt, var_used, dyn_used,
-      font_in_short_display, depth_threshold, breadth_max, cs_count, mag_set,
-      line, max_param_stack, align_state, cur_val, if_line, skip_line, max_push,
-      last_bop, dead_cycles, lq, lr, cur_s, last_badness, pack_begin_line,
-      magic_offset, threshold, minimum_demerits, fewest_demerits,
-      actual_looseness, line_diff, hyf_char, l_hyf, r_hyf, init_l_hyf,
-      init_r_hyf, least_page_cost, last_penalty, insert_penalties, main_s,
-      ready_already;
+  //  integer bad;
+  integer tally;
+  integer trick_count;
+  integer first_count;
+  integer interrupt;
+  integer var_used;
+  integer dyn_used;
+  integer font_in_short_display;
+  integer depth_threshold;
+  integer breadth_max;
+  integer cs_count;
+  integer mag_set;
+  integer line;
+  integer max_param_stack;
+  integer align_state;
+  integer cur_val;
+  integer if_line;
+  integer skip_line;
+  integer max_push;
+  integer last_bop;
+  integer dead_cycles;
+  integer lq;
+  integer lr;
+  integer cur_s;
+  integer last_badness;
+  integer pack_begin_line;
+  integer magic_offset;
+  integer threshold;
+  integer minimum_demerits;
+  integer fewest_demerits;
+  integer actual_looseness;
+  integer line_diff;
+  integer hyf_char;
+  integer l_hyf;
+  integer r_hyf;
+  integer init_l_hyf;
+  integer init_r_hyf;
+  integer least_page_cost;
+  integer last_penalty;
+  integer insert_penalties;
+  integer main_s;
+  integer ready_already;
 
   ctex_dvi_t dvi_mgr;
   ASCII_code xord[256];
@@ -700,10 +737,16 @@ protected:
         pool_file(nullptr), term_out(nullptr),
         term_in(nullptr) // clear file pointers
   {
+    ctx = (ctex_t *)(malloc(sizeof(ctex_t)));
+    ctex_init_ctx(ctx);
+
     ctex_dvi_init(&dvi_mgr);
   }
 
-  virtual ~tex() = default;
+  virtual ~tex() {
+    free(ctx);
+    ctx = NULL;
+  }
 };
 
 } // namespace tex
