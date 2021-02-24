@@ -353,41 +353,41 @@ protected:
 
   // methods.
 
-  void loadU8(FILE *r, int &mode, uint8_t *v) {
-    if (mode == 1) {
+  void loadU8(FILE *r, int *mode, uint8_t *v) {
+    if (*mode == 1) {
       fread(v, sizeof(uint8_t), 1, r);
     } else {
-      mode = 1;
+      *mode = 1;
     }
   }
 
-  uint8_t &readU8(FILE *r, int &mode, uint8_t *v) {
-    if (mode == 1) {
-      mode = 2;
+  uint8_t *readU8(FILE *r, int *mode, uint8_t *v) {
+    if (*mode == 1) {
+      *mode = 2;
       fread(v, sizeof(uint8_t), 1, r);
     }
-    return *v;
+    return v;
   }
 
-  void loadU32(FILE *r, int &mode, memory_word *v) {
-    if (mode == 1) {
+  void loadU32(FILE *r, int *mode, memory_word *v) {
+    if (*mode == 1) {
       fread(&v, sizeof(memory_word), 1, r);
     } else {
-      mode = 1;
+      *mode = 1;
     }
   }
 
-  memory_word &readU32(FILE *r, int &mode, memory_word *v) {
-    if (mode == 1) {
-      mode = 2;
+  memory_word *readU32(FILE *r, int *mode, memory_word *v) {
+    if (*mode == 1) {
+      *mode = 2;
       fread(&v, sizeof(memory_word), 1, r);
     }
-    return *v;
+    return v;
   }
 
-  void writeU32(FILE *w, int &mode, memory_word *v) {
+  void writeU32(FILE *w, int *mode, memory_word *v) {
     fwrite(v, sizeof(memory_word), 1, w);
-    mode = 0;
+    *mode = 0;
   }
 
   static int erstat(FILE *f) { return f == nullptr or (ferror(f) != 0); }

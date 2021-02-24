@@ -7160,83 +7160,83 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
     goto _L11;
   file_opened = true;
   tfm_file_mode = 1;
-  lf = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  lf = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (lf > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  lf = (lf * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  lh = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  lf = (lf * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  lh = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (lh > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  lh = (lh * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  bc = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  lh = (lh * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  bc = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (bc > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  bc = (bc * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ec = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  bc = (bc * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ec = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (ec > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ec = (ec * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ec = (ec * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if ((bc > (ec + 1)) || (ec > 255))
     goto _L11;
   if (bc > 255) {
     bc = 1;
     ec = 0;
   }
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nw = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nw = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (nw > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nw = (nw * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nh = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nw = (nw * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nh = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (nh > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nh = (nh * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nd = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nh = (nh * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nd = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (nd > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nd = (nd * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ni = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nd = (nd * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ni = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (ni > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ni = (ni * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nl = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ni = (ni * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nl = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (nl > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nl = (nl * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nk = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nl = (nl * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nk = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (nk > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  nk = (nk * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ne = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  nk = (nk * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ne = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (ne > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  ne = (ne * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  np = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  ne = (ne * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  np = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (np > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  np = (np * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  np = (np * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (lf != (lh + ec - bc + nw + nh + nd + ni + nl + nk + ne + np + 7))
     goto _L11;
   if ((!nw) || (!nh) || (!nd) || (!ni))
@@ -7279,36 +7279,36 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   fnt_infos.param_base[f] = fnt_infos.exten_base[f] + ne;
   if (lh < 2)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  a = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   qw.b0 = a;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  b = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  b = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   qw.b1 = b;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  c = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  c = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   qw.b2 = c;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   qw.b3 = d;
   fnt_infos.font_check[f] = qw;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  z = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  z = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
   if (z > 127)
     goto _L11;
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  z = (z * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  z = (z * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-  z = (z * 16) + (readU8(tfm_file, tfm_file_mode, &tfm_file_value) / 16);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  z = (z * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  z = (z * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+  z = (z * 16) + (*readU8(tfm_file, &tfm_file_mode, &tfm_file_value) / 16);
   if (z < 65536)
     goto _L11;
   while (lh > 2) {
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     --lh;
   }
   fnt_infos.font_dsize[f] = z;
@@ -7320,17 +7320,17 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   }
   fnt_infos.font_size[f] = z;
   for (N = fnt_infos.width_base[f], k = fmem_ptr; k <= (N - 1); ++k) {
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    a = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b0 = a;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    b = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    b = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b1 = b;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    c = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    c = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b2 = c;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b3 = d;
     font_info[k].qqqq = qw;
     if ((a >= nw) || (b / 16 >= nh) || ((b & 15) >= nd) || (c / 4 >= ni))
@@ -7369,11 +7369,11 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   alpha *= z;
   for (N = fnt_infos.lig_kern_base[f], k = fnt_infos.width_base[f];
        k <= (N - 1); ++k) {
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     fread(&a, sizeof(uint8_t), 1, tfm_file);
     fread(&b, sizeof(uint8_t), 1, tfm_file);
     fread(&c, sizeof(uint8_t), 1, tfm_file);
-    d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
     if (!a) {
       font_info[k].int_ = sw;
@@ -7393,17 +7393,17 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   if (nl > 0) {
     for (N = fnt_infos.kern_base[f] + 32767, k = fnt_infos.lig_kern_base[f];
          k <= N; ++k) {
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      a = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       qw.b0 = a;
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      b = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      b = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       qw.b1 = b;
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      c = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      c = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       qw.b2 = c;
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       qw.b3 = d;
       font_info[k].qqqq = qw;
       if (a > 128) {
@@ -7440,11 +7440,11 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   }
   for (N = fnt_infos.exten_base[f], k = fnt_infos.kern_base[f] + 32768;
        k <= (N - 1); ++k) {
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     fread(&a, sizeof(uint8_t), 1, tfm_file);
     fread(&b, sizeof(uint8_t), 1, tfm_file);
     fread(&c, sizeof(uint8_t), 1, tfm_file);
-    d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
     if (!a) {
       font_info[k].int_ = sw;
@@ -7455,17 +7455,17 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   }
   for (N = fnt_infos.param_base[f], k = fnt_infos.exten_base[f]; k <= (N - 1);
        ++k) {
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    a = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    a = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b0 = a;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    b = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    b = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b1 = b;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    c = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    c = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b2 = c;
-    loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-    d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+    loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+    d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
     qw.b3 = d;
     font_info[k].qqqq = qw;
     if (a) {
@@ -7497,23 +7497,23 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
   }
   for (k = 1; k <= np; ++k) {
     if (k == 1) {
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      sw = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      sw = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       if (sw > 127)
         sw -= 256;
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      sw = (sw * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      sw = (sw * 256) + readU8(tfm_file, tfm_file_mode, &tfm_file_value);
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      sw = (sw * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      sw = (sw * 256) + *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       font_info[fnt_infos.param_base[f]].int_ =
-          (sw * 16) + (readU8(tfm_file, tfm_file_mode, &tfm_file_value) / 16);
+          (sw * 16) + (*readU8(tfm_file, &tfm_file_mode, &tfm_file_value) / 16);
     } else {
-      loadU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      loadU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       fread(&a, sizeof(uint8_t), 1, tfm_file);
       fread(&b, sizeof(uint8_t), 1, tfm_file);
       fread(&c, sizeof(uint8_t), 1, tfm_file);
-      d = readU8(tfm_file, tfm_file_mode, &tfm_file_value);
+      d = *readU8(tfm_file, &tfm_file_mode, &tfm_file_value);
       sw = ((((d * z / 256) + (c * z)) / 256) + (b * z)) / beta;
       if (!a) {
         font_info[fnt_infos.param_base[f] + k - 1].int_ = sw;
@@ -16332,25 +16332,25 @@ void tex::store_fmt_file() {
   pool_ptr = str_start[str_ptr];
   print_nl(338);
   slow_print(format_ident);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 117275187;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 0;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = mem_max;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 13006;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 7649;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 307;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = pool_ptr;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = str_ptr;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 117275187;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 0;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = mem_max;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 13006;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 7649;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 307;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = pool_ptr;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = str_ptr;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = str_ptr, k = 0; k <= N; ++k) {
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = str_start[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = str_start[k];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
   k = 0;
   while (k + 4 < pool_ptr) {
@@ -16358,8 +16358,8 @@ void tex::store_fmt_file() {
     w.b1 = str_pool[k + 1];
     w.b2 = str_pool[k + 2];
     w.b3 = str_pool[k + 3];
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq = w;
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq = w;
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     k += 4;
   }
   k = pool_ptr - 4;
@@ -16367,18 +16367,18 @@ void tex::store_fmt_file() {
   w.b1 = str_pool[k + 1];
   w.b2 = str_pool[k + 2];
   w.b3 = str_pool[k + 3];
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq = w;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq = w;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   print_ln();
   print_int(str_ptr);
   print(1259);
   print_int(pool_ptr);
   sort_avail();
   var_used = 0;
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = lo_mem_max;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = rover;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = lo_mem_max;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = rover;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   q = rover;
   do {
     for (k = p; k <= (q + 1); ++k)
@@ -16394,10 +16394,10 @@ void tex::store_fmt_file() {
   for (N = lo_mem_max, k = p; k <= N; ++k)
     fwrite((&mem[k - mem_min]), sizeof(memory_word), 1, fmt_file);
   x += lo_mem_max - p + 1;
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hi_mem_min;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = avail;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hi_mem_min;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = avail;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = mem_end, k = hi_mem_min; k <= N; ++k)
     fwrite((&mem[k - mem_min]), sizeof(memory_word), 1, fmt_file);
   x += mem_end - hi_mem_min + 1;
@@ -16406,10 +16406,10 @@ void tex::store_fmt_file() {
     --dyn_used;
     p = mem[p - mem_min].hh.rh;
   }
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = var_used;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = dyn_used;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = var_used;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = dyn_used;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   print_ln();
   print_int(x);
   print(1260);
@@ -16439,15 +16439,15 @@ void tex::store_fmt_file() {
       ++j;
     }
   _L31:
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = l - k;
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = l - k;
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     while (k < l) {
       fwrite((&eqtb[k]), sizeof(memory_word), 1, fmt_file);
       ++k;
     }
     k = j + 1;
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = k - l;
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = k - l;
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   } while (k != 12163);
   do {
     j = k;
@@ -16467,117 +16467,117 @@ void tex::store_fmt_file() {
       ++j;
     }
   _L32:
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = l - k;
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = l - k;
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     while (k < l) {
       fwrite((&eqtb[k]), sizeof(memory_word), 1, fmt_file);
       ++k;
     }
     k = j + 1;
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = k - l;
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = k - l;
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   } while (k <= 13006);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = par_loc;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = write_loc;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hash_used;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = par_loc;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = write_loc;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hash_used;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   cs_count = 9513 - hash_used;
   for (N1 = hash_used, p = 514; p <= N1; ++p) {
     if (hash[p - 514].rh) {
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = p;
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh = hash[p - 514];
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = p;
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh = hash[p - 514];
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
       ++cs_count;
     }
   }
   for (p = hash_used + 1; p <= 9780; ++p) {
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh = hash[p - 514];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh = hash[p - 514];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = cs_count;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = cs_count;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   print_ln();
   print_int(cs_count);
   print(1261);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = fmem_ptr;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = fmem_ptr;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = fmem_ptr, k = 0; k < N; ++k)
     fwrite((&font_info[k]), sizeof(memory_word), 1, fmt_file);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = font_ptr;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = font_ptr;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = font_ptr, k = 0; k <= N; ++k) {
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq =
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq =
         fnt_infos.font_check[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_size[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_dsize[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_params[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.hyphen_char[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.skew_char[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_name[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_area[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_bc[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_ec[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.char_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.width_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.height_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.depth_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.italic_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.lig_kern_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.kern_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.exten_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.param_base[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_glue[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.bchar_label[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_bchar[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ =
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ =
         fnt_infos.font_false_bchar[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     print_nl(1264);
     print_esc(hash[k + 9010].rh);
     print_char(61);
@@ -16595,16 +16595,16 @@ void tex::store_fmt_file() {
   print(1263);
   if (font_ptr != 1)
     print_char(115);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyph_count;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyph_count;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (k = 0; k <= 307; ++k) {
     if (hyph_word[k]) {
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = k;
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyph_word[k];
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyph_list[k];
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = k;
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyph_word[k];
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyph_list[k];
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     }
   }
   print_ln();
@@ -16614,21 +16614,21 @@ void tex::store_fmt_file() {
     print_char(115);
   if (trie_not_ready)
     init_trie();
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = trie_max;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = trie_max;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = trie_max, k = 0; k <= N; ++k) {
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh = trie[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh = trie[k];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = trie_op_ptr;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = trie_op_ptr;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   for (N = trie_op_ptr, k = 1; k <= N; ++k) {
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyf_distance[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyf_num[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = hyf_next[k];
-    writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyf_distance[k];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyf_num[k];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = hyf_next[k];
+    writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
   print_nl(1266);
   print_int(trie_max);
@@ -16645,18 +16645,18 @@ void tex::store_fmt_file() {
       print_int(trie_used[k]);
       print(1270);
       print_int(k);
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = k;
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = trie_used[k];
-      writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = k;
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = trie_used[k];
+      writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     }
   }
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = interaction;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = format_ident;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 69069;
-  writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = interaction;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = format_ident;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_ = 69069;
+  writeU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   eqtb[12194].int_ = 0;
   w_close(&fmt_file);
 }
@@ -17851,31 +17851,31 @@ bool tex::load_fmt_file() {
   halfword p = 0, q;
   four_quarters w;
   int N;
-  integer x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  integer x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x != 117275187)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x != mem_max)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x != 13006)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x != 7649)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x != 307)
     goto _L6666;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 0)
     goto _L6666;
   if (x > pool_size) {
@@ -17883,8 +17883,8 @@ bool tex::load_fmt_file() {
     goto _L6666;
   }
   pool_ptr = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 0)
     goto _L6666;
   if (x > max_strings) {
@@ -17893,16 +17893,16 @@ bool tex::load_fmt_file() {
   }
   str_ptr = x;
   for (N = str_ptr, k = 0; k <= N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > pool_ptr)
       goto _L6666;
     str_start[k] = x;
   }
   k = 0;
   while (k + 4 < pool_ptr) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    w = readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    w = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq;
     str_pool[k] = w.b0;
     str_pool[k + 1] = w.b1;
     str_pool[k + 2] = w.b2;
@@ -17910,29 +17910,29 @@ bool tex::load_fmt_file() {
     k += 4;
   }
   k = pool_ptr - 4;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  w = readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  w = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq;
   str_pool[k] = w.b0;
   str_pool[k + 1] = w.b1;
   str_pool[k + 2] = w.b2;
   str_pool[k + 3] = w.b3;
   init_str_ptr = str_ptr;
   init_pool_ptr = pool_ptr;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < 1019) || (x > (mem_max - 14)))
     goto _L6666;
   lo_mem_max = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < 20) || (x > lo_mem_max))
     goto _L6666;
   rover = x;
   q = rover;
   do {
     for (k = p; k <= (q + 1); ++k) {
-      loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      mem[k - mem_min] = readU32(fmt_file, fmt_file_mode, &fmt_file_value);
+      loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      mem[k - mem_min] = *readU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     }
     p = q + mem[q - mem_min].hh.lh;
     if ((p > lo_mem_max) || ((q >= mem[q - mem_min + 1].hh.rh) &&
@@ -17941,8 +17941,8 @@ bool tex::load_fmt_file() {
     q = mem[q - mem_min + 1].hh.rh;
   } while (q != rover);
   for (N = lo_mem_max, k = p; k <= N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    mem[k - mem_min] = readU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    mem[k - mem_min] = *readU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
   if (mem_min < (-2)) {
     p = mem[rover - mem_min + 1].hh.lh;
@@ -17956,78 +17956,78 @@ bool tex::load_fmt_file() {
     mem[q - mem_min].hh.rh = 1073741824;
     mem[q - mem_min].hh.lh = -q;
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x <= lo_mem_max) || (x > (mem_max - 13)))
     goto _L6666;
   hi_mem_min = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < (-1073741824)) || (x > mem_max))
     goto _L6666;
   avail = x;
   mem_end = mem_max;
   for (N = mem_end, k = hi_mem_min; k <= N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    mem[k - mem_min] = readU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    mem[k - mem_min] = *readU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  var_used = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  dyn_used = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  var_used = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  dyn_used = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   k = 1;
   do {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < 1) || (k + x > 13007))
       goto _L6666;
     for (j = k; j < (k + x); ++j) {
-      loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-      eqtb[j] = readU32(fmt_file, fmt_file_mode, &fmt_file_value);
+      loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+      eqtb[j] = *readU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     }
     k += x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < 0) || (k + x > 13007))
       goto _L6666;
     for (j = k; j < (k + x); ++j)
       eqtb[j] = eqtb[k - 1];
     k += x;
   } while (k <= 13006);
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < 514) || (x > 9514))
     goto _L6666;
   par_loc = x;
   par_token = par_loc + 4095;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < 514) || (x > 9514))
     goto _L6666;
   write_loc = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x < 514) || (x > 9514))
     goto _L6666;
   hash_used = x;
   p = 513;
   do {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x <= p) || (x > hash_used))
       goto _L6666;
     p = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    hash[p - 514] = readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    hash[p - 514] = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh;
   } while (p != hash_used);
   for (p = hash_used + 1; p <= 9780; ++p) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    hash[p - 514] = readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    hash[p - 514] = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh;
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  cs_count = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  cs_count = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 7)
     goto _L6666;
   if (x > font_mem_size) {
@@ -18036,11 +18036,11 @@ bool tex::load_fmt_file() {
   }
   fmem_ptr = x;
   for (N = fmem_ptr, k = 0; k < N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    font_info[k] = readU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    font_info[k] = *readU32(fmt_file, &fmt_file_mode, &fmt_file_value);
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 0)
     goto _L6666;
   if (x > font_max) {
@@ -18049,118 +18049,118 @@ bool tex::load_fmt_file() {
   }
   font_ptr = x;
   for (N = font_ptr, k = 0; k <= N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.font_check[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).qqqq;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->qqqq;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.font_size[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.font_dsize[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < (-1073741824)) || (x > 1073741824))
       goto _L6666;
     fnt_infos.font_params[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.hyphen_char[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.skew_char[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > str_ptr)
       goto _L6666;
     fnt_infos.font_name[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > str_ptr)
       goto _L6666;
     fnt_infos.font_area[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 255)
       goto _L6666;
     fnt_infos.font_bc[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 255)
       goto _L6666;
     fnt_infos.font_ec[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.char_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.width_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.height_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.depth_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.italic_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.lig_kern_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.kern_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.exten_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
     fnt_infos.param_base[k] =
-        readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+        readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < (-1073741824)) || (x > lo_mem_max))
       goto _L6666;
     fnt_infos.font_glue[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) >= fmem_ptr)
       goto _L6666;
     fnt_infos.bchar_label[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 256)
       goto _L6666;
     fnt_infos.font_bchar[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 256)
       goto _L6666;
     fnt_infos.font_false_bchar[k] = x;
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (((unsigned)x) > 307)
     goto _L6666;
   hyph_count = x;
   for (N = hyph_count, k = 1; k <= N; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 307)
       goto _L6666;
     j = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > str_ptr)
       goto _L6666;
     hyph_word[j] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < (-1073741824)) || (x > 1073741824))
       goto _L6666;
     hyph_list[j] = x;
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 0)
     goto _L6666;
   if (x > trie_size) {
@@ -18170,11 +18170,11 @@ bool tex::load_fmt_file() {
   j = x;
   trie_max = j;
   for (k = 0; k <= j; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    trie[k] = readU32(fmt_file, fmt_file_mode, &fmt_file_value).hh;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    trie[k] = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->hh;
   }
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (x < 0)
     goto _L6666;
   if (x > trie_op_size) {
@@ -18184,18 +18184,18 @@ bool tex::load_fmt_file() {
   j = x;
   trie_op_ptr = j;
   for (k = 1; k <= j; ++k) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 63)
       goto _L6666;
     hyf_distance[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 63)
       goto _L6666;
     hyf_num[k] = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) > 65535)
       goto _L6666;
     hyf_next[k] = x;
@@ -18204,13 +18204,13 @@ bool tex::load_fmt_file() {
     trie_used[k] = 0;
   k = 256;
   while (j > 0) {
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if (((unsigned)x) >= k)
       goto _L6666;
     k = x;
-    loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-    x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+    loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+    x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
     if ((x < 1) || (x > j))
       goto _L6666;
     trie_used[k] = x;
@@ -18218,18 +18218,18 @@ bool tex::load_fmt_file() {
     op_start[k] = j;
   }
   trie_not_ready = false;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (((unsigned)x) > 3)
     goto _L6666;
   interaction = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if (((unsigned)x) > str_ptr)
     goto _L6666;
   format_ident = x;
-  loadU32(fmt_file, fmt_file_mode, &fmt_file_value);
-  x = readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_;
+  loadU32(fmt_file, &fmt_file_mode, &fmt_file_value);
+  x = readU32(fmt_file, &fmt_file_mode, &fmt_file_value)->int_;
   if ((x != 69069) || feof(fmt_file))
     goto _L6666;
   goto _L10;
