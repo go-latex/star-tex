@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-#include "ctex-capi-consts.h"
-#include "ctex-capi-types.h"
+#include "ctex-consts.h"
+#include "ctex-types.h"
 
 typedef struct {
   four_quarters font_check[font_max + 1];

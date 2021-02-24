@@ -9,6 +9,8 @@ package ctex // import "git.sr.ht/~sbinet/star-tex/internal/ctex"
 //
 // #include <stdlib.h>
 // #include <string.h>
+//
+// #cgo !windows LDFLAGS: -lm
 import "C"
 
 import (
@@ -26,7 +28,7 @@ import (
 var bundle embed.FS
 
 type Context struct {
-	ctx unsafe.Pointer
+	ctx *C.ctex_t
 
 	search string    // search dir for TeX engine.
 	work   string    // work dir for TeX engine.
@@ -42,7 +44,7 @@ func New(stderr io.Writer) Context {
 
 	ctx := C.ctex_new_context()
 	return Context{
-		ctx:    unsafe.Pointer(ctx),
+		ctx:    ctx,
 		search: root,
 		work:   work,
 		stderr: stderr,
@@ -50,8 +52,7 @@ func New(stderr io.Writer) Context {
 }
 
 func (ctx Context) Free() {
-	ptr := (C.context_t)(ctx.ctx)
-	C.ctex_del_context(&ptr)
+	C.ctex_del_context(&ctx.ctx)
 
 	_ = os.RemoveAll(ctx.work)
 }
@@ -117,7 +118,7 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) error {
 	}()
 
 	o := C.ctex_context_typeset(
-		(C.context_t)(ctx.ctx),
+		ctx.ctx,
 		c_name, c_dvi,
 		c_search, c_work,
 		c_cerr,

@@ -9,8 +9,9 @@
 extern "C" {
 #endif
 
-#include "ctex-capi-consts.h"
-#include "ctex-capi-types.h"
+#include "ctex-consts.h"
+#include "ctex-types.h"
+
 #include <stdio.h>
 
 typedef int dvi_index;

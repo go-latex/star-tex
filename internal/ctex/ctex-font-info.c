@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-#include "ctex-capi-font-info.h"
-#include "ctex-capi-consts.h"
+#include "ctex-font-info.h"
+#include "ctex-consts.h"
 
 void ctex_font_info_init(ctex_font_info_t *fnt_infos) {
   for (int k = 0; k <= font_max; k++) {

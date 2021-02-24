@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "ctex-capi-types.h"
+#include "ctex-types.h"
 
 #ifdef __cplusplus
 extern "C" {
