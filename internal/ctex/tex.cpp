@@ -753,7 +753,7 @@ void tex::confusion(str_number s) {
   jump_out();
 }
 
-bool tex::a_open_in(FILE **f) {
+bool_t tex::a_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!*f) {
@@ -762,7 +762,7 @@ bool tex::a_open_in(FILE **f) {
   return erstat(*f) == 0;
 }
 
-bool tex::a_open_out(FILE **f) {
+bool_t tex::a_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!*f) {
@@ -771,7 +771,7 @@ bool tex::a_open_out(FILE **f) {
   return erstat(*f) == 0;
 }
 
-bool tex::b_open_in(FILE **f) {
+bool_t tex::b_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!*f) {
@@ -780,7 +780,7 @@ bool tex::b_open_in(FILE **f) {
   return erstat(*f) == 0;
 }
 
-bool tex::b_open_out(FILE **f) {
+bool_t tex::b_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!*f) {
@@ -789,7 +789,7 @@ bool tex::b_open_out(FILE **f) {
   return erstat(*f) == 0;
 }
 
-bool tex::w_open_in(FILE **f) {
+bool_t tex::w_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!*f) {
@@ -798,7 +798,7 @@ bool tex::w_open_in(FILE **f) {
   return erstat(*f) == 0;
 }
 
-bool tex::w_open_out(FILE **f) {
+bool_t tex::w_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
   *f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!*f) {
@@ -828,7 +828,7 @@ void tex::w_close(FILE **f) {
   *f = nullptr;
 }
 
-bool tex::input_ln(FILE *f, bool bypass_eoln) {
+bool_t tex::input_ln(FILE *f, bool_t bypass_eoln) {
   int last_nonblank;
   if (bypass_eoln) {
     if (!feof(f))
@@ -864,8 +864,8 @@ bool tex::input_ln(FILE *f, bool bypass_eoln) {
   }
 }
 
-bool tex::init_terminal() {
-  bool result;
+bool_t tex::init_terminal() {
+  bool_t result;
   term_in = input_stream;
   if (!term_in)
     io_error(errno, "TTY:");
@@ -899,8 +899,8 @@ str_number tex::make_string() {
   return str_ptr - 1;
 }
 
-bool tex::str_eq_buf(str_number s, integer k) {
-  bool result;
+bool_t tex::str_eq_buf(str_number s, integer k) {
+  bool_t result;
   pool_pointer j = str_start[s];
   while (j < str_start[s + 1]) {
     if (str_pool[j] != buffer[k]) {
@@ -915,9 +915,9 @@ _L45:
   return result;
 }
 
-bool tex::str_eq_str(str_number s, str_number t) {
+bool_t tex::str_eq_str(str_number s, str_number t) {
   pool_pointer j, k;
-  bool result = false;
+  bool_t result = false;
   if (str_start[s + 1] - str_start[s] != str_start[t + 1] - str_start[t])
     goto _L45;
   j = str_start[s];
@@ -933,13 +933,13 @@ _L45:
   return result;
 }
 
-bool tex::get_strings_started() {
-  bool result;
+bool_t tex::get_strings_started() {
+  bool_t result;
   uint8_t k, l;
   char m, n;
   str_number g;
   integer a;
-  bool c = false;
+  bool_t c = false;
   short character;
   pool_ptr = 0;
   str_ptr = 0;
@@ -1211,7 +1211,7 @@ scaled tex::mult_and_add(integer n, scaled x, scaled y, scaled max_answer) {
 
 scaled tex::x_over_n(scaled x, integer n) {
   int result;
-  bool negative = false;
+  bool_t negative = false;
   if (!n) {
     arith_error = true;
     result = 0;
@@ -1237,7 +1237,7 @@ scaled tex::x_over_n(scaled x, integer n) {
 
 scaled tex::xn_over_d(scaled x, integer n, integer d) {
   int result;
-  bool positive;
+  bool_t positive;
   nonnegative_integer t, u, v;
   if (x >= 0) {
     positive = true;
@@ -2875,7 +2875,7 @@ void tex::begin_diagnostic() {
     history = 1;
 }
 
-void tex::end_diagnostic(bool blank_line) {
+void tex::end_diagnostic(bool_t blank_line) {
   print_nl(338);
   if (blank_line)
     print_ln();
@@ -4077,7 +4077,7 @@ void tex::show_cur_cmd_chr() {
 void tex::show_context() {
   char old_setting;
   integer nn = -1, m, p, q;
-  bool bottom_line = false;
+  bool_t bottom_line = false;
   int i, j, l, n, N1;
   base_ptr = input_ptr;
   input_stack[base_ptr] = cur_input;
@@ -5351,8 +5351,8 @@ void tex::scan_optional_equals() {
     back_input();
 }
 
-bool tex::scan_keyword(str_number s) {
-  bool result;
+bool_t tex::scan_keyword(str_number s) {
+  bool_t result;
   halfword p = mem_max - 13, q;
   pool_pointer k;
   mem[p - mem_min].hh.rh = -1073741824;
@@ -5482,7 +5482,7 @@ void tex::scan_font_ident() {
   cur_val = f;
 }
 
-void tex::find_font_dimen(bool writing) {
+void tex::find_font_dimen(bool_t writing) {
   internal_font_number f;
   integer n;
   scan_int();
@@ -5528,7 +5528,7 @@ void tex::find_font_dimen(bool writing) {
   error();
 }
 
-void tex::scan_something_internal(small_number level, bool negative) {
+void tex::scan_something_internal(small_number level, bool_t negative) {
   int p;
   halfword m = cur_chr;
   switch (cur_cmd) {
@@ -5790,10 +5790,10 @@ void tex::scan_something_internal(small_number level, bool negative) {
 }
 
 void tex::scan_int() {
-  bool negative = false;
+  bool_t negative = false;
   integer m;
   small_number d;
-  bool vacuous, OK_so_far = true;
+  bool_t vacuous, OK_so_far = true;
   radix = 0;
   do {
     do {
@@ -5894,8 +5894,8 @@ void tex::scan_int() {
     cur_val = -cur_val;
 }
 
-void tex::scan_dimen(bool mu, bool inf, bool shortcut) {
-  bool negative = false;
+void tex::scan_dimen(bool_t mu, bool_t inf, bool_t shortcut) {
+  bool_t negative = false;
   integer f = 0, save_cur_val;
   int num, denom;
   small_number k, kk;
@@ -6124,9 +6124,9 @@ _L89:
 }
 
 void tex::scan_glue(small_number level) {
-  bool negative = false;
+  bool_t negative = false;
   halfword q;
-  bool mu = level == 3;
+  bool_t mu = level == 3;
   do {
     do {
       get_x_token();
@@ -6349,7 +6349,7 @@ void tex::conv_toks() {
   begin_token_list(mem[mem_max - mem_min - 3].hh.rh, 4);
 }
 
-halfword tex::scan_toks(bool macro_def, bool xpand) {
+halfword tex::scan_toks(bool_t macro_def, bool_t xpand) {
   halfword t = 3120, s, p, q, unbalance = 1, hash_brace = 0;
   if (macro_def)
     scanner_status = 2;
@@ -6620,7 +6620,7 @@ _L10:;
 }
 
 void tex::conditional() {
-  bool b;
+  bool_t b;
   char r;
   integer m, n;
   halfword q;
@@ -6863,7 +6863,7 @@ void tex::begin_name() {
   ext_delimiter = 0;
 }
 
-bool tex::more_name(ASCII_code c) {
+bool_t tex::more_name(ASCII_code c) {
   if (c == 32) {
     return false;
   } else {
@@ -7142,7 +7142,7 @@ _L30:
 internal_font_number tex::read_font_info(halfword u, str_number nom,
                                          str_number aire, scaled s) {
   font_index k;
-  bool file_opened = false;
+  bool_t file_opened = false;
   halfword lf, lh, bc, ec, nw, nh, nd, ni, nl, nk, ne, np;
   internal_font_number f, g = 0;
   uint8_t a, b, c, d;
@@ -7944,7 +7944,7 @@ void tex::hlist_out() {
   scaled base_line, left_edge, save_h, save_v, leader_wd, lx, edge, cur_g = 0;
   integer save_loc;
   halfword leader_box;
-  bool outer_doing_leaders;
+  bool_t outer_doing_leaders;
   double glue_temp, cur_glue = 0.0;
   halfword this_box = temp_ptr;
   glue_ord g_order = mem[this_box - mem_min + 5].hh.U2.b1;
@@ -8162,7 +8162,7 @@ void tex::vlist_out() {
   scaled left_edge, top_edge, save_h, save_v, leader_ht, lx, edge, cur_g = 0;
   integer save_loc;
   halfword leader_box;
-  bool outer_doing_leaders;
+  bool_t outer_doing_leaders;
   double glue_temp, cur_glue = 0.0;
   halfword this_box = temp_ptr;
   glue_ord g_order = mem[this_box - mem_min + 5].hh.U2.b1;
@@ -8459,7 +8459,7 @@ _L30:
   flush_node_list(p);
 }
 
-void tex::scan_spec(group_code c, bool three_codes) {
+void tex::scan_spec(group_code c, bool_t three_codes) {
   integer s;
   char spec_code;
   if (three_codes)
@@ -9004,7 +9004,7 @@ halfword tex::var_delimiter(halfword d, small_number s, scaled v) {
   four_quarters q;
   uint8_t hd;
   four_quarters r;
-  bool large_attempt = false;
+  bool_t large_attempt = false;
   small_number z = mem[d - mem_min].qqqq.b0;
   quarterword x = mem[d - mem_min].qqqq.b1;
   while (true) {
@@ -9889,7 +9889,7 @@ void tex::mlist_to_hlist() {
   small_number s;
   scaled max_h = 0, max_d = 0, delta;
   halfword mlist = cur_mlist;
-  bool penalties = mlist_penalties;
+  bool_t penalties = mlist_penalties;
   small_number style = cur_style;
   halfword q = mlist;
   if (cur_style < 4)
@@ -10465,8 +10465,8 @@ void tex::init_col() {
   }
 }
 
-bool tex::fin_col() {
-  bool result;
+bool_t tex::fin_col() {
+  bool_t result;
   halfword p, q, r, s, u;
   scaled w;
   glue_ord o;
@@ -10957,16 +10957,16 @@ halfword tex::finite_shrink(halfword p) {
 
 void tex::try_break(integer pi, small_number break_type) {
   halfword r, prev_r = mem_max - 7, old_l = 0;
-  bool no_break_yet = true;
+  bool_t no_break_yet = true;
   halfword prev_prev_r, s, q, v;
   integer t, d;
   internal_font_number f;
   halfword l;
-  bool node_r_stays_active;
+  bool_t node_r_stays_active;
   scaled line_width, shortfall;
   char fit_class;
   halfword b;
-  bool artificial_demerits;
+  bool_t artificial_demerits;
   if (abs(pi) >= 10000) {
     if (pi > 0)
       goto _L10;
@@ -11350,7 +11350,7 @@ _L10:;
 
 void tex::post_line_break(integer final_widow_penalty) {
   halfword r, s;
-  bool disc_break, post_disc_break;
+  bool_t disc_break, post_disc_break;
   scaled cur_width, cur_indent;
   quarterword t;
   integer pen;
@@ -12148,10 +12148,10 @@ void tex::trie_fix(trie_pointer p) {
 
 void tex::new_patterns() {
   char k, l;
-  bool digit_sensed;
+  bool_t digit_sensed;
   quarterword v;
   trie_pointer p, q;
-  bool first_child;
+  bool_t first_child;
   ASCII_code c;
   if (trie_not_ready) {
     if (eqtb[12213].int_ <= 0) {
@@ -12337,7 +12337,7 @@ void tex::init_trie() {
 }
 
 void tex::line_break(integer final_widow_penalty) {
-  bool auto_breaking;
+  bool_t auto_breaking;
   halfword prev_p, q, r, s, prev_s;
   internal_font_number f;
   small_number j;
@@ -13257,7 +13257,7 @@ void tex::ensure_vbox(uint8_t n) {
 void tex::fire_up(halfword c) {
   halfword p, q = mem_max - 4, r, s, prev_p = mem_max - 2;
   uint8_t n;
-  bool wait;
+  bool_t wait;
   integer save_vbadness;
   scaled save_vfuzz;
   halfword save_split_top_skip;
@@ -13777,7 +13777,7 @@ void tex::report_illegal_case() {
   error();
 }
 
-bool tex::privileged() {
+bool_t tex::privileged() {
   if (cur_list.mode_field > 0) {
     return true;
   } else {
@@ -13786,8 +13786,8 @@ bool tex::privileged() {
   }
 }
 
-bool tex::its_all_over() {
-  bool result;
+bool_t tex::its_all_over() {
+  bool_t result;
   if (privileged()) {
     if ((mem_max - 2 == page_tail) &&
         (cur_list.head_field == cur_list.tail_field) && (!dead_cycles)) {
@@ -14159,7 +14159,7 @@ small_number tex::norm_min(integer h) {
     return h;
 }
 
-void tex::new_graf(bool indented) {
+void tex::new_graf(bool_t indented) {
   cur_list.pg_field = 0;
   if ((cur_list.mode_field == 1) ||
       (cur_list.head_field != cur_list.tail_field)) {
@@ -14862,7 +14862,7 @@ void tex::math_limit_switch() {
 _L10:;
 }
 
-void tex::scan_delimiter(halfword p, bool r) {
+void tex::scan_delimiter(halfword p, bool_t r) {
   if (r) {
     scan_twenty_seven_bit_int();
   } else {
@@ -15115,7 +15115,7 @@ void tex::math_left_right() {
 }
 
 void tex::after_math() {
-  bool l = false, danger = false;
+  bool_t l = false, danger = false;
   integer m;
   halfword p, a, b;
   scaled w, z, e, q, d, s;
@@ -15699,7 +15699,7 @@ void tex::prefixed_command() {
   font_index k;
   halfword p, q;
   integer n;
-  bool e;
+  bool_t e;
   while (cur_cmd == 93) {
     if (!((a / cur_chr) & 1))
       a += cur_chr;
@@ -17813,8 +17813,8 @@ _L10:;
 
 void tex::give_err_help() { token_show(eqtb[10321].hh.rh); }
 
-bool tex::open_fmt_file() {
-  bool result;
+bool_t tex::open_fmt_file() {
+  bool_t result;
   int j = cur_input.loc_field;
   if (buffer[cur_input.loc_field] == 38) {
     ++cur_input.loc_field;
@@ -17845,8 +17845,8 @@ _L10:
   return result;
 }
 
-bool tex::load_fmt_file() {
-  bool result = true;
+bool_t tex::load_fmt_file() {
+  bool_t result = true;
   integer j, k;
   halfword p = 0, q;
   four_quarters w;
