@@ -44,6 +44,7 @@
 #include "ctex-capi-dvi.h"
 #include "ctex-capi-font-info.h"
 #include "ctex-capi-types.h"
+#include "ctex-io.h"
 #include "ctex.h"
 
 namespace tex {
@@ -352,70 +353,6 @@ protected:
   jmp_buf _JL9999;
 
   // methods.
-
-  void loadU8(FILE *r, int *mode, uint8_t *v) {
-    if (*mode == 1) {
-      fread(v, sizeof(uint8_t), 1, r);
-    } else {
-      *mode = 1;
-    }
-  }
-
-  uint8_t *readU8(FILE *r, int *mode, uint8_t *v) {
-    if (*mode == 1) {
-      *mode = 2;
-      fread(v, sizeof(uint8_t), 1, r);
-    }
-    return v;
-  }
-
-  void loadU32(FILE *r, int *mode, memory_word *v) {
-    if (*mode == 1) {
-      fread(&v, sizeof(memory_word), 1, r);
-    } else {
-      *mode = 1;
-    }
-  }
-
-  memory_word *readU32(FILE *r, int *mode, memory_word *v) {
-    if (*mode == 1) {
-      *mode = 2;
-      fread(&v, sizeof(memory_word), 1, r);
-    }
-    return v;
-  }
-
-  void writeU32(FILE *w, int *mode, memory_word *v) {
-    fwrite(v, sizeof(memory_word), 1, w);
-    *mode = 0;
-  }
-
-  static int erstat(FILE *f) { return f == nullptr or (ferror(f) != 0); }
-
-  static int fpeek(FILE *f) {
-    int c = fgetc(f);
-    ungetc(c, f);
-    return c;
-  }
-
-  static void break_in(FILE *ios, bool) {}
-
-  static bool eoln(FILE *f) {
-    int c = fpeek(f);
-    return (c == EOF or c == '\n');
-  }
-
-  static const char *
-  trim_name(char *filename, size_t length) // never called on a string literal;
-                                           // note the lack of a const
-  {
-    for (char *p = filename + length - 1; *p == ' '; --p)
-      *p = '\0';
-
-    return filename;
-  }
-
-  static void io_error(int error, const char *name) {}
 
   void initialize();
 
