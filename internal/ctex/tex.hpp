@@ -440,15 +440,15 @@ protected:
   void overflow(str_number s, integer n);
   void confusion(str_number s);
 
-  virtual bool a_open_in(FILE *&f);
-  virtual bool a_open_out(FILE *&f);
-  virtual bool b_open_in(FILE *&f);
-  virtual bool b_open_out(FILE *&f);
-  virtual bool w_open_in(FILE *&f);
-  virtual bool w_open_out(FILE *&f);
-  virtual void a_close(FILE *&f);
-  virtual void b_close(FILE *&f);
-  virtual void w_close(FILE *&f);
+  bool a_open_in(FILE *&f);
+  bool a_open_out(FILE *&f);
+  bool b_open_in(FILE *&f);
+  bool b_open_out(FILE *&f);
+  bool w_open_in(FILE *&f);
+  bool w_open_out(FILE *&f);
+  void a_close(FILE *&f);
+  void b_close(FILE *&f);
+  void w_close(FILE *&f);
 
   bool input_ln(FILE *f, bool bypass_eoln);
   bool init_terminal();
@@ -588,7 +588,7 @@ protected:
   void pack_job_name(str_number s);
   void prompt_file_name(str_number s, str_number e);
 
-  virtual void open_log_file();
+  void open_log_file();
 
   void start_input();
   internal_font_number read_font_info(halfword u, str_number nom,
@@ -759,9 +759,13 @@ protected:
   void final_cleanup();
   void init_prim();
 
-  virtual void typeset(int argc, const char **args);
+  void getopt(int argc, const char **args);
+  void typeset(int argc, const char **args);
 
-  virtual void getopt(int argc, const char **args);
+public:
+  void process(const char *tex_fname, const char *dvi_ofname,
+               const char *serach_dir, const char *work_dir,
+               const char *err_oname);
 
   tex()
       : fmt_file_value({0}), tfm_file_mode(0), tfm_file_value(0),
@@ -776,7 +780,7 @@ protected:
     ctex_dvi_init(&dvi_mgr);
   }
 
-  virtual ~tex() {
+  ~tex() {
     free(ctx);
     ctx = NULL;
   }

@@ -754,6 +754,7 @@ void tex::confusion(str_number s) {
 }
 
 bool tex::a_open_in(FILE *&f) {
+  ctex_kpath_ifind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -761,6 +762,7 @@ bool tex::a_open_in(FILE *&f) {
 }
 
 bool tex::a_open_out(FILE *&f) {
+  ctex_kpath_ofind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -768,6 +770,7 @@ bool tex::a_open_out(FILE *&f) {
 }
 
 bool tex::b_open_in(FILE *&f) {
+  ctex_kpath_ifind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -775,6 +778,7 @@ bool tex::b_open_in(FILE *&f) {
 }
 
 bool tex::b_open_out(FILE *&f) {
+  ctex_kpath_ofind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -782,6 +786,7 @@ bool tex::b_open_out(FILE *&f) {
 }
 
 bool tex::w_open_in(FILE *&f) {
+  ctex_kpath_ifind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "rb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -789,6 +794,7 @@ bool tex::w_open_in(FILE *&f) {
 }
 
 bool tex::w_open_out(FILE *&f) {
+  ctex_kpath_ofind(name_of_file);
   f = fopen(trim_name(name_of_file, file_name_size), "wb");
   if (!f)
     io_error(errno, trim_name(name_of_file, file_name_size));
@@ -18828,6 +18834,27 @@ void tex::getopt(int argc, const char **args) {
     // ' ' must come first, the first character is always skipped…
     fprintf(input_stream, " %s", args[i]);
   }
+}
+
+void tex::process(const char *filename, const char *result,
+                  const char *search_dir, const char *working_dir,
+                  const char *output) {
+
+  input_stream = open_memstream(&input_stream_buf,
+                                &input_stream_len); // will be closed as term_in
+  output_stream = fopen(output, "w"); // will be closed as term_out
+
+  dvi_mgr.dvi_file = fopen(result, "w");
+
+  const char *args[5] = {
+      R"(\nonstopmode)", // omits all stops (\batchmode also omits terminal
+                         // output)
+      R"(\input plain)",
+      R"(\input)",
+      filename,
+      R"(\end)",
+  };
+  typeset(5, args);
 }
 
 } // namespace tex
