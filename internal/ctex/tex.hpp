@@ -440,15 +440,15 @@ protected:
   void overflow(str_number s, integer n);
   void confusion(str_number s);
 
-  bool a_open_in(FILE *&f);
-  bool a_open_out(FILE *&f);
-  bool b_open_in(FILE *&f);
-  bool b_open_out(FILE *&f);
-  bool w_open_in(FILE *&f);
-  bool w_open_out(FILE *&f);
-  void a_close(FILE *&f);
-  void b_close(FILE *&f);
-  void w_close(FILE *&f);
+  bool a_open_in(FILE **f);
+  bool a_open_out(FILE **f);
+  bool b_open_in(FILE **f);
+  bool b_open_out(FILE **f);
+  bool w_open_in(FILE **f);
+  bool w_open_out(FILE **f);
+  void a_close(FILE **f);
+  void b_close(FILE **f);
+  void w_close(FILE **f);
 
   bool input_ln(FILE *f, bool bypass_eoln);
   bool init_terminal();

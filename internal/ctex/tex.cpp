@@ -753,70 +753,79 @@ void tex::confusion(str_number s) {
   jump_out();
 }
 
-bool tex::a_open_in(FILE *&f) {
+bool tex::a_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "rb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-bool tex::a_open_out(FILE *&f) {
+bool tex::a_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "wb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-bool tex::b_open_in(FILE *&f) {
+bool tex::b_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "rb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-bool tex::b_open_out(FILE *&f) {
+bool tex::b_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "wb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-bool tex::w_open_in(FILE *&f) {
+bool tex::w_open_in(FILE **f) {
   ctex_kpath_ifind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "rb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "rb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-bool tex::w_open_out(FILE *&f) {
+bool tex::w_open_out(FILE **f) {
   ctex_kpath_ofind(name_of_file);
-  f = fopen(trim_name(name_of_file, file_name_size), "wb");
-  if (!f)
+  *f = fopen(trim_name(name_of_file, file_name_size), "wb");
+  if (!*f) {
     io_error(errno, trim_name(name_of_file, file_name_size));
-  return erstat(f) == 0;
+  }
+  return erstat(*f) == 0;
 }
 
-void tex::a_close(FILE *&f) {
-  if (f)
-    fclose(f);
-  f = nullptr;
+void tex::a_close(FILE **f) {
+  if (*f) {
+    fclose(*f);
+  }
+  *f = NULL;
 }
 
-void tex::b_close(FILE *&f) {
-  if (f)
-    fclose(f);
-  f = nullptr;
+void tex::b_close(FILE **f) {
+  if (*f) {
+    fclose(*f);
+  }
+  *f = NULL;
 }
 
-void tex::w_close(FILE *&f) {
-  if (f)
-    fclose(f);
-  f = nullptr;
+void tex::w_close(FILE **f) {
+  if (*f) {
+    fclose(*f);
+  }
+  *f = nullptr;
 }
 
 bool tex::input_ln(FILE *f, bool bypass_eoln) {
@@ -974,16 +983,16 @@ bool tex::get_strings_started() {
   }
   // memcpy(name_of_file, pool_name, file_name_size); // FIXME(sbinet)
   memcpy(name_of_file, pool_name, 13);
-  if (!a_open_in(pool_file)) {
+  if (!a_open_in(&pool_file)) {
     fprintf(term_out, "! I can't read tex.pool.\n");
-    a_close(pool_file);
+    a_close(&pool_file);
     result = false;
     goto _L10;
   }
   do {
     if (feof(pool_file)) {
       fprintf(term_out, "! tex.pool has no check sum.\n");
-      a_close(pool_file);
+      a_close(&pool_file);
       result = false;
       goto _L10;
     }
@@ -995,7 +1004,7 @@ bool tex::get_strings_started() {
       while (true) {
         if ((xord[n] < 48) || (xord[n] > 57)) {
           fprintf(term_out, "! tex.pool check sum doesn't have nine digits.\n");
-          a_close(pool_file);
+          a_close(&pool_file);
           result = false;
           goto _L10;
         }
@@ -1008,7 +1017,7 @@ bool tex::get_strings_started() {
     _L30:
       if (a != 117275187) {
         fprintf(term_out, "! tex.pool doesn't match; TANGLE me again.\n");
-        a_close(pool_file);
+        a_close(&pool_file);
         result = false;
         goto _L10;
       }
@@ -1017,14 +1026,14 @@ bool tex::get_strings_started() {
       if ((xord[m] < 48) || (xord[m] > 57) || (xord[n] < 48) ||
           (xord[n] > 57)) {
         fprintf(term_out, "! tex.pool line doesn't begin with two digits.\n");
-        a_close(pool_file);
+        a_close(&pool_file);
         result = false;
         goto _L10;
       }
       l = (xord[m] * 10) + xord[n] - 528;
       if (pool_ptr + l + string_vacancies > pool_size) {
         fprintf(term_out, "! You have to increase POOLSIZE.\n");
-        a_close(pool_file);
+        a_close(&pool_file);
         result = false;
         goto _L10;
       }
@@ -1040,7 +1049,7 @@ bool tex::get_strings_started() {
       g = make_string();
     }
   } while (!c);
-  a_close(pool_file);
+  a_close(&pool_file);
   result = true;
 _L10:
   return result;
@@ -4366,7 +4375,7 @@ void tex::end_file_reading() {
   first = cur_input.start_field;
   line = line_stack[cur_input.index_field];
   if (cur_input.name_field > 17)
-    a_close(input_file[cur_input.index_field]);
+    a_close(&input_file[cur_input.index_field]);
   --input_ptr;
   cur_input = input_stack[input_ptr];
   --in_open;
@@ -6523,11 +6532,11 @@ void tex::read_toks(integer n, halfword r) {
       if (input_ln(read_file[m], false)) {
         read_open[m] = 0;
       } else {
-        a_close(read_file[m]);
+        a_close(&read_file[m]);
         read_open[m] = 2;
       }
     } else if (!input_ln(read_file[m], true)) {
-      a_close(read_file[m]);
+      a_close(&read_file[m]);
       read_open[m] = 2;
       if (align_state != 1000000) {
         runaway();
@@ -7047,7 +7056,7 @@ void tex::open_log_file() {
   if (!job_name)
     job_name = 795;
   pack_job_name(796);
-  while (!a_open_out(log_file)) {
+  while (!a_open_out(&log_file)) {
     selector = 17;
     prompt_file_name(798, 796);
   }
@@ -7086,11 +7095,11 @@ void tex::start_input() {
   pack_file_name(cur_name, cur_area, cur_ext);
   while (true) {
     begin_file_reading();
-    if (a_open_in(input_file[cur_input.index_field]))
+    if (a_open_in(&input_file[cur_input.index_field]))
       goto _L30;
     if (cur_area == 338) {
       pack_file_name(cur_name, 783, cur_ext);
-      if (a_open_in(input_file[cur_input.index_field]))
+      if (a_open_in(&input_file[cur_input.index_field]))
         goto _L30;
     }
     end_file_reading();
@@ -7147,7 +7156,7 @@ internal_font_number tex::read_font_info(halfword u, str_number nom,
     pack_file_name(nom, 784, 810);
   else
     pack_file_name(nom, aire, 810);
-  if (!b_open_in(tfm_file))
+  if (!b_open_in(&tfm_file))
     goto _L11;
   file_opened = true;
   tfm_file_mode = 1;
@@ -7574,7 +7583,7 @@ _L11:
   error();
 _L30:
   if (file_opened)
-    b_close(tfm_file);
+    b_close(&tfm_file);
   {
     const char *tfm_fname = trim_name(name_of_file, file_name_size);
     int nnn = cgo_load_tfm_file(tfm_fname);
@@ -7902,7 +7911,7 @@ void tex::out_what(halfword p) {
         write_out(p);
       } else {
         if (write_open[j])
-          a_close(write_file[j]);
+          a_close(&write_file[j]);
         if (mem[p - mem_min].hh.U2.b1 == 2) {
           write_open[j] = false;
         } else if (j < 16) {
@@ -7912,7 +7921,7 @@ void tex::out_what(halfword p) {
           if (cur_ext == 338)
             cur_ext = 790;
           pack_file_name(cur_name, cur_area, cur_ext);
-          while (!a_open_out(write_file[j]))
+          while (!a_open_out(&write_file[j]))
             prompt_file_name(1299, 790);
           write_open[j] = true;
         }
@@ -8396,7 +8405,7 @@ void tex::ship_out(halfword p) {
     if (!job_name)
       open_log_file();
     pack_job_name(793);
-    while (!dvi_mgr.dvi_file and !b_open_out(dvi_mgr.dvi_file))
+    while (!dvi_mgr.dvi_file and !b_open_out(&dvi_mgr.dvi_file))
       prompt_file_name(794, 793);
     output_file_name = b_make_name_string(dvi_mgr.dvi_file);
   }
@@ -16133,7 +16142,7 @@ void tex::open_or_close_in() {
   scan_four_bit_int();
   n = cur_val;
   if (read_open[n] != 2) {
-    a_close(read_file[n]);
+    a_close(&read_file[n]);
     read_open[n] = 2;
   }
   if (!c)
@@ -16143,7 +16152,7 @@ void tex::open_or_close_in() {
   if (cur_ext == 338)
     cur_ext = 790;
   pack_file_name(cur_name, cur_area, cur_ext);
-  if (a_open_in(read_file[n]))
+  if (a_open_in(&read_file[n]))
     read_open[n] = 1;
 }
 
@@ -16315,7 +16324,7 @@ void tex::store_fmt_file() {
     overflow(257, pool_size - init_pool_ptr);
   format_ident = make_string();
   pack_job_name(785);
-  while (!w_open_out(fmt_file))
+  while (!w_open_out(&fmt_file))
     prompt_file_name(1272, 785);
   print_nl(1273);
   slow_print(w_make_name_string(fmt_file));
@@ -16649,7 +16658,7 @@ void tex::store_fmt_file() {
   readU32(fmt_file, fmt_file_mode, &fmt_file_value).int_ = 69069;
   writeU32(fmt_file, fmt_file_mode, &fmt_file_value);
   eqtb[12194].int_ = 0;
-  w_close(fmt_file);
+  w_close(&fmt_file);
 }
 
 void tex::new_whatsit(small_number s, small_number w) {
@@ -17814,17 +17823,17 @@ bool tex::open_fmt_file() {
     while (buffer[j] != 32)
       ++j;
     pack_buffered_name(0, cur_input.loc_field, j - 1);
-    if (w_open_in(fmt_file))
+    if (w_open_in(&fmt_file))
       goto _L40;
     pack_buffered_name(11, cur_input.loc_field, j - 1);
-    if (w_open_in(fmt_file))
+    if (w_open_in(&fmt_file))
       goto _L40;
     fprintf(term_out, "Sorry, I can't find that format; will try PLAIN.\n");
     fflush(term_out);
     errno = 0;
   }
   pack_buffered_name(16, 1, 0);
-  if (!w_open_in(fmt_file)) {
+  if (!w_open_in(&fmt_file)) {
     fprintf(term_out, "I can't find the PLAIN format file!\n");
     result = false;
     goto _L10;
@@ -18235,7 +18244,7 @@ void tex::close_files_and_terminate() {
   integer k;
   for (k = 0; k <= 15; ++k) {
     if (write_open[k])
-      a_close(write_file[k]);
+      a_close(&write_file[k]);
   }
   while (cur_s > (-1)) {
     if (cur_s > 0) {
@@ -18289,12 +18298,12 @@ void tex::close_files_and_terminate() {
     print(839);
     print_int(ctex_dvi_pos(&dvi_mgr));
     print(840);
-    b_close(dvi_mgr.dvi_file);
+    b_close(&dvi_mgr.dvi_file);
   }
   if (!log_opened)
     return;
   fprintf(log_file, "\n");
-  a_close(log_file);
+  a_close(&log_file);
   selector -= 2;
   if (selector != 17)
     return;
@@ -18784,10 +18793,10 @@ _L1:
     if (!open_fmt_file())
       goto _L9999;
     if (!load_fmt_file()) {
-      w_close(fmt_file);
+      w_close(&fmt_file);
       goto _L9999;
     }
-    w_close(fmt_file);
+    w_close(&fmt_file);
     while ((cur_input.loc_field < cur_input.limit_field) &&
            (buffer[cur_input.loc_field] == 32))
       ++cur_input.loc_field;
