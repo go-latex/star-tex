@@ -11,6 +11,9 @@ extern "C" {
 
 int cgo_load_tfm_file(const char *);
 
+void ctex_kpath_ifind(char *fname);
+void ctex_kpath_ofind(char *fname);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

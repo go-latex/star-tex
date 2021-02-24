@@ -107,6 +107,15 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) error {
 		fmt.Fprintf(ctx.stderr, "\n")
 	}()
 
+	// update "kpath"-like global variables.
+	// TODO(sbinet): get rid of these globals.
+	g_ipath = ctx.search
+	g_opath = ctx.work
+	defer func() {
+		g_ipath = ""
+		g_opath = ""
+	}()
+
 	o := C.ctex_context_typeset(
 		(C.context_t)(ctx.ctx),
 		c_name, c_dvi,
