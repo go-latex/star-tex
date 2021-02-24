@@ -1962,8 +1962,7 @@ void tex::show_node_list(integer p) {
                 print(328);
               print_glue(1310720000, mem[p - mem_min + 5].hh.U2.b1, 0);
             } else {
-              print_glue(int(round(65536 * g)), mem[p - mem_min + 5].hh.U2.b1,
-                         0);
+              print_glue(round(65536 * g), mem[p - mem_min + 5].hh.U2.b1, 0);
             }
           }
           if (mem[p - mem_min + 4].int_) {
@@ -8040,7 +8039,7 @@ void tex::hlist_out() {
               glue_temp = 1000000000.0;
             } else if (glue_temp < (-1000000000.0))
               glue_temp = -1000000000.0;
-            cur_g = int(round(glue_temp));
+            cur_g = round(glue_temp);
           }
         } else if (mem[g - mem_min].hh.U2.b1 == g_order) {
           cur_glue -= mem[g - mem_min + 3].int_;
@@ -8049,7 +8048,7 @@ void tex::hlist_out() {
             glue_temp = 1000000000.0;
           } else if (glue_temp < (-1000000000.0))
             glue_temp = -1000000000.0;
-          cur_g = int(round(glue_temp));
+          cur_g = round(glue_temp);
         }
       }
       rule_wd += cur_g;
@@ -8228,7 +8227,7 @@ void tex::vlist_out() {
                 glue_temp = 1000000000.0;
               } else if (glue_temp < (-1000000000.0))
                 glue_temp = -1000000000.0;
-              cur_g = int(round(glue_temp));
+              cur_g = round(glue_temp);
             }
           } else if (mem[g - mem_min].hh.U2.b1 == g_order) {
             cur_glue -= mem[g - mem_min + 3].int_;
@@ -8237,7 +8236,7 @@ void tex::vlist_out() {
               glue_temp = 1000000000.0;
             } else if (glue_temp < (-1000000000.0))
               glue_temp = -1000000000.0;
-            cur_g = int(round(glue_temp));
+            cur_g = round(glue_temp);
           }
         }
         rule_ht += cur_g;
@@ -10753,12 +10752,10 @@ void tex::fin_align() {
             t += mem[v - mem_min + 1].int_;
             if (mem[p - mem_min + 5].hh.U2.b0 == 1) {
               if (mem[v - mem_min].hh.U2.b0 == mem[p - mem_min + 5].hh.U2.b1)
-                t += int(
-                    round(mem[p - mem_min + 6].gr * mem[v - mem_min + 2].int_));
+                t += round(mem[p - mem_min + 6].gr * mem[v - mem_min + 2].int_);
             } else if (mem[p - mem_min + 5].hh.U2.b0 == 2) {
               if (mem[v - mem_min].hh.U2.b1 == mem[p - mem_min + 5].hh.U2.b1)
-                t -= int(
-                    round(mem[p - mem_min + 6].gr * mem[v - mem_min + 3].int_));
+                t -= round(mem[p - mem_min + 6].gr * mem[v - mem_min + 3].int_);
             }
             s = mem[s - mem_min].hh.rh;
             mem[u - mem_min].hh.rh = new_null_box();
@@ -14519,7 +14516,7 @@ void tex::make_accent() {
       p = hpack(p, 0, 1);
       mem[p - mem_min + 4].int_ = x - h;
     }
-    delta = int(round(((w - a) / 2.0) + (h * t) - (x * s)));
+    delta = round(((w - a) / 2.0) + (h * t) - (x * s));
     r = new_kern(delta);
     mem[r - mem_min].hh.U2.b1 = 2;
     mem[cur_list.tail_field - mem_min].hh.rh = r;
