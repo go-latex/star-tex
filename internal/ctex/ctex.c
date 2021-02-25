@@ -19433,12 +19433,8 @@ void process(ctex_t *ctx, const char *filename, const char *result,
   ctx->dvi_mgr.dvi_file = fopen(result, "w");
 
   const char *args[5] = {
-      R"(\nonstopmode)", // omits all stops (\batchmode also omits terminal
-                         // output)
-      R"(\input plain)",
-      R"(\input)",
-      filename,
-      R"(\end)",
+      // omits all stops (\batchmode also omits terminal output)
+      "\\nonstopmode", "\\input plain", "\\input", filename, "\\end",
   };
   typeset(ctx, 5, args);
 }
