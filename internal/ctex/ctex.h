@@ -260,10 +260,8 @@ typedef struct {
 
   jmp_buf _JL9998;
   jmp_buf _JL9999;
-  FILE *output_stream; // displays the logging messages
-  char *input_stream_buf;
-  size_t input_stream_len;
-  FILE *input_stream; // stores the command line args
+  FILE *istream; // tex engine stdin
+  FILE *ostream; // tex engine stdout
   //
   // inexplicably, p2c forgets these
   int tfm_file_mode;
@@ -610,11 +608,8 @@ bool_t load_fmt_file(ctex_t *ctx);
 void close_files_and_terminate(ctex_t *ctx);
 void final_cleanup(ctex_t *ctx);
 void init_prim(ctex_t *ctx);
-void getopt(ctex_t *ctx, int argc, const char **args);
-void typeset(ctex_t *ctx, int argc, const char **args);
-void process(ctex_t *ctx, const char *tex_fname, const char *dvi_ofname,
-             const char *serach_dir, const char *work_dir,
-             const char *err_oname);
+void typeset(ctex_t *ctx, const char *oname, const char *istream,
+             const char *ostream);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -20,9 +20,8 @@ void ctex_init_ctx(ctex_t *ctx) {
   ctx->term_out = NULL;
   ctx->term_in = NULL;
 
-  ctx->input_stream_buf = NULL;
-  ctx->input_stream_len = 0;
-  ctx->input_stream = NULL;
+  ctx->istream = NULL;
+  ctx->ostream = NULL;
 
   ctex_dvi_init(&ctx->dvi_mgr);
 }
@@ -888,7 +887,7 @@ bool_t input_ln(ctex_t *ctx, FILE *f, bool_t bypass_eoln) {
 
 bool_t init_terminal(ctex_t *ctx) {
   bool_t result;
-  ctx->term_in = ctx->input_stream;
+  ctx->term_in = ctx->istream;
   if (!ctx->term_in)
     io_error(errno, "TTY:");
   while (true) {
@@ -19299,21 +19298,19 @@ void init_prim(ctex_t *ctx) {
   ctx->no_new_control_sequence = true;
 }
 
-void getopt(ctex_t *ctx, int argc, const char **args) {
-  for (int i = 0; i < argc; i++) {
-    // ' ' must come first, the first character is always skipped…
-    fprintf(ctx->input_stream, " %s", args[i]);
-  }
-}
+void typeset(ctex_t *ctx, const char *oname, const char *istream,
+             const char *ostream) {
+  ctx->istream = fopen(istream, "r"); // will be closed as term_in
+  ctx->ostream = fopen(ostream, "w"); // will be closed as term_out
 
-void typeset(ctex_t *ctx, int argc, const char **args) {
-  getopt(ctx, argc, args);
+  ctx->dvi_mgr.dvi_file = fopen(oname, "w");
+
   if (setjmp(ctx->_JL9998))
     goto _L9998;
   if (setjmp(ctx->_JL9999))
     goto _L9999;
   ctx->history = 3;
-  ctx->term_out = ctx->output_stream;
+  ctx->term_out = ctx->ostream;
   if (!ctx->term_out)
     io_error(errno, "TTY:");
   if (ctx->ready_already == 314159)
@@ -19419,22 +19416,4 @@ _L9999:
   if (ctx->fmt_file)
     fclose(ctx->fmt_file);
   return;
-}
-
-void process(ctex_t *ctx, const char *filename, const char *result,
-             const char *search_dir, const char *working_dir,
-             const char *output) {
-
-  ctx->input_stream =
-      open_memstream(&ctx->input_stream_buf,
-                     &ctx->input_stream_len); // will be closed as term_in
-  ctx->output_stream = fopen(output, "w");    // will be closed as term_out
-
-  ctx->dvi_mgr.dvi_file = fopen(result, "w");
-
-  const char *args[5] = {
-      // omits all stops (\batchmode also omits terminal output)
-      "\\nonstopmode", "\\input plain", "\\input", filename, "\\end",
-  };
-  typeset(ctx, 5, args);
 }

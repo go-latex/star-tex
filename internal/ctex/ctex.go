@@ -65,33 +65,54 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) error {
 	}
 	defer os.RemoveAll(tmp)
 
-	in, err := os.Create(filepath.Join(tmp, "input.tex"))
+	tex, err := os.Create(filepath.Join(tmp, "input.tex"))
 	if err != nil {
 		return fmt.Errorf("could not create input TeX document: %w", err)
 	}
-	defer in.Close()
+	defer tex.Close()
 
-	_, err = io.Copy(in, f)
+	_, err = io.Copy(tex, f)
 	if err != nil {
 		return fmt.Errorf("could not fill input TeX document: %w", err)
 	}
 
-	c_name := C.CString(in.Name())
-	defer C.free(unsafe.Pointer(c_name))
+	err = tex.Sync()
+	if err != nil {
+		return fmt.Errorf("could not save input TeX document: %w", err)
+	}
+
+	cmd, err := os.Create(filepath.Join(tmp, "cmd.tex"))
+	if err != nil {
+		return fmt.Errorf("could not create input TeX document: %w", err)
+	}
+	defer cmd.Close()
+
+	for _, arg := range []string{
+		`\nonstopmode`,
+		`\input plain`,
+		`\input`,
+		tex.Name(),
+		`\end`,
+	} {
+		// ' ' must come first, the first character is always skipped…
+		fmt.Fprintf(cmd, " %s", arg)
+	}
+
+	err = cmd.Close()
+	if err != nil {
+		return fmt.Errorf("could not save input TeX commands: %w", err)
+	}
+
+	c_stdin := C.CString(cmd.Name())
+	defer C.free(unsafe.Pointer(c_stdin))
 
 	oname := filepath.Join(tmp, "out.dvi")
 	c_dvi := C.CString(oname)
 	defer C.free(unsafe.Pointer(c_dvi))
 
-	c_search := C.CString(ctx.search)
-	defer C.free(unsafe.Pointer(c_search))
-
-	c_work := C.CString(ctx.work)
-	defer C.free(unsafe.Pointer(c_work))
-
 	ename := filepath.Join(tmp, "err.log")
-	c_cerr := C.CString(ename)
-	defer C.free(unsafe.Pointer(c_cerr))
+	c_stdout := C.CString(ename)
+	defer C.free(unsafe.Pointer(c_stdout))
 
 	defer func() {
 		if err == nil {
@@ -119,9 +140,8 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) error {
 
 	o := C.ctex_context_typeset(
 		ctx.ctx,
-		c_name, c_dvi,
-		c_search, c_work,
-		c_cerr,
+		c_dvi,
+		c_stdin, c_stdout,
 	)
 
 	if o != 0 {

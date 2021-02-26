@@ -11,9 +11,8 @@ void ctex_del_context(ctex_t **ctx) {
   *ctx = NULL;
 }
 
-int ctex_context_typeset(ctex_t *ctx, const char *tex_fname,
-                         const char *dvi_oname, const char *search_dir,
-                         const char *working_dir, const char *err_oname) {
-  process(ctx, tex_fname, dvi_oname, search_dir, working_dir, err_oname);
+int ctex_context_typeset(ctex_t *ctx, const char *oname, const char *istream,
+                         const char *ostream) {
+  typeset(ctx, oname, istream, ostream);
   return 0;
 }
