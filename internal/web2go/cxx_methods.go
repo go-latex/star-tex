@@ -334,6 +334,5 @@ func init() {
 		"final_cleanup",
 		"init_prim",
 		"typeset",
-		"getopt",
 	}
 }
