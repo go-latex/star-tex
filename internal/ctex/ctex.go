@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package ctex provides CGo bindings to a C/C++ implementation of TeX.
+// Package ctex provides CGo bindings to a C implementation of TeX.
 package ctex // import "git.sr.ht/~sbinet/star-tex/internal/ctex"
 
 // #include "ctex-api.h"
