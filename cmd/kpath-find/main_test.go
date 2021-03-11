@@ -62,17 +62,16 @@ file2.tex
 			err:    fmt.Errorf(`kpath: too many hits for file "file2.tex" (n=2)`),
 		},
 		{
-			name:   "file1.tex",
-			dbname: dir,
+			name:   "err-new-from-db",
+			dbname: "/dev/full",
 			err: fmt.Errorf(
-				`could not create kpath context: `+
-					`kpath: could not parse db file: `+
-					`could not scan db file: read %s: is a directory`,
-				dir,
+				`could not create kpath context: ` +
+					`kpath: could not parse db file: ` +
+					`could not scan db file: bufio.Scanner: token too long`,
 			),
 		},
 		{
-			name:   "file1.tex",
+			name:   "err-no-db-file",
 			dbname: filepath.Join(dir, "not-there"),
 			err: fmt.Errorf(
 				`could not open texmf db %[1]q: `+
