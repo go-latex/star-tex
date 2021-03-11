@@ -11,7 +11,7 @@ package kpath // import "git.sr.ht/~sbinet/star-tex/kpath"
 import (
 	"fmt"
 	"io"
-	"path/filepath"
+	stdpath "path"
 	"strings"
 )
 
@@ -53,7 +53,7 @@ func (ctx *Context) init() {
 func NewFromDB(r io.Reader) (Context, error) {
 	dir := "/"
 	if f, ok := r.(interface{ Name() string }); ok {
-		dir = filepath.Dir(f.Name())
+		dir = stdpath.Dir(f.Name())
 	}
 	ctx, err := parseDB(dir, r)
 	if err != nil {
@@ -91,8 +91,12 @@ func (ctx Context) FindAll(name string) ([]string, error) {
 	// TODO(sbinet): handle multi-root TEXMFs
 	// FIXME(sbinet): normalize all paths to use UNIX path separator ?
 
-	subdir := strings.Contains(name, string(filepath.Separator))
-	ext := filepath.Ext(name)
+	orig := name
+	name = strings.Replace(name, "\\", "/", -1)
+	var (
+		subdir = strings.Contains(name, "/")
+		ext    = stdpath.Ext(name)
+	)
 	switch ext {
 	case "":
 		// try some extensions.
@@ -125,7 +129,7 @@ func (ctx Context) FindAll(name string) ([]string, error) {
 		}
 	}
 
-	return nil, fmt.Errorf("kpath: could not find file %q", name)
+	return nil, fmt.Errorf("kpath: could not find file %q", orig)
 }
 
 func (s Context) lookup(name string, subdir bool) ([]string, bool) {

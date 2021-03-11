@@ -7,8 +7,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+	stdpath "path"
 	"reflect"
+	"runtime"
 	"testing"
 )
 
@@ -19,7 +20,7 @@ func TestProcess(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	dbname := filepath.Join(dir, "ls-R")
+	dbname := stdpath.Join(dir, "ls-R")
 	err = os.WriteFile(dbname, []byte(`%%
 ./:
 ./dir1:
@@ -35,6 +36,11 @@ file2.tex
 		t.Fatalf("could not create texmf db: %+v", err)
 	}
 
+	errNotThere := "no such file or directory"
+	if runtime.GOOS == "windows" {
+		errNotThere = "File not found."
+	}
+
 	for _, tc := range []struct {
 		name   string
 		dbname string
@@ -45,15 +51,15 @@ file2.tex
 		{
 			name:   "file1.tex",
 			dbname: dbname,
-			want:   []string{filepath.Join(dir, "/dir1/file1.tex")},
+			want:   []string{stdpath.Join(dir, "/dir1/file1.tex")},
 		},
 		{
 			name:   "file2.tex",
 			dbname: dbname,
 			all:    true,
 			want: []string{
-				filepath.Join(dir, "/dir2/file2.tex"),
-				filepath.Join(dir, "/dir3/file2.tex"),
+				stdpath.Join(dir, "/dir2/file2.tex"),
+				stdpath.Join(dir, "/dir3/file2.tex"),
 			},
 		},
 		{
@@ -72,11 +78,12 @@ file2.tex
 		},
 		{
 			name:   "err-no-db-file",
-			dbname: filepath.Join(dir, "not-there"),
+			dbname: stdpath.Join(dir, "not-there"),
 			err: fmt.Errorf(
 				`could not open texmf db %[1]q: `+
-					`open %[1]s: no such file or directory`,
-				filepath.Join(dir, "not-there"),
+					`open %[1]s: %s`,
+				stdpath.Join(dir, "not-there"),
+				errNotThere,
 			),
 		},
 	} {

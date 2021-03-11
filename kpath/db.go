@@ -8,7 +8,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
-	"path/filepath"
+	stdpath "path"
 	"strings"
 )
 
@@ -27,9 +27,9 @@ func parseDB(root string, r io.Reader) (Context, error) {
 
 		switch {
 		case isDirDB(txt):
-			dir = filepath.Join(root, strings.TrimRight(txt, ":"))
+			dir = stdpath.Join(root, strings.TrimRight(txt, ":"))
 		default:
-			db[txt] = append(db[txt], filepath.Join(dir, txt))
+			db[txt] = append(db[txt], stdpath.Join(dir, txt))
 		}
 	}
 
