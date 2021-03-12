@@ -11,8 +11,7 @@ import (
 	"log"
 	"os"
 
-	tex "git.sr.ht/~sbinet/star-tex"
-	"git.sr.ht/~sbinet/star-tex/internal/ctex"
+	"git.sr.ht/~sbinet/star-tex/internal/xtex"
 )
 
 func main() {
@@ -59,10 +58,17 @@ func xmain(args []string) {
 }
 
 func process(o io.Writer, f io.Reader, stderr io.Writer) error {
-	ctx := ctex.New(stderr)
-	defer ctx.Free()
+	stdout, ok := stderr.(io.WriteCloser)
+	if !ok {
+		stdout = &nopWriteCloser{stderr}
+	}
 
-	var _ tex.Processor = &ctx
-
+	ctx := xtex.New(stdout, os.Stdin)
 	return ctx.Process(o, f)
 }
+
+type nopWriteCloser struct {
+	io.Writer
+}
+
+func (*nopWriteCloser) Close() error { return nil }

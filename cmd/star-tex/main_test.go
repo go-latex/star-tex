@@ -11,9 +11,19 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
+
+	"git.sr.ht/~sbinet/star-tex/internal/xtex"
 )
 
 func TestProcess(t *testing.T) {
+	xtex.TimeNow = func() time.Time {
+		return time.Date(1776, time.July, 4, 12, 0, 0, 0, time.UTC)
+	}
+	defer func() {
+		xtex.TimeNow = time.Now
+	}()
+
 	for _, name := range []string{
 		"../../testdata/hello.tex",
 	} {
