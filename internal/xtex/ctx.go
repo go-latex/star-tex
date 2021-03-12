@@ -20,7 +20,7 @@ func New(stdout io.WriteCloser, stdin io.ReadCloser) *Context {
 	}
 }
 
-func (ctx *Context) Process(dvi io.Writer, f io.Reader) (err error) {
+func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader) (err error) {
 	tmp, err := ioutil.TempDir("", "go-xtex-")
 	if err != nil {
 		return fmt.Errorf("could not create tmp dir: %w", err)
@@ -63,7 +63,7 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) (err error) {
 		erstat:        0,
 		componentSize: 1,
 		name:          "out.dvi",
-		out:           &nopWriteCloser{dvi},
+		out:           dvi,
 	}
 
 	stdin := ctx.stdin
@@ -82,9 +82,3 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) (err error) {
 
 	return nil
 }
-
-type nopWriteCloser struct {
-	io.Writer
-}
-
-func (*nopWriteCloser) Close() error { return nil }

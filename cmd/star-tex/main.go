@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	"git.sr.ht/~sbinet/star-tex/internal/xtex"
+	tex "git.sr.ht/~sbinet/star-tex"
 )
 
 func main() {
@@ -58,17 +58,6 @@ func xmain(args []string) {
 }
 
 func process(o io.Writer, f io.Reader, stderr io.Writer) error {
-	stdout, ok := stderr.(io.WriteCloser)
-	if !ok {
-		stdout = &nopWriteCloser{stderr}
-	}
-
-	ctx := xtex.New(stdout, os.Stdin)
+	ctx := tex.NewEngine(stderr, os.Stdin)
 	return ctx.Process(o, f)
 }
-
-type nopWriteCloser struct {
-	io.Writer
-}
-
-func (*nopWriteCloser) Close() error { return nil }
