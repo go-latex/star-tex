@@ -62,7 +62,7 @@ func (r readCloser) Close() error { return nil }
 // Reset (F) initiates inspection (reading) of F by placing the file at its
 // beginning. If F is not empty, the value of the first component of F is
 // assigned to F and eof (F) becomes false.
-func reset(t *Context, f *pasFile, componentSize int, name, mode string) {
+func reset(ctx *Context, f *pasFile, componentSize int, name, mode string) {
 	name = strings.TrimRight(name, " ")
 	if !strings.Contains(mode, modeNoIOPanic) {
 		panic(fmt.Errorf("unsupported file mode: %q (%q)", mode, name))
@@ -82,12 +82,17 @@ func reset(t *Context, f *pasFile, componentSize int, name, mode string) {
 			return
 		}
 
+		fname := os.Stdin.Name()
+		if f, ok := ctx.stdin.(interface{ Name() string }); ok {
+			fname = f.Name()
+		}
+
 		f.ioFile = &ioFile{
 			eof:           false,
 			erstat:        0,
 			componentSize: componentSize,
-			name:          os.Stdin.Name(),
-			in:            t.stdin,
+			name:          fname,
+			in:            ctx.stdin,
 		}
 		return
 	}
@@ -158,7 +163,7 @@ ok:
 // Rewrite (F) initiates generation (writing) of the file F. The current value
 // of F is replaced with the empty file. Eof(F) becomes true, and a new file
 // may be written.
-func rewrite(t *Context, f *pasFile, componentSize int, name, mode string) {
+func rewrite(ctx *Context, f *pasFile, componentSize int, name, mode string) {
 	name = strings.TrimRight(name, " ")
 	if !strings.Contains(mode, modeNoIOPanic) {
 		panic(fmt.Errorf("unsupported file mode: %q", mode))
@@ -183,7 +188,7 @@ func rewrite(t *Context, f *pasFile, componentSize int, name, mode string) {
 			erstat:        0,
 			componentSize: componentSize,
 			name:          os.Stdout.Name(),
-			out:           t.stdout,
+			out:           ctx.stdout,
 		}
 		return
 	}

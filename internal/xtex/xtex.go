@@ -75,7 +75,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 	"unsafe"
 )
 
@@ -7672,7 +7671,7 @@ func (tex *Context) startInput() {
 		tex.curExt = 791
 	}
 	tex.packFileName(tex.curName, tex.curArea, tex.curExt)
-	for true {
+	for {
 		tex.beginFileReading()
 		if tex.aOpenIn(&tex.inputFile[tex.curInput.indexField-1]) {
 			goto label30
@@ -19966,10 +19965,6 @@ func pasJumpOut() { panic(pasEndOfTeX) }
 func abs(n float32) float32       { return float32(math.Abs(float64(n))) }
 func chr(i int32) byte            { return byte(i) }
 func odd(i int32) bool            { return i&1 != 0 }
-func pasSysDay() int32            { return int32(time.Now().Day()) }
-func pasSysMonth() int32          { return int32(time.Now().Month()) }
-func pasSysTime() int32           { return int32(time.Now().Hour()*60 + time.Now().Minute()) }
-func pasSysYear() int32           { return int32(time.Now().Year()) }
 func read(args ...interface{})    { args[0].(*pasFile).read(args[1:], false) }
 func readLn(args ...interface{})  { args[0].(*pasFile).read(args[1:], true) }
 func write(args ...interface{})   { args[0].(*pasFile).write(args[1:], false) }
