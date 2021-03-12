@@ -27,6 +27,17 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) (err error) {
 	}
 	defer os.RemoveAll(tmp)
 
+	dir, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("could not retrieve current working directory: %w", err)
+	}
+	defer os.Chdir(dir)
+
+	err = os.Chdir(tmp)
+	if err != nil {
+		return fmt.Errorf("could not move to tmp dir: %w", err)
+	}
+
 	tex, err := os.Create(filepath.Join(tmp, "input.tex"))
 	if err != nil {
 		return fmt.Errorf("could not create input TeX document: %w", err)
@@ -43,10 +54,9 @@ func (ctx *Context) Process(dvi io.Writer, f io.Reader) (err error) {
 		return fmt.Errorf("could not save input TeX document: %w", err)
 	}
 
-	cmd := strings.NewReader(fmt.Sprintf(
-		` \nonstopmode \input plain \input %s \end`,
-		strings.Replace(tex.Name(), string(os.PathSeparator), "/", -1),
-	))
+	cmd := strings.NewReader(
+		` \nonstopmode \input plain \input input \end`,
+	)
 
 	ctx.dviFile.ioFile = &ioFile{
 		eof:           true,
