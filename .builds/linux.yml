@@ -3,6 +3,7 @@ image: debian/testing
 packages:
  - curl
  - unzip
+ - wine
 sources:
  - https://git.sr.ht/~sbinet/star-tex
 environment:
@@ -12,9 +13,13 @@ tasks:
  - install_go1_16: |
      mkdir -p /home/build/sdk
      curl -L https://golang.org/dl/go1.16.linux-amd64.tar.gz | tar -C /home/build/sdk -xzf -
- - test_project: |
+ - test_linux: |
      cd star-tex
      go test -race ./...
+ - test_windows: |
+     cd star-tex
+     GOOS=windows \
+        go test -exec=wine ./...
  - check_gofmt: |
      cd star-tex
      test -z "$(gofmt -s -l .)"
