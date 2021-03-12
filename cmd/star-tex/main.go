@@ -10,6 +10,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	tex "git.sr.ht/~sbinet/star-tex"
 )
@@ -35,7 +37,7 @@ func xmain(args []string) {
 	}
 	defer f.Close()
 
-	oname := "out.dvi"
+	oname := strings.Replace(filepath.Base(f.Name()), ".tex", ".dvi", 1)
 	if len(args) > 1 {
 		oname = args[1]
 	}
@@ -59,5 +61,16 @@ func xmain(args []string) {
 
 func process(o io.Writer, f io.Reader, stderr io.Writer) error {
 	ctx := tex.NewEngine(stderr, os.Stdin)
+	ctx.Jobname = jobNameFrom(o)
 	return ctx.Process(o, f)
+}
+
+func jobNameFrom(w io.Writer) (job string) {
+	o, ok := w.(interface{ Name() string })
+	if !ok {
+		return job
+	}
+	job = o.Name()
+	job = job[:len(job)-len(filepath.Ext(job))]
+	return job
 }

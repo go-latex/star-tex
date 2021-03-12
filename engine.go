@@ -10,26 +10,40 @@ import (
 	"git.sr.ht/~sbinet/star-tex/internal/xtex"
 )
 
+const (
+	defaultJobname = "output"
+)
+
 // Engine is a TeX engine.
 type Engine struct {
 	stdin  io.ReadCloser
 	stdout io.WriteCloser
+
+	// Jobname used for TeX output.
+	// Default is "output".
+	Jobname string
 }
 
 // NewEngine creates a new TeX engine connected to the provided
 // stdin and stdout file descriptors.
 func NewEngine(stdout io.Writer, stdin io.Reader) *Engine {
 	return &Engine{
-		stdout: writerCloser(stdout),
-		stdin:  io.NopCloser(stdin),
+		stdout:  writerCloser(stdout),
+		stdin:   io.NopCloser(stdin),
+		Jobname: defaultJobname,
 	}
 }
 
 // Process reads the provided TeX document and
 // compiles it to the provided writer.
 func (engine *Engine) Process(w io.Writer, r io.Reader) error {
+	jobname := engine.Jobname
+	if jobname == "" {
+		jobname = defaultJobname
+	}
+
 	ctx := xtex.New(engine.stdout, engine.stdin)
-	return ctx.Process(writerCloser(w), r)
+	return ctx.Process(writerCloser(w), r, jobname)
 }
 
 func writerCloser(w io.Writer) io.WriteCloser {

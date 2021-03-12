@@ -20,7 +20,7 @@ func New(stdout io.WriteCloser, stdin io.ReadCloser) *Context {
 	}
 }
 
-func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader) (err error) {
+func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader, jobname string) (err error) {
 	tmp, err := ioutil.TempDir("", "go-xtex-")
 	if err != nil {
 		return fmt.Errorf("could not create tmp dir: %w", err)
@@ -38,25 +38,25 @@ func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader) (err error) {
 		return fmt.Errorf("could not move to tmp dir: %w", err)
 	}
 
-	tex, err := os.Create(filepath.Join(tmp, "input.tex"))
+	tex, err := os.Create(filepath.Join(tmp, jobname+".tex"))
 	if err != nil {
 		return fmt.Errorf("could not create input TeX document: %w", err)
 	}
 	defer tex.Close()
+
+	fmt.Fprintf(tex, "\\nonstopmode\n\\input plain\n")
 
 	_, err = io.Copy(tex, f)
 	if err != nil {
 		return fmt.Errorf("could not fill input TeX document: %w", err)
 	}
 
+	fmt.Fprintf(tex, "\n\\end")
+
 	err = tex.Close()
 	if err != nil {
 		return fmt.Errorf("could not save input TeX document: %w", err)
 	}
-
-	cmd := strings.NewReader(
-		` \nonstopmode \input plain \input input \end`,
-	)
 
 	ctx.dviFile.ioFile = &ioFile{
 		eof:           true,
@@ -77,7 +77,7 @@ func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader) (err error) {
 		}
 	}()
 
-	ctx.stdin = io.NopCloser(cmd)
+	ctx.stdin = io.NopCloser(strings.NewReader(`\input ` + jobname))
 	ctx.main()
 
 	return nil
