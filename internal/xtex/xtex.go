@@ -1451,6 +1451,9 @@ func (tex *Context) bOpenIn(f *pasFile) (ret bool) {
 }
 
 func (tex *Context) bOpenOut(f *pasFile) (ret bool) {
+	if f.ioFile != nil {
+		return true
+	}
 	rewrite1(tex, f, string(tex.nameOfFile[:]), "/O")
 	ret = erstat(f) == 0
 	return ret
