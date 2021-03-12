@@ -1048,7 +1048,6 @@ func (tex *Context) print(s int32) {
 		j = uint16(int32(j) + 1)
 	}
 label10:
-	;
 }
 
 func (tex *Context) slowPrint(s int32) {
@@ -5192,7 +5191,6 @@ label20:
 		}
 	}
 label10:
-	;
 }
 
 func (tex *Context) firmUpTheLine() {
@@ -6922,7 +6920,6 @@ func (tex *Context) scanToks(macroDef, xpand bool) (ret uint16) {
 			goto label40
 		}
 	label30:
-		;
 	} else {
 		tex.scanLeftBrace()
 	}
@@ -7379,7 +7376,6 @@ label50:
 		tex.ifLimit = 2
 	}
 label10:
-	;
 }
 
 func (tex *Context) beginName() {
@@ -8573,7 +8569,6 @@ label40:
 		}
 	}
 label10:
-	;
 }
 
 func (tex *Context) pruneMovements(l int32) {
@@ -12867,7 +12862,6 @@ label50:
 	tex.mem[s].pHh().rh = q
 	tex.flushList(tex.initList)
 label10:
-	;
 }
 
 func (tex *Context) newTrieOp(d, n byte, v byte) (ret byte) {
@@ -13182,7 +13176,6 @@ func (tex *Context) newPatterns() {
 			}
 		}
 	label30:
-		;
 	} else {
 		if tex.interaction == 3 {
 		}
@@ -13875,7 +13868,6 @@ func (tex *Context) newHyphExceptions() {
 		}
 	}
 label10:
-	;
 }
 
 func (tex *Context) prunePageTop(p uint16) (ret uint16) {
@@ -14397,7 +14389,6 @@ func (tex *Context) fireUp(c uint16) {
 	tex.shipOut(tex.eqtb[3933-1].hh().rh)
 	tex.eqtb[3933-1].pHh().rh = 0
 label10:
-	;
 }
 
 func (tex *Context) buildPage() {
@@ -15843,7 +15834,6 @@ func (tex *Context) mathLimitSwitch() {
 	tex.helpLine[0] = 1131
 	tex.error1()
 label10:
-	;
 }
 
 func (tex *Context) scanDelimiter(p uint16, r bool) {
@@ -16532,7 +16522,6 @@ label40:
 		}
 	}
 label10:
-	;
 }
 
 func (tex *Context) alterAux() {
@@ -18647,7 +18636,6 @@ label120:
 	tex.curList.tailField = tex.tempPtr
 	goto label60
 label10:
-	;
 }
 
 func (tex *Context) giveErrHelp() {
