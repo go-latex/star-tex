@@ -6,7 +6,9 @@
 package main // import "git.sr.ht/~sbinet/star-tex/cmd/star-tex"
 
 import (
+	"errors"
 	"flag"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -16,24 +18,50 @@ import (
 	tex "git.sr.ht/~sbinet/star-tex"
 )
 
+var (
+	fset = flag.NewFlagSet("star-tex", flag.ContinueOnError)
+
+	usage = `Usage: star-tex [options] FILE.tex [FILE.dvi]
+
+ex:
+ $> star-tex ./testdata/hello.tex
+ $> star-tex ./testdata/hello.tex ./out.dvi
+
+options:
+`
+)
+
 func main() {
-	log.SetPrefix("star-tex: ")
-	log.SetFlags(0)
-
-	flag.Parse()
-
-	if flag.NArg() < 1 {
-		flag.Usage()
-		log.Fatalf("missing file arguments")
-	}
-
-	xmain(flag.Args())
+	os.Exit(xmain(os.Stdout, os.Stderr, os.Args[1:]))
 }
 
-func xmain(args []string) {
+func xmain(stdout, stderr io.Writer, args []string) int {
+	msg := log.New(stderr, "star-tex: ", 0)
+
+	fset.Usage = func() {
+		fmt.Fprintf(stderr, usage)
+		fset.PrintDefaults()
+	}
+
+	err := fset.Parse(args)
+	if err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return 0
+		}
+		msg.Printf("could not parse args %q: %+v", args, err)
+		return 1
+	}
+
+	if fset.NArg() < 1 {
+		msg.Printf("missing file argument")
+		fset.Usage()
+		return 1
+	}
+
 	f, err := os.Open(args[0])
 	if err != nil {
-		log.Fatalf("could not open input TeX file: %+v", err)
+		msg.Printf("could not open input TeX file: %+v", err)
+		return 1
 	}
 	defer f.Close()
 
@@ -44,19 +72,24 @@ func xmain(args []string) {
 
 	o, err := os.Create(oname)
 	if err != nil {
-		log.Fatalf("could not open output DVI file: %+v", err)
+		msg.Printf("could not open output DVI file: %+v", err)
+		return 1
 	}
 	defer o.Close()
 
 	err = process(o, f, os.Stderr)
 	if err != nil {
-		log.Fatalf("could not run star-tex: %+v", err)
+		msg.Printf("could not run star-tex: %+v", err)
+		return 1
 	}
 
 	err = o.Close()
 	if err != nil {
-		log.Fatalf("could not close output DVI file: %+v", err)
+		msg.Printf("could not close output DVI file: %+v", err)
+		return 1
 	}
+
+	return 0
 }
 
 func process(o io.Writer, f io.Reader, stderr io.Writer) error {
