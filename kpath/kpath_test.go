@@ -7,6 +7,9 @@ package kpath
 import (
 	"fmt"
 	"io"
+	"os"
+	stdpath "path"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -226,4 +229,125 @@ TEXPICTS.XDvi  = .;$TEXMF/%q{dvips,tex}//
 	}
 
 	_ = ctx // FIXME(sbinet): test Find/FindAll
+}
+
+func TestFindFromFS(t *testing.T) {
+	ctx := New()
+	for _, tc := range []struct {
+		name string
+		want string
+		err  error
+	}{
+		{
+			name: "plain.tex",
+			want: "tex/plain/base/plain.tex",
+		},
+		{
+			name: "hyphen.tex",
+			want: "tex/generic/hyphen/hyphen.tex",
+		},
+		{
+			name: "cmr10.tfm",
+			want: "fonts/tfm/public/cm/cmr10.tfm",
+		},
+		{
+			name: "not-there.tex",
+			err:  fmt.Errorf(`kpath: could not find file "not-there.tex"`),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := ctx.Find(tc.name)
+			switch {
+			case err == nil && tc.err == nil:
+				// ok.
+			case err != nil && tc.err != nil:
+				if got, want := err.Error(), tc.err.Error(); got != want {
+					t.Fatalf("invalid error:\ngot= %s\nwant=%s\n", got, want)
+				}
+				return
+			case err != nil && tc.err == nil:
+				t.Fatalf("could not run kpath-find: %+v", err)
+			case err == nil && tc.err != nil:
+				t.Fatalf("missing error. expected: %+v", tc.err)
+			}
+
+			if got != tc.want {
+				t.Fatalf("invalid file named:\ngot= %s\nwant=%s", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestNewFromFS(t *testing.T) {
+	dir, err := os.MkdirTemp("", "star-tex-kpath-")
+	if err != nil {
+		t.Fatalf("could not create tmp dir: %+v", err)
+	}
+	defer os.RemoveAll(dir)
+
+	dbname := stdpath.Join(dir, "ls-R")
+	err = os.WriteFile(dbname, []byte(`%%
+./:
+./dir1:
+file1.tex
+
+./dir2:
+file2.tex
+`), 0644)
+	if err != nil {
+		t.Fatalf("could not create texmf db: %+v", err)
+	}
+	db := os.DirFS(dir)
+
+	err = os.MkdirAll(filepath.Join(dir, "dir1"), 0755)
+	if err != nil {
+		t.Fatalf("could not create dir1: %+v", err)
+	}
+
+	err = os.WriteFile(filepath.Join(dir, "dir1", "file1.tex"), []byte(""), 0644)
+	if err != nil {
+		t.Fatalf("could not create dir1/file1.tex: %+v", err)
+	}
+
+	ctx, err := NewFromFS(db)
+	if err != nil {
+		t.Fatalf("could not create kpath context: %+v", err)
+	}
+
+	for _, tc := range []struct {
+		name string
+		want string
+		err  error
+	}{
+		{
+			name: "file1.tex",
+			want: stdpath.Join(dir, "dir1", "file1.tex"),
+		},
+		{
+			// test NewFromFS only considered ls-R informations.
+			name: "file2.tex",
+			want: stdpath.Join(dir, "dir2", "file2.tex"),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := ctx.Find(tc.name)
+			switch {
+			case err == nil && tc.err == nil:
+				// ok.
+			case err != nil && tc.err != nil:
+				if got, want := err.Error(), tc.err.Error(); got != want {
+					t.Fatalf("invalid error:\ngot= %s\nwant=%s\n", got, want)
+				}
+				return
+			case err != nil && tc.err == nil:
+				t.Fatalf("could not run kpath-find: %+v", err)
+			case err == nil && tc.err != nil:
+				t.Fatalf("missing error. expected: %+v", tc.err)
+			}
+
+			if got != tc.want {
+				t.Fatalf("invalid file named:\ngot= %s\nwant=%s", got, tc.want)
+			}
+		})
+	}
 }

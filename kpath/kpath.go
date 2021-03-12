@@ -11,9 +11,27 @@ package kpath // import "star-tex.org/x/tex/kpath"
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	stdpath "path"
 	"strings"
+	"sync"
+
+	"star-tex.org/x/tex/internal/tds"
 )
+
+var (
+	once   sync.Once
+	tdsCtx Context
+)
+
+// New returns a minimal kpath context initialized with the content of
+// a minimal TeX Directory Structure.
+func New() Context {
+	once.Do(func() {
+		tdsCtx, _ = NewFromFS(tds.FS)
+	})
+	return tdsCtx
+}
 
 // Context holds state to efficiently search for files in a TDS
 // (TeX Directory Structure), as described in:
@@ -32,12 +50,6 @@ func (ctx *Context) init() {
 	}
 }
 
-// func New(root string) Context {
-// 	ctx := Context{}
-// 	ctx.init()
-// 	return ctx
-// }
-//
 // // NewFromDB creates a kpath search from a TeX .cnf configuration file.
 // func NewFromConfig(cfg io.Reader) (Context, error) {
 // 	ctx, err := parseConfig(cfg)
@@ -61,6 +73,41 @@ func NewFromDB(r io.Reader) (Context, error) {
 	}
 
 	ctx.init()
+	return ctx, nil
+}
+
+// NewFromFS creates a kpath search context from the provided filesystem.
+//
+// NewFromFS checks first whether an ls-R database exists at the root of the
+// provided filesystem, and otherwise walks the whole fs.
+func NewFromFS(fsys fs.FS) (Context, error) {
+	var ctx Context
+	ctx.init()
+
+	if _, err := fs.Stat(fsys, "ls-R"); err == nil {
+		db, err := fsys.Open("ls-R")
+		if err != nil {
+			return ctx, fmt.Errorf("kpath: could not open db file: %w", err)
+		}
+		defer db.Close()
+		return NewFromDB(db)
+	}
+
+	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		fname := stdpath.Base(path)
+		ctx.db[fname] = append(ctx.db[fname], path)
+		return nil
+	})
+	if err != nil {
+		return ctx, fmt.Errorf("kpath: could not walk fs: %w", err)
+	}
+
 	return ctx, nil
 }
 
@@ -89,7 +136,6 @@ func (ctx Context) Find(name string) (string, error) {
 func (ctx Context) FindAll(name string) ([]string, error) {
 	// TODO(sbinet): handle (all) standard exts.
 	// TODO(sbinet): handle multi-root TEXMFs
-	// FIXME(sbinet): normalize all paths to use UNIX path separator ?
 
 	orig := name
 	name = strings.Replace(name, "\\", "/", -1)
