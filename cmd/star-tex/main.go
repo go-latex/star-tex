@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Command star-tex compiles TeX documents.
-package main // import "git.sr.ht/~sbinet/star-tex/cmd/star-tex"
+package main // import "star-tex.org/x/tex/cmd/star-tex"
 
 import (
 	"errors"
@@ -15,7 +15,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	tex "git.sr.ht/~sbinet/star-tex"
+	"star-tex.org/x/tex"
 )
 
 var (

@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"git.sr.ht/~sbinet/star-tex/internal/xtex"
+	"star-tex.org/x/tex/internal/xtex"
 )
 
 func TestProcess(t *testing.T) {

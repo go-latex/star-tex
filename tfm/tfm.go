@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package tfm implements a decoder for TFM (TeX Font Metrics) files.
-package tfm // import "git.sr.ht/~sbinet/star-tex/tfm"
+package tfm // import "star-tex.org/x/tex/tfm"
 
 import (
 	"fmt"

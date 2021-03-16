@@ -6,7 +6,7 @@
 //
 // It loosely mimicks Kpathsea, as described in:
 //  - https://texdoc.org/serve/kpathsea/0
-package kpath // import "git.sr.ht/~sbinet/star-tex/kpath"
+package kpath // import "star-tex.org/x/tex/kpath"
 
 import (
 	"fmt"

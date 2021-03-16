@@ -1,3 +1,3 @@
-module git.sr.ht/~sbinet/star-tex
+module star-tex.org/x/tex
 
 go 1.16

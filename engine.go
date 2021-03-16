@@ -7,7 +7,7 @@ package tex
 import (
 	"io"
 
-	"git.sr.ht/~sbinet/star-tex/internal/xtex"
+	"star-tex.org/x/tex/internal/xtex"
 )
 
 const (

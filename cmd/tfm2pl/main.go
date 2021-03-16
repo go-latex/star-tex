@@ -9,7 +9,7 @@
 // ex:
 //  $> tfm2pl testdata/simple.tfm
 //  $> tfm2pl testdata/simple.tfm out.pl
-package main // import "git.sr.ht/~sbinet/star-tex/cmd/tfm2pl"
+package main // import "star-tex.org/x/tex/cmd/tfm2pl"
 
 import (
 	"flag"
@@ -18,7 +18,7 @@ import (
 	"log"
 	"os"
 
-	"git.sr.ht/~sbinet/star-tex/tfm"
+	"star-tex.org/x/tex/tfm"
 )
 
 func init() {

@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.sr.ht/~sbinet/star-tex/kpath"
+	"star-tex.org/x/tex/kpath"
 )
 
 func main() {
