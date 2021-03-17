@@ -243,7 +243,7 @@ func (f *ioFile) close() {
 			f.erstat = 1
 		}
 		f.eof = false
-		f.in = nil
+		f.out = nil
 	}
 }
 
