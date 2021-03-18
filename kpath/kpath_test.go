@@ -10,6 +10,7 @@ import (
 	"os"
 	stdpath "path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -274,11 +275,22 @@ func TestFindFromFS(t *testing.T) {
 			if got != tc.want {
 				t.Fatalf("invalid file named:\ngot= %s\nwant=%s", got, tc.want)
 			}
+
+			f, err := ctx.Open(got)
+			if err != nil {
+				t.Fatalf("could not open file %q: %+v", got, err)
+			}
+			defer f.Close()
 		})
 	}
 }
 
 func TestNewFromFS(t *testing.T) {
+	errNotThere := "no such file or directory"
+	if runtime.GOOS == "windows" {
+		errNotThere = "Path not found."
+	}
+
 	dir, err := os.MkdirTemp("", "star-tex-kpath-")
 	if err != nil {
 		t.Fatalf("could not create tmp dir: %+v", err)
@@ -318,6 +330,7 @@ file2.tex
 		name string
 		want string
 		err  error
+		open error
 	}{
 		{
 			name: "file1.tex",
@@ -327,6 +340,10 @@ file2.tex
 			// test NewFromFS only considered ls-R informations.
 			name: "file2.tex",
 			want: stdpath.Join(dir, "dir2", "file2.tex"),
+			open: fmt.Errorf("open %s: %s",
+				stdpath.Join(dir, "dir2", "file2.tex"),
+				errNotThere,
+			),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -348,6 +365,22 @@ file2.tex
 			if got != tc.want {
 				t.Fatalf("invalid file named:\ngot= %s\nwant=%s", got, tc.want)
 			}
+
+			f, err := ctx.Open(got)
+			switch {
+			case err == nil && tc.open == nil:
+				// ok.
+			case err != nil && tc.open != nil:
+				if got, want := err.Error(), tc.open.Error(); got != want {
+					t.Fatalf("invalid Open error:\ngot= %s\nwant=%s\n", got, want)
+				}
+				return
+			case err != nil && tc.open == nil:
+				t.Fatalf("could not run kpath-open: %+v", err)
+			case err == nil && tc.open != nil:
+				t.Fatalf("missing error. expected: %+v", tc.open)
+			}
+			defer f.Close()
 		})
 	}
 }

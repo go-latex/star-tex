@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"os"
 	stdpath "path"
 	"strings"
 	"sync"
@@ -39,15 +40,17 @@ func New() Context {
 type Context struct {
 	exts strset              // known common suffices
 	db   map[string][]string // db of filename->dirs
+	fs   fs.FS
 }
 
-func (ctx *Context) init() {
+func (ctx *Context) init(root fs.FS) {
 	if ctx.exts.db == nil {
 		ctx.exts = strsets["tex"]
 	}
 	if ctx.db == nil {
 		ctx.db = make(map[string][]string)
 	}
+	ctx.fs = root
 }
 
 // // NewFromDB creates a kpath search from a TeX .cnf configuration file.
@@ -63,6 +66,10 @@ func (ctx *Context) init() {
 
 // NewFromDB creates a kpath search from a TeX ls-R db file.
 func NewFromDB(r io.Reader) (Context, error) {
+	return newFromDB(os.DirFS("/"), r)
+}
+
+func newFromDB(root fs.FS, r io.Reader) (Context, error) {
 	dir := "/"
 	if f, ok := r.(interface{ Name() string }); ok {
 		dir = stdpath.Dir(f.Name())
@@ -72,7 +79,7 @@ func NewFromDB(r io.Reader) (Context, error) {
 		return Context{}, fmt.Errorf("kpath: could not parse db file: %w", err)
 	}
 
-	ctx.init()
+	ctx.init(root)
 	return ctx, nil
 }
 
@@ -82,7 +89,7 @@ func NewFromDB(r io.Reader) (Context, error) {
 // provided filesystem, and otherwise walks the whole fs.
 func NewFromFS(fsys fs.FS) (Context, error) {
 	var ctx Context
-	ctx.init()
+	ctx.init(fsys)
 
 	if _, err := fs.Stat(fsys, "ls-R"); err == nil {
 		db, err := fsys.Open("ls-R")
@@ -90,7 +97,7 @@ func NewFromFS(fsys fs.FS) (Context, error) {
 			return ctx, fmt.Errorf("kpath: could not open db file: %w", err)
 		}
 		defer db.Close()
-		return NewFromDB(db)
+		return newFromDB(fsys, db)
 	}
 
 	err := fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
@@ -109,6 +116,11 @@ func NewFromFS(fsys fs.FS) (Context, error) {
 	}
 
 	return ctx, nil
+}
+
+// Open opens the named file for reading.
+func (ctx Context) Open(name string) (fs.File, error) {
+	return ctx.fs.Open(name)
 }
 
 // Find returns the full path to the named file if it could be found within the
