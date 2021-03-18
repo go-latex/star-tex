@@ -8,10 +8,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
-	"path/filepath"
 
+	"star-tex.org/x/tex/internal/tds"
 	"star-tex.org/x/tex/kpath"
 )
 
@@ -40,17 +41,21 @@ func main() {
 				break loop
 			}
 		}
-		if *texmf == "" {
-			*texmf = "/usr/share/texmf-dist"
-		}
 	}
 
-	dbname := filepath.Join(*texmf, "ls-R")
-	xmain(flag.Arg(0), dbname, *all)
+	dir := *texmf
+	xmain(flag.Arg(0), dir, *all)
 }
 
-func xmain(name, dbname string, all bool) {
-	fnames, err := process(name, dbname, all)
+func xmain(name, dbdir string, all bool) {
+	var db fs.FS
+	switch dbdir {
+	case "":
+		db = tds.FS
+	default:
+		db = os.DirFS(dbdir)
+	}
+	fnames, err := process(name, db, all)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,14 +64,13 @@ func xmain(name, dbname string, all bool) {
 	}
 }
 
-func process(name, dbname string, all bool) ([]string, error) {
-	db, err := os.Open(dbname)
-	if err != nil {
-		return nil, fmt.Errorf("could not open texmf db %q: %w", dbname, err)
-	}
-	defer db.Close()
+func process(name string, fsys fs.FS, all bool) ([]string, error) {
+	var (
+		ctx kpath.Context
+		err error
+	)
 
-	ctx, err := kpath.NewFromDB(db)
+	ctx, err = kpath.NewFromFS(fsys)
 	if err != nil {
 		return nil, fmt.Errorf("could not create kpath context: %w", err)
 	}
