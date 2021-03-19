@@ -16,24 +16,27 @@ import (
 type Int12_20 uint32
 
 func (x Int12_20) Float64() float64 {
-	const (
-		signMask = 0b1000_0000_0000_0000_0000_0000_0000_0000
-		intMask  = 0b0111_1111_1111_0000_0000_0000_0000_0000
-		fracMask = 0b0000_0000_0000_1111_1111_1111_1111_1111
-	)
+	v := int32(x)
+	return float64(v) / (1 << 20)
 
-	var (
-		num  = uint32(x)
-		sign = 1.0
-	)
-	if num&signMask == signMask {
-		num = ^num + 1
-		sign = -1
-	}
-
-	ip := float64((num & intMask) >> 20)
-	fp := float64(num&fracMask) / float64(1<<20)
-	return sign * (ip + fp)
+	//	const (
+	//		signMask = 0b1000_0000_0000_0000_0000_0000_0000_0000
+	//		intMask  = 0b0111_1111_1111_0000_0000_0000_0000_0000
+	//		fracMask = 0b0000_0000_0000_1111_1111_1111_1111_1111
+	//	)
+	//
+	//	var (
+	//		num  = uint32(x)
+	//		sign = 1.0
+	//	)
+	//	if num&signMask == signMask {
+	//		num = ^num + 1
+	//		sign = -1
+	//	}
+	//
+	//	ip := float64((num & intMask) >> 20)
+	//	fp := float64(num&fracMask) / float64(1<<20)
+	//	return sign * (ip + fp)
 }
 
 // String returns a human-readable representation of a 12.20 fixed-point number.
