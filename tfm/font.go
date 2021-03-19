@@ -93,6 +93,19 @@ func (fnt *Font) glyph(x GlyphIndex) glyphInfo {
 	return fnt.body.glyphs[x]
 }
 
+// GlyphAdvance returns the advance width of r's glyph.
+//
+// It returns !ok if the face does not contain a glyph for r.
+func (fnt *Font) GlyphAdvance(x rune) (Int12_20, bool) {
+	i := int(x)
+	if !(int(fnt.hdr.bc) <= i && i <= int(fnt.hdr.ec)) {
+		return 0, false
+	}
+	i -= int(fnt.hdr.bc)
+	g := fnt.body.glyphs[i]
+	return fnt.body.width[g.wd()], true
+}
+
 func (fnt *Font) readHeader(r *reader) error {
 	hdr := &fnt.hdr
 	err := r.readHeader(hdr)
