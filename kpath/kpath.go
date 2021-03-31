@@ -120,7 +120,21 @@ func NewFromFS(fsys fs.FS) (Context, error) {
 
 // Open opens the named file for reading.
 func (ctx Context) Open(name string) (fs.File, error) {
-	return ctx.fs.Open(name)
+	f, err := ctx.fs.Open(name)
+	if err == nil {
+		return f, nil
+	}
+	// FIXME(sbinet): ctx.fs.Open may fail to open the named file because
+	// of absolute vs relative path issues.
+	// e.g.:
+	//  - ctx.fs is rooted at /usr/share/texmf-dist
+	//  - one requests /usr/share/texmf-dist/foo.txt (which exists)
+	// Name is thus "/usr/share/texmf-dist/foo.txt",
+	// but from the POV of ctx.fs, only "foo.txt" exists.
+	// Giving the absolute path from "/" won't work.
+	//
+	// In the meantime, resort to just calling to os.Open.
+	return os.Open(name)
 }
 
 // Find returns the full path to the named file if it could be found within the
