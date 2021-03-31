@@ -10,4 +10,5 @@ import "embed"
 //go:embed tex/plain/base/plain.tex
 //go:embed tex/generic/hyphen/hyphen.tex
 //go:embed fonts/tfm/public/cm/*.tfm
+//go:embed fonts/pk/ljfour/public/cm/dpi600/*.pk
 var FS embed.FS
