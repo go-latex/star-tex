@@ -7,8 +7,10 @@ package tds // import "star-tex.org/x/tex/internal/tds"
 
 import "embed"
 
+//go:embed fonts/afm/public/amsfonts/cm/*.afm
+//go:embed fonts/pk/ljfour/public/cm/dpi600/*.pk
+//go:embed fonts/tfm/public/cm/*.tfm
+//go:embed fonts/type1/public/amsfonts/cm/*pfb
 //go:embed tex/plain/base/plain.tex
 //go:embed tex/generic/hyphen/hyphen.tex
-//go:embed fonts/tfm/public/cm/*.tfm
-//go:embed fonts/pk/ljfour/public/cm/dpi600/*.pk
 var FS embed.FS
