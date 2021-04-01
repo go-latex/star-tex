@@ -118,6 +118,11 @@ func NewFromFS(fsys fs.FS) (Context, error) {
 	return ctx, nil
 }
 
+// FS returns the underlying filesystem this context is using.
+func (ctx Context) FS() fs.FS {
+	return ctx.fs
+}
+
 // Open opens the named file for reading.
 func (ctx Context) Open(name string) (fs.File, error) {
 	f, err := ctx.fs.Open(name)
