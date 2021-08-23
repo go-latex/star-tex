@@ -5,7 +5,6 @@
 package tfm
 
 import (
-	"io/ioutil"
 	"os"
 	"reflect"
 	"strings"
@@ -93,14 +92,14 @@ func TestFont(t *testing.T) {
 			}
 
 			fname := strings.Replace(tc.name, ".tfm", "_golden.pl", 1)
-			pl, err := ioutil.ReadFile(fname)
+			pl, err := os.ReadFile(fname)
 			if err != nil {
 				t.Fatalf("could not open PL reference file: %+v", err)
 			}
 
 			if got, want := txt, pl; !reflect.DeepEqual(got, want) {
 				oname := strings.Replace(tc.name, ".tfm", ".pl", 1)
-				_ = ioutil.WriteFile(oname, got, 0644)
+				_ = os.WriteFile(oname, got, 0644)
 				t.Fatalf(
 					"invalid PL serialization",
 				)

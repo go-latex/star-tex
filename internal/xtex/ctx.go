@@ -7,7 +7,6 @@ package xtex
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,7 +20,7 @@ func New(stdout io.WriteCloser, stdin io.ReadCloser) *Context {
 }
 
 func (ctx *Context) Process(dvi io.WriteCloser, f io.Reader, jobname string) (err error) {
-	tmp, err := ioutil.TempDir("", "go-xtex-")
+	tmp, err := os.MkdirTemp("", "go-xtex-")
 	if err != nil {
 		return fmt.Errorf("could not create tmp dir: %w", err)
 	}

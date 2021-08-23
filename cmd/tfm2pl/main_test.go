@@ -6,7 +6,6 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -30,7 +29,7 @@ func TestProcess(t *testing.T) {
 				t.Fatalf("could not process TFM file: %+v", err)
 			}
 
-			want, err := ioutil.ReadFile(strings.Replace(name, ".tfm", "_golden.pl", 1))
+			want, err := os.ReadFile(strings.Replace(name, ".tfm", "_golden.pl", 1))
 			if err != nil {
 				t.Fatalf("could not open reference PL file: %+v", err)
 			}

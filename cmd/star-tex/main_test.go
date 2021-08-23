@@ -6,7 +6,6 @@ package main
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -44,7 +43,7 @@ func TestProcess(t *testing.T) {
 				t.Fatalf("could not process TeX document: %+v", err)
 			}
 
-			want, err := ioutil.ReadFile(strings.Replace(name, ".tex", "_golden.dvi", 1))
+			want, err := os.ReadFile(strings.Replace(name, ".tex", "_golden.dvi", 1))
 			if err != nil {
 				t.Fatalf("could not read reference DVI file: %+v", err)
 			}

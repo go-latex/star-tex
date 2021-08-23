@@ -3,8 +3,8 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
+	"os"
 )
 
 func main() {
@@ -78,7 +78,7 @@ func main() {
 		0b0000_0000, 0b0100_0000, 0b0000_0000, 0b0000_0000,
 		0b0000_0000, 0b0001_0000, 0b0000_0000, 0b0000_0000,
 	}
-	err := ioutil.WriteFile("testdata/simple.tfm", raw, 0644)
+	err := os.WriteFile("testdata/simple.tfm", raw, 0644)
 	if err != nil {
 		log.Fatal(err)
 	}
