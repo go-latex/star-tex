@@ -77,7 +77,8 @@ file2.tex
 			err: fmt.Errorf(
 				`could not create kpath context: `+
 					`kpath: could not walk fs: `+
-					`open %[1]s/.: %[2]s`,
+					`%[1]s %[2]s/.: %[3]s`,
+				openErr,
 				stdpath.Join(dir, "not-there"),
 				errNotThere,
 			),
