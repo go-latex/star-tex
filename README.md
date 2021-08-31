@@ -15,14 +15,81 @@ $> dvipdf out.dvi
 $> pdf out.pdf
 ```
 
-## cmd/tfm2pl
+## cmd/dvi-dump
 
-`tfm2pl` reads a TeX Font Metrics (TFM) file and dumps it in a human-readable text format (property-list, PL).
+`dvi-dump` displays the content of a DVI file in a human readable format or JSON.
 
-`tfm2pl` is a Go-based reimplementation of `TFtoPL`, distributed with TeX-live.
+The human readable format should be exactly the same than the official [`dvitype`](https://texdoc.org/serve/dvitype/0) command from `TeX Live`.
 
 ```
-$> tfm2pl ./tfm/testdata/cmr10.tfm
+$> dvi-dump -h
+Usage of dvi-dump:
+  -json
+    	enable JSON output
+  -texmf string
+    	path to TexMF root
+
+$> dvi-dump ./testdata/hello_golden.dvi
+numerator/denominator=25400000/473628672
+magnification=1000;       0.00006334 pixels per DVI unit
+' TeX output 1776.07.04:1200'
+Postamble starts at byte 1290.
+maxv=43725786, maxh=30785863, maxstackdepth=2, totalpages=1
+Font 36: cmti10---loaded at size 655360 DVI units 
+Font 23: cmbx10---loaded at size 655360 DVI units 
+Font 12: cmsy10---loaded at size 655360 DVI units 
+Font 6: cmmi10---loaded at size 655360 DVI units 
+Font 0: cmr10---loaded at size 655360 DVI units 
+ 
+42: beginning of page 1 
+87: push 
+level 0:(h=0,v=0,w=0,x=0,y=0,z=0,hh=0,vv=0) 
+88: down3 -917504 v:=0-917504=-917504, vv:=-58 
+92: pop 
+[...]
+```
+
+## cmd/kpath-find
+
+`kpath-find` is a new command that finds files in a `TeX` directory structure:
+
+```
+$> kpath-find -h
+Usage of kpath-find:
+  -all
+    	display all matches
+  -texmf string
+    	path to TEXMF distribution
+
+$> kpath-find -texmf /usr/share/texmf-dist cmr10.pk
+/usr/share/texmf-dist/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk
+
+$> kpath-find -all -texmf /usr/share/texmf-dist latex
+/usr/share/texmf-dist/makeindex/latex
+/usr/share/texmf-dist/tex/latex
+/usr/share/texmf-dist/tex4ht/ht-fonts/alias/latex
+/usr/share/texmf-dist/tex4ht/ht-fonts/unicode/latex
+```
+
+## cmd/tfm2pl
+
+`tfm2pl` converts a TFM file to human-readable property list file or standard output.
+`tfm2pl` is a Go-based reimplementation of `TFtoPL`, distributed with TeX-live.
+
+
+```
+$> tfm2pl -h
+Usage: tfm2pl [options] file.tfm [file.pl]
+
+tfm2pl converts a TFM file to human-readable property list file or standard output.
+
+ex:
+ $> tfm2pl testdata/simple.tfm
+ $> tfm2pl testdata/simple.tfm out.pl
+
+options:
+
+$> tfm2pl /usr/share/texmf-dist/fonts/tfm/public/cm/cmr10.tfm
 (FAMILY CMR)
 (FACE O 352)
 (CODINGSCHEME TEX TEXT)
@@ -45,3 +112,5 @@ $> tfm2pl ./tfm/testdata/cmr10.tfm
    (KRN C L R -0.319446)
 [...]
 ```
+
+The output of `tfm2pl` should be exactly the same than the one from the official [`tftopl`](https://texdoc.org/serve/tftopl/0) binary from `TeX Live`.
