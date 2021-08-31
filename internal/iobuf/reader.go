@@ -23,6 +23,8 @@ func (r *Reader) Len() int     { return len(r.p) }
 func (r *Reader) Pos() int     { return r.c }
 func (r *Reader) SetPos(p int) { r.c = p }
 
+func (r *Reader) Bytes() []byte { return r.p[r.c:] }
+
 func (r *Reader) PeekU8() uint8 {
 	return r.p[r.c]
 }
