@@ -8,6 +8,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+
+	"star-tex.org/x/tex/internal/iobuf"
 )
 
 type fontFamily string
@@ -42,10 +44,12 @@ type fileHeader struct {
 // Parse parses a TFM file.
 func Parse(r io.Reader) (Font, error) {
 	var (
-		rr  = newReader(r)
-		fnt Font
-		err error
+		fnt     Font
+		rr, err = newReader(r)
 	)
+	if err != nil {
+		return fnt, fmt.Errorf("could not read TFM file: %w", err)
+	}
 
 	err = fnt.readHeader(rr)
 	if err != nil {
@@ -106,9 +110,9 @@ func (fnt *Font) GlyphAdvance(x rune) (Int12_20, bool) {
 	return fnt.body.width[g.wd()], true
 }
 
-func (fnt *Font) readHeader(r *reader) error {
+func (fnt *Font) readHeader(r *iobuf.Reader) error {
 	hdr := &fnt.hdr
-	err := r.readHeader(hdr)
+	err := readHeader(r, hdr)
 	if err != nil {
 		return fmt.Errorf("could not parse TFM file header: %w", err)
 	}
@@ -153,46 +157,30 @@ type header struct {
 	extra []Int12_20
 }
 
-func (fnt *Font) readBody(r *reader) error {
-	if r.err != nil {
-		return r.err
+func (fnt *Font) readBody(r *iobuf.Reader) error {
+	fnt.body.header.chksum = r.ReadU32()
+	fnt.body.header.designSize = Int12_20(r.ReadU32())
+	if fnt.hdr.lh > 2 {
+		fnt.body.header.codingScheme = readStr(r, 40)
+		fnt.body.header.fontID = readStr(r, 20)
+		fnt.body.header.sevenBitSafe = r.ReadU8() == 0b1000_0000
+		_ = r.ReadU16() // unused
+		fnt.body.header.face = r.ReadU8()
+	}
+	if lh := int(fnt.hdr.lh); lh > 18 {
+		n := lh - 18
+		fnt.body.header.extra = readFWs(r, n)
 	}
 
-	{
-		raw := make([]byte, fnt.hdr.lh*4)
-		_, err := io.ReadFull(r, raw)
-		if err != nil {
-			return fmt.Errorf("could not read TFM file body header: %w", err)
-		}
-
-		r := newReader(bytes.NewReader(raw))
-		fnt.body.header.chksum = r.readU32()
-		fnt.body.header.designSize = Int12_20(r.readU32())
-		if fnt.hdr.lh > 2 {
-			fnt.body.header.codingScheme = r.readStr(40)
-			fnt.body.header.fontID = r.readStr(20)
-			fnt.body.header.sevenBitSafe = r.readU8() == 0b1000_0000
-			_ = r.readU16() // unused
-			fnt.body.header.face = r.readU8()
-		}
-		if lh := int(fnt.hdr.lh); lh > 18 {
-			n := lh - 18
-			fnt.body.header.extra = r.readFWs(n)
-		}
-		if r.err != nil {
-			return r.err
-		}
-	}
-
-	fnt.body.glyphs = r.readCharInfos(int(fnt.hdr.ec - fnt.hdr.bc + 1))
-	fnt.body.width = r.readFWs(int(fnt.hdr.nw))
-	fnt.body.height = r.readFWs(int(fnt.hdr.nh))
-	fnt.body.depth = r.readFWs(int(fnt.hdr.nd))
-	fnt.body.italic = r.readFWs(int(fnt.hdr.ni))
-	fnt.body.ligKern = r.readLigKerns(int(fnt.hdr.nl))
-	fnt.body.kern = r.readFWs(int(fnt.hdr.nk))
-	fnt.body.exten = r.readExtens(int(fnt.hdr.ne))
-	fnt.body.param = r.readFWs(int(fnt.hdr.np))
+	fnt.body.glyphs = readCharInfos(r, int(fnt.hdr.ec-fnt.hdr.bc+1))
+	fnt.body.width = readFWs(r, int(fnt.hdr.nw))
+	fnt.body.height = readFWs(r, int(fnt.hdr.nh))
+	fnt.body.depth = readFWs(r, int(fnt.hdr.nd))
+	fnt.body.italic = readFWs(r, int(fnt.hdr.ni))
+	fnt.body.ligKern = readLigKerns(r, int(fnt.hdr.nl))
+	fnt.body.kern = readFWs(r, int(fnt.hdr.nk))
+	fnt.body.exten = readExtens(r, int(fnt.hdr.ne))
+	fnt.body.param = readFWs(r, int(fnt.hdr.np))
 
 	return nil
 }
