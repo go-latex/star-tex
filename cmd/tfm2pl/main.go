@@ -18,7 +18,7 @@ import (
 	"log"
 	"os"
 
-	"star-tex.org/x/tex/tfm"
+	"star-tex.org/x/tex/font/tfm"
 )
 
 func init() {

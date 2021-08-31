@@ -4,7 +4,9 @@
 
 package dvi
 
-import "star-tex.org/x/tex/tfm"
+import (
+	"star-tex.org/x/tex/font/tfm"
+)
 
 // regs is the set of DVI registers.
 type regs struct {

@@ -4,7 +4,9 @@
 
 package dvi
 
-import "star-tex.org/x/tex/tfm"
+import (
+	"star-tex.org/x/tex/font/tfm"
+)
 
 // Font describes a DVI font, with TeX Font Metrics and its
 // associated font glyph data.

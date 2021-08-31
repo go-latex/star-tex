@@ -11,8 +11,8 @@ import (
 	"sort"
 	"strings"
 
+	"star-tex.org/x/tex/font/tfm"
 	"star-tex.org/x/tex/kpath"
-	"star-tex.org/x/tex/tfm"
 )
 
 const (

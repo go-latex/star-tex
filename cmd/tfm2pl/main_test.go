@@ -14,7 +14,7 @@ import (
 
 func TestProcess(t *testing.T) {
 	for _, name := range []string{
-		"../../tfm/testdata/simple.tfm",
+		"../../font/tfm/testdata/simple.tfm",
 	} {
 		t.Run(filepath.Base(name), func(t *testing.T) {
 			f, err := os.Open(name)
