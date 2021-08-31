@@ -1,0 +1,24 @@
+StartFontMetrics 3.0
+MetricsSets 1
+FontName Fake Vertical Font
+IsBaseFont false
+Characters 3
+FontBBox -500 -1185 500 23
+EncodingScheme JIS12-88-CFEncoding
+MappingScheme 2
+FullName Fake Vertical Font
+FamilyName FakeVertical
+Weight Light
+Version 001.001
+Notice Burn
+StartDirection 1
+ItalicAngle 0
+CharWidth 0 -1000
+EndDirection
+StartCharMetrics 3
+CH <2121> ; B 0 0 0 0 ;
+CH <2122> ; B 211 -337 435 -81 ;
+CH <747E> ; B 0 0 0 0 ;
+EndCharMetrics
+EndFontMetrics
+

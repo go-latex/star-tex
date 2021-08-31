@@ -1,0 +1,50 @@
+StartFontMetrics 2.0
+Comment Copyright (c) 1985, 1987, 1989, 1990 Adobe Systems Incorporated.  All Rights Reserved.
+Comment Creation Date: Tue Mar 20 13:14:56 1990
+Comment UniqueID 28427
+Comment VMusage 32912 39804
+FontName Times-Italic
+FullName Times Italic
+FamilyName Times
+Weight Medium
+ItalicAngle -15.5
+IsFixedPitch false
+FontBBox -169 -217 1010 883
+UnderlinePosition -100
+UnderlineThickness 50
+Version 001.007
+Notice Copyright (c) 1985, 1987, 1989, 1990 Adobe Systems Incorporated.  All Rights Reserved.Times is a trademark of Linotype AG and/or its subsidiaries.
+EncodingScheme AdobeStandardEncoding
+CapHeight 653
+XHeight 441
+Ascender 683
+Descender -205
+StartCharMetrics 2
+Comment comments are allowed
+C 32 ; WX 250 ; N space ; B 0 0 0 0 ;
+C -1 ; WX 750 ; N onehalf ; B 34 -10 749 676 ;
+EndCharMetrics
+StartKernData
+StartKernPairs 3
+Comment comments are allowed
+
+KPX A y -55
+KPX A w -55
+
+KPX z e 0
+EndKernPairs
+
+StartTrackKern 1
+Comment comments are allowed
+TrackKern -3 6 -.1 72 -3.78
+EndTrackKern
+
+EndKernData
+StartComposites 4
+Comment comments are allowed
+CC Aacute 2 ; PCC A 0 0 ; PCC acute 139 212 ;
+CC Acircumflex 2 ; PCC A 0 0 ; PCC circumflex 144 212 ;
+CC ydieresis 2 ; PCC y 0 0 ; PCC dieresis 36 0 ;
+CC zcaron 2 ; PCC z 0 0 ; PCC caron 8 0 ;
+EndComposites
+EndFontMetrics
