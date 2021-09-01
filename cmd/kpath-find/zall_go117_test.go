@@ -7,4 +7,14 @@
 
 package main
 
-const openErr = "stat"
+import (
+	"runtime"
+)
+
+var openErr = "stat"
+
+func init() {
+	if runtime.GOOS == "windows" {
+		openErr = "CreateFile"
+	}
+}
