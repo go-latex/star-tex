@@ -9,6 +9,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"star-tex.org/x/tex/font/fixed"
 )
 
 func TestFont(t *testing.T) {
@@ -17,42 +19,42 @@ func TestFont(t *testing.T) {
 		numglyphs int
 		family    string
 		scheme    string
-		size      Int12_20
+		size      fixed.Int12_20
 	}{
 		{
 			name:      "testdata/simple.tfm",
 			numglyphs: 1,
 			family:    "hi parc",
 			scheme:    "testing",
-			size:      Int12_20(5 << 20),
+			size:      fixed.I12_20(5),
 		},
 		{
 			name:      "testdata/cmr10.tfm",
 			numglyphs: 128,
 			family:    "CMR",
 			scheme:    "TeX text",
-			size:      Int12_20(10 << 20),
+			size:      fixed.I12_20(10),
 		},
 		{
 			name:      "testdata/cmex10.tfm",
 			numglyphs: 128,
 			family:    "CMEX",
 			scheme:    "TeX math extension",
-			size:      Int12_20(10 << 20),
+			size:      fixed.I12_20(10),
 		},
 		{
 			name:      "testdata/cmbsy10.tfm",
 			numglyphs: 128,
 			family:    "CMBSY",
 			scheme:    "TeX math symbols",
-			size:      Int12_20(10 << 20),
+			size:      fixed.I12_20(10),
 		},
 		{
 			name:      "testdata/lmroman10-regular.tfm",
 			numglyphs: 256,
 			family:    "lmroman10-regular",
 			scheme:    "Unspecified",
-			size:      Int12_20(10 << 20),
+			size:      fixed.I12_20(10),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -126,7 +128,7 @@ func TestParse(t *testing.T) {
 				body: fileBody{
 					header: header{
 						chksum:       0xABCDEFAB,
-						designSize:   Int12_20(5 << 20),
+						designSize:   fixed.I12_20(5),
 						codingScheme: "testing",
 						fontID:       "hi parc",
 						sevenBitSafe: true,
@@ -147,7 +149,7 @@ func TestParse(t *testing.T) {
 				body: fileBody{
 					header: header{
 						chksum:       1274110073,
-						designSize:   Int12_20(10 << 20),
+						designSize:   fixed.I12_20(10),
 						codingScheme: "TeX text",
 						fontID:       "CMR",
 						sevenBitSafe: false,
@@ -168,7 +170,7 @@ func TestParse(t *testing.T) {
 				body: fileBody{
 					header: header{
 						chksum:       4205933842,
-						designSize:   Int12_20(10 << 20),
+						designSize:   fixed.I12_20(10),
 						codingScheme: "TeX math extension",
 						fontID:       "CMEX",
 						sevenBitSafe: false,
@@ -189,7 +191,7 @@ func TestParse(t *testing.T) {
 				body: fileBody{
 					header: header{
 						chksum:       3771304972,
-						designSize:   Int12_20(10 << 20),
+						designSize:   fixed.I12_20(10),
 						codingScheme: "TeX math symbols",
 						fontID:       "CMBSY",
 						sevenBitSafe: false,
@@ -210,12 +212,12 @@ func TestParse(t *testing.T) {
 				body: fileBody{
 					header: header{
 						chksum:       1674865313,
-						designSize:   Int12_20(10 << 20),
+						designSize:   fixed.I12_20(10),
 						codingScheme: "Unspecified",
 						fontID:       "lmroman10-regular",
 						sevenBitSafe: false,
 						face:         0,
-						extra: []Int12_20{
+						extra: []fixed.Int12_20{
 							2806215269, 1635018084, 543324448, 1618244710,
 							846489197, 539977839, 1835347810, 1768842612,
 							796356466, 1798268783, 1853189423, 1936876335,
@@ -264,15 +266,15 @@ func TestParse(t *testing.T) {
 				t.Fatalf("invalid TFM body header:\ngot= %+v\nwant=%+v\n", got, want)
 			}
 
-			if got, want := fnt.body.width[0], Int12_20(0); got != want {
+			if got, want := fnt.body.width[0], fixed.Int12_20(0); got != want {
 				t.Fatalf("invalid TFM width: got=%v, want=%v", got, want)
 			}
 
-			if got, want := fnt.body.height[0], Int12_20(0); got != want {
+			if got, want := fnt.body.height[0], fixed.Int12_20(0); got != want {
 				t.Fatalf("invalid TFM height: got=%v, want=%v", got, want)
 			}
 
-			if got, want := fnt.body.depth[0], Int12_20(0); got != want {
+			if got, want := fnt.body.depth[0], fixed.Int12_20(0); got != want {
 				t.Fatalf("invalid TFM depth: got=%v, want=%v", got, want)
 			}
 

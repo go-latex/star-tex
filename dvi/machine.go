@@ -11,6 +11,7 @@ import (
 	"sort"
 	"strings"
 
+	"star-tex.org/x/tex/font/fixed"
 	"star-tex.org/x/tex/font/tfm"
 	"star-tex.org/x/tex/kpath"
 )
@@ -1079,7 +1080,7 @@ func (m *Machine) loadFont(i int) (*tfm.Face, error) {
 		return nil, fmt.Errorf("could not parse TFM font %q: %w", def.Name, err)
 	}
 	face := tfm.NewFace(&font, &tfm.FaceOptions{
-		Size: tfm.Int12_20(def.Size),
+		Size: fixed.Int12_20(def.Size),
 	})
 	def.font = &font
 	def.face = &face

@@ -4,10 +4,14 @@
 
 package tfm
 
+import (
+	"star-tex.org/x/tex/font/fixed"
+)
+
 // Face is a TFM font face.
 type Face struct {
 	font  *Font
-	scale Int12_20
+	scale fixed.Int12_20
 
 	buf []byte
 }
@@ -15,7 +19,7 @@ type Face struct {
 // FaceOptions describes the possible options given to NewFace when
 // creating a new Face from a Font.
 type FaceOptions struct {
-	Size Int12_20 // Size is the font size in DVI points.
+	Size fixed.Int12_20 // Size is the font size in DVI points.
 }
 
 func defaultFaceOptions(font *Font) *FaceOptions {
@@ -46,10 +50,10 @@ func (face *Face) Name() string {
 // GlyphAdvance returns the advance width of r's glyph.
 //
 // It returns !ok if the face does not contain a glyph for r.
-func (face *Face) GlyphAdvance(r rune) (adv Int12_20, ok bool) {
+func (face *Face) GlyphAdvance(r rune) (adv fixed.Int12_20, ok bool) {
 	adv, ok = face.font.GlyphAdvance(r)
 	if !ok {
 		return 0, ok
 	}
-	return Int12_20((int64(adv) * int64(face.scale)) >> 20), true
+	return fixed.Int12_20((int64(adv) * int64(face.scale)) >> 20), true
 }

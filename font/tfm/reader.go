@@ -7,6 +7,7 @@ package tfm
 import (
 	"io"
 
+	"star-tex.org/x/tex/font/fixed"
 	"star-tex.org/x/tex/internal/iobuf"
 )
 
@@ -64,14 +65,14 @@ func readCharInfos(r *iobuf.Reader, n int) []glyphInfo {
 	return out
 }
 
-func readFWs(r *iobuf.Reader, n int) []Int12_20 {
+func readFWs(r *iobuf.Reader, n int) []fixed.Int12_20 {
 	if len(r.Bytes()) < n*4 {
 		return nil
 	}
 
-	out := make([]Int12_20, n)
+	out := make([]fixed.Int12_20, n)
 	for i := range out {
-		out[i] = Int12_20(r.ReadU32())
+		out[i] = fixed.Int12_20(r.ReadU32())
 	}
 	return out
 }

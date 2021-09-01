@@ -10,6 +10,8 @@ import (
 	"io"
 	"sort"
 	"strings"
+
+	"star-tex.org/x/tex/font/fixed"
 )
 
 type label struct {
@@ -97,7 +99,7 @@ func (te *textEncoder) face(v byte) string {
 	return "F " + string(mblString[b%3]) + string(riString[s]) + string(rceString[b/3])
 }
 
-func (te *textEncoder) fword(v Int12_20) string {
+func (te *textEncoder) fword(v fixed.Int12_20) string {
 	var (
 		j     byte
 		delta = int32(10)

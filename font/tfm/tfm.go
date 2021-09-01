@@ -9,52 +9,6 @@ import (
 	"fmt"
 )
 
-// Int12_20 is a signed 26.6 fixed-point number.
-//
-// The integer part ranges from -2048 to 2047, inclusive. The
-// fractional part has 20 bits of precision.
-type Int12_20 uint32
-
-func (x Int12_20) Float64() float64 {
-	v := int32(x)
-	return float64(v) / (1 << 20)
-
-	//	const (
-	//		signMask = 0b1000_0000_0000_0000_0000_0000_0000_0000
-	//		intMask  = 0b0111_1111_1111_0000_0000_0000_0000_0000
-	//		fracMask = 0b0000_0000_0000_1111_1111_1111_1111_1111
-	//	)
-	//
-	//	var (
-	//		num  = uint32(x)
-	//		sign = 1.0
-	//	)
-	//	if num&signMask == signMask {
-	//		num = ^num + 1
-	//		sign = -1
-	//	}
-	//
-	//	ip := float64((num & intMask) >> 20)
-	//	fp := float64(num&fracMask) / float64(1<<20)
-	//	return sign * (ip + fp)
-}
-
-// String returns a human-readable representation of a 12.20 fixed-point number.
-func (x Int12_20) String() string {
-	const (
-		shift = 12
-		mask  = 1<<shift - 1
-	)
-	if x >= 0 {
-		return fmt.Sprintf("%d:%02d", int32(x>>shift), int32(x&mask))
-	}
-	x = -x
-	if x >= 0 {
-		return fmt.Sprintf("-%d:%02d", int32(x>>shift), int32(x&mask))
-	}
-	return "-2048:00" // The minimum value is -(1<<(12-1)).
-}
-
 type glyphKind uint8
 
 const (

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 
+	"star-tex.org/x/tex/font/fixed"
 	"star-tex.org/x/tex/internal/iobuf"
 )
 
@@ -64,7 +65,7 @@ func Parse(r io.Reader) (Font, error) {
 	return fnt, nil
 }
 
-func (fnt *Font) DesignSize() Int12_20 {
+func (fnt *Font) DesignSize() fixed.Int12_20 {
 	return fnt.body.header.designSize
 }
 
@@ -100,7 +101,7 @@ func (fnt *Font) glyph(x GlyphIndex) glyphInfo {
 // GlyphAdvance returns the advance width of r's glyph.
 //
 // It returns !ok if the face does not contain a glyph for r.
-func (fnt *Font) GlyphAdvance(x rune) (Int12_20, bool) {
+func (fnt *Font) GlyphAdvance(x rune) (fixed.Int12_20, bool) {
 	i := int(x)
 	if !(int(fnt.hdr.bc) <= i && i <= int(fnt.hdr.ec)) {
 		return 0, false
@@ -136,30 +137,30 @@ func (fnt *Font) readHeader(r *iobuf.Reader) error {
 type fileBody struct {
 	header  header
 	glyphs  []glyphInfo
-	width   []Int12_20
-	height  []Int12_20
-	depth   []Int12_20
-	italic  []Int12_20
+	width   []fixed.Int12_20
+	height  []fixed.Int12_20
+	depth   []fixed.Int12_20
+	italic  []fixed.Int12_20
 	ligKern []ligKernCmd
-	kern    []Int12_20
+	kern    []fixed.Int12_20
 	exten   []extensible
-	param   []Int12_20
+	param   []fixed.Int12_20
 }
 
 type header struct {
 	chksum       uint32
-	designSize   Int12_20
+	designSize   fixed.Int12_20
 	codingScheme string
 	fontID       string
 	sevenBitSafe bool
 	face         byte
 
-	extra []Int12_20
+	extra []fixed.Int12_20
 }
 
 func (fnt *Font) readBody(r *iobuf.Reader) error {
 	fnt.body.header.chksum = r.ReadU32()
-	fnt.body.header.designSize = Int12_20(r.ReadU32())
+	fnt.body.header.designSize = fixed.Int12_20(r.ReadU32())
 	if fnt.hdr.lh > 2 {
 		fnt.body.header.codingScheme = readStr(r, 40)
 		fnt.body.header.fontID = readStr(r, 20)
