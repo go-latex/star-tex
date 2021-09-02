@@ -20,6 +20,7 @@ import (
 
 // Renderer defines the protocol to draw a DVI document.
 type Renderer interface {
+	Init(pre *CmdPre, post *CmdPost)
 	BOP(bop *CmdBOP)
 	EOP()
 
@@ -29,8 +30,9 @@ type Renderer interface {
 
 type nopRenderer struct{}
 
-func (nopRenderer) BOP(cmd *CmdBOP) {}
-func (nopRenderer) EOP()            {}
+func (nopRenderer) Init(pre *CmdPre, post *CmdPost) {}
+func (nopRenderer) BOP(cmd *CmdBOP)                 {}
+func (nopRenderer) EOP()                            {}
 
 func (nopRenderer) DrawGlyph(x, y int32, font Font, glyph rune, c color.Color) {}
 func (nopRenderer) DrawRule(x, y, w, h int32, c color.Color)                   {}

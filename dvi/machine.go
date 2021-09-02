@@ -106,6 +106,8 @@ func (m *Machine) run(p Program, ip int) error {
 		eop = false
 	)
 
+	m.rdr.Init(&p.pre, &p.post)
+
 	p.r.SetPos(beg)
 	op := opCode(p.r.PeekU8())
 	if op != opBOP {
