@@ -5,12 +5,16 @@
 package tfm
 
 import (
+	"image"
 	"os"
 	"reflect"
 	"strings"
 	"testing"
 
+	"golang.org/x/image/font"
+	xfix "golang.org/x/image/math/fixed"
 	"star-tex.org/x/tex/font/fixed"
+	"star-tex.org/x/tex/kpath"
 )
 
 func TestFont(t *testing.T) {
@@ -278,7 +282,7 @@ func TestParse(t *testing.T) {
 				t.Fatalf("invalid TFM depth: got=%v, want=%v", got, want)
 			}
 
-			x := fnt.GlyphIndex('a')
+			x := fnt.index('a')
 			if x < 0 {
 				t.Fatalf("could not find glyph")
 			}
@@ -286,6 +290,148 @@ func TestParse(t *testing.T) {
 			glyph := fnt.glyph(x)
 			if got, want := glyph, tc.glyph; got != want {
 				t.Fatalf("invalid glyph-info:\ngot= %#v\nwant%#v", got, want)
+			}
+		})
+	}
+}
+
+func TestCaretSlope(t *testing.T) {
+	for _, tc := range []struct {
+		slant float64
+		caret image.Point
+	}{
+		{0, image.Pt(0, 1)},
+		{+0.25, image.Pt(+25, 100)},
+		{-0.25, image.Pt(-25, 100)},
+		{+0.165549, image.Pt(+165549, 1e6)},
+		{-0.165549, image.Pt(-165549, 1e6)},
+	} {
+		got := slopeFrom(tc.slant)
+		if got != tc.caret {
+			t.Errorf("invalid caret-slope from %v: got=%+v, want=%+v", tc.slant, got, tc.caret)
+		}
+	}
+}
+
+func TestMetrics(t *testing.T) {
+	ktx := kpath.New()
+	for _, tc := range []struct {
+		name string
+		want font.Metrics
+	}{
+		{
+			name: "cmr10.tfm",
+			want: font.Metrics{
+				Height:     0, // FIXME
+				Ascent:     0, // FIXME
+				Descent:    0, // FIXME
+				XHeight:    27,
+				CapHeight:  43,
+				CaretSlope: image.Point{X: 0, Y: 1},
+			},
+		},
+		{
+			name: "cmmi10.tfm",
+			want: font.Metrics{
+				Height:     0, // FIXME
+				Ascent:     0, // FIXME
+				Descent:    0, // FIXME
+				XHeight:    27,
+				CapHeight:  43,
+				CaretSlope: image.Point{X: 25, Y: 100},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fname, err := ktx.Find(tc.name)
+			if err != nil {
+				t.Fatalf("could not find TFM file: %+v", err)
+			}
+
+			f, err := ktx.Open(fname)
+			if err != nil {
+				t.Fatalf("could not open TFM file: %+v", err)
+			}
+			defer f.Close()
+
+			fnt, err := Parse(f)
+			if err != nil {
+				t.Fatalf("could not parse TFM file: %+v", err)
+			}
+
+			got := fnt.Metrics()
+			if got != tc.want {
+				t.Fatalf("invalid metrics:\ngot: %+v\nwant:%+v", got, tc.want)
+			}
+		})
+	}
+}
+
+func TestKern(t *testing.T) {
+	type kern struct {
+		r0, r1 rune
+		v      xfix.Int26_6
+	}
+	ktx := kpath.New()
+	for _, tc := range []struct {
+		name string
+		want []kern
+	}{
+		{
+			name: "cmr10.tfm",
+			want: []kern{
+				{'A', 'a', 0},
+				{'A', 't', -1},
+				{'A', 'C', -1},
+				{'A', 'O', -1},
+				{'A', 'G', -1},
+				{'A', 'U', -1},
+				{'A', 'Q', -1},
+				{'A', 'T', -5},
+				{'A', 'Y', -5},
+				{'A', 'V', -7},
+				{'A', 'W', -7},
+			},
+		},
+		{
+			name: "cmsl10.tfm",
+			want: []kern{
+				{'A', 'a', 0},
+				{'A', 't', -1},
+				{'A', 'C', -1},
+				{'A', 'O', -1},
+				{'A', 'G', -1},
+				{'A', 'U', -1},
+				{'A', 'Q', -1},
+				{'A', 'T', -5},
+				{'A', 'Y', -5},
+				{'A', 'V', -7},
+				{'A', 'W', -7},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fname, err := ktx.Find(tc.name)
+			if err != nil {
+				t.Fatalf("could not find TFM file: %+v", err)
+			}
+
+			f, err := ktx.Open(fname)
+			if err != nil {
+				t.Fatalf("could not open TFM file: %+v", err)
+			}
+			defer f.Close()
+
+			fnt, err := Parse(f)
+			if err != nil {
+				t.Fatalf("could not parse TFM file: %+v", err)
+			}
+
+			for _, krn := range tc.want {
+				got := fnt.Kern(krn.r0, krn.r1)
+				if got != krn.v {
+					t.Fatalf("invalid kern(%q,%q):\ngot: %d\nwant:%d", krn.r0, krn.r1, got, krn.v)
+				}
 			}
 		})
 	}

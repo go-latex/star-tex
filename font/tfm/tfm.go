@@ -36,8 +36,8 @@ func (ck glyphKind) String() string {
 	}
 }
 
-// GlyphIndex is a glyph index in a Font.
-type GlyphIndex int
+// glyphIndex is a glyph index in a Font.
+type glyphIndex int
 
 // glyphInfo provides informations about a glyph.
 type glyphInfo struct {
@@ -93,6 +93,10 @@ func (lk ligKernCmd) op() ligKernOp {
 		return ligCmd
 	}
 	return krnCmd
+}
+
+func (lk ligKernCmd) nextIndex() int {
+	return (int(lk.raw[2])-128)*256 + int(lk.raw[3])
 }
 
 type ligKernOp uint8

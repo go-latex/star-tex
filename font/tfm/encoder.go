@@ -291,7 +291,7 @@ func (te *textEncoder) encodeLigTable(fnt *Font) {
 	if lk := fnt.body.ligKern[0]; lk.raw[0] == 255 {
 		te.boundarychar = int16(lk.raw[1])
 		te.line("BOUNDARYCHAR" + te.char(byte(te.boundarychar)))
-		te.act[0] = 1
+		te.act[0] = actPassthrough
 	}
 
 	te.buildLabels(fnt)
@@ -316,7 +316,7 @@ func (te *textEncoder) encodeLigTable(fnt *Font) {
 			// FIXME(sbinet): check unconditional stop command.
 		case lk.op() == krnCmd:
 			line := "KRN" + te.char(byte(lk.nextChar()))
-			ii := (int(lk.raw[2])-128)*256 + int(lk.raw[3])
+			ii := lk.nextIndex()
 			vv := fnt.body.kern[ii]
 			line += " " + te.fword(vv)
 			te.line(line)
@@ -378,8 +378,8 @@ func (te *textEncoder) buildLabels(fnt *Font) {
 			if lk.skipByte() {
 				rem = int(lk.raw[2])*256 + int(lk.raw[3])
 				if rem < len(fnt.body.ligKern) {
-					if te.act[int(ci.raw[3])] == 0 {
-						te.act[int(ci.raw[3])] = 1
+					if te.act[int(ci.raw[3])] == actUnreachable {
+						te.act[int(ci.raw[3])] = actPassthrough
 					}
 				}
 			}
@@ -391,7 +391,7 @@ func (te *textEncoder) buildLabels(fnt *Font) {
 			))
 		}
 
-		te.act[rem] = 2
+		te.act[rem] = actAccessible
 		te.labels = append(te.labels, label{
 			cc: int16(i),
 			rr: rem,
@@ -445,7 +445,7 @@ func (te *textEncoder) encodeChars(fnt *Font) {
 					// FIXME(sinet): test for unconditional stop cmd address.
 				case lk.raw[2] >= 128:
 					line := "KRN" + te.char(byte(lk.raw[1]))
-					rr := (int(lk.raw[2])-128)*256 + int(lk.raw[3])
+					rr := lk.nextIndex()
 					if rr >= len(fnt.body.kern) {
 						panic("Bad TFM file: Kern index too large.")
 					}

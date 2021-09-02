@@ -7,7 +7,12 @@ package tfm
 import (
 	"bytes"
 	"fmt"
+	"image"
 	"io"
+	"math"
+
+	"golang.org/x/image/font"
+	xfix "golang.org/x/image/math/fixed"
 
 	"star-tex.org/x/tex/font/fixed"
 	"star-tex.org/x/tex/internal/iobuf"
@@ -25,6 +30,9 @@ const (
 type Font struct {
 	hdr  fileHeader
 	body fileBody
+
+	metSet  bool // metSet tells whether the font metrics have been computed.
+	metrics font.Metrics
 }
 
 type fileHeader struct {
@@ -82,33 +90,217 @@ func (fnt *Font) NumGlyphs() int {
 	return int(fnt.hdr.ec) + 1 - int(fnt.hdr.bc)
 }
 
-// GlyphIndex returns the GlyphIndex for the given rune.
+// index returns the glyphIndex for the given rune.
 //
-// GlyphIndex returns -1 if there is no such rune.
-func (fnt *Font) GlyphIndex(x rune) GlyphIndex {
-	i := int(x)
+// index returns -1 if there is no such rune.
+func (fnt *Font) index(r rune) glyphIndex {
+	i := int(r)
 	if !(int(fnt.hdr.bc) <= i && i <= int(fnt.hdr.ec)) {
 		panic(fmt.Errorf("glyph out of range"))
 	}
 	i -= int(fnt.hdr.bc)
-	return GlyphIndex(i)
+	return glyphIndex(i)
 }
 
-func (fnt *Font) glyph(x GlyphIndex) glyphInfo {
+func (fnt *Font) glyph(x glyphIndex) glyphInfo {
 	return fnt.body.glyphs[x]
+}
+
+// Box returns the width, height and depth of r's glyph.
+//
+// It returns !ok if the face does not contain a glyph for r.
+func (fnt *Font) Box(r rune) (w, h, d fixed.Int12_20, ok bool) {
+	i := int(r)
+	if !(int(fnt.hdr.bc) <= i && i <= int(fnt.hdr.ec)) {
+		return 0, 0, 0, false
+	}
+	i -= int(fnt.hdr.bc)
+	g := fnt.body.glyphs[i]
+	w = fnt.body.width[g.wd()] // FIXME(sbinet): apply italic correction?
+	h = fnt.body.height[g.ht()]
+	d = fnt.body.depth[g.dp()]
+	return w, h, d, true
 }
 
 // GlyphAdvance returns the advance width of r's glyph.
 //
 // It returns !ok if the face does not contain a glyph for r.
-func (fnt *Font) GlyphAdvance(x rune) (fixed.Int12_20, bool) {
-	i := int(x)
+func (fnt *Font) GlyphAdvance(r rune) (xfix.Int26_6, bool) {
+	i := int(r)
 	if !(int(fnt.hdr.bc) <= i && i <= int(fnt.hdr.ec)) {
 		return 0, false
 	}
 	i -= int(fnt.hdr.bc)
+	var (
+		g  = fnt.body.glyphs[i]
+		ic = fnt.body.italic[g.ic()]
+		w  = fnt.body.width[g.wd()] + ic
+	)
+	return w.ToInt26_6(), true
+}
+
+// GlyphBounds returns the bounding box of r's glyph, drawn at a dot equal
+// to the origin, and that glyph's advance width.
+//
+// It returns !ok if the face does not contain a glyph for r.
+//
+// The glyph's ascent and descent equal -bounds.Min.Y and +bounds.Max.Y. A
+// visual depiction of what these metrics are is at
+// https://developer.apple.com/library/mac/documentation/TextFonts/Conceptual/CocoaTextArchitecture/Art/glyph_metrics_2x.png
+func (fnt *Font) GlyphBounds(r rune) (bounds xfix.Rectangle26_6, advance xfix.Int26_6, ok bool) {
+	i := fnt.index(r)
+	if i < 0 {
+		return
+	}
+	ok = true
 	g := fnt.body.glyphs[i]
-	return fnt.body.width[g.wd()], true
+	var (
+		ic = fnt.body.italic[g.ic()]
+		w  = fnt.body.width[g.wd()] + ic
+		h  = fnt.body.height[g.ht()]
+		d  = fnt.body.depth[g.dp()]
+	)
+
+	bounds = xfix.Rectangle26_6{
+		Min: xfix.Point26_6{
+			X: 0, // bearing?
+			Y: -h.ToInt26_6(),
+		},
+		Max: xfix.Point26_6{
+			X: w.ToInt26_6(),
+			Y: d.ToInt26_6(),
+		},
+	}
+	advance = w.ToInt26_6()
+
+	return
+}
+
+// Kern returns the horizontal adjustment for the kerning pair (r0, r1). A
+// positive kern means to move the glyphs further apart.
+func (fnt *Font) Kern(r0, r1 rune) xfix.Int26_6 {
+	i0 := fnt.index(r0)
+	if i0 < 0 {
+		return 0
+	}
+	i1 := fnt.index(r1)
+	if i1 < 0 {
+		return 0
+	}
+
+	g0 := fnt.glyph(i0)
+	c1 := int(r1)
+	if g0.raw[2]&3 == 1 {
+		ii := int(g0.raw[3])
+		rr := fnt.body.ligKern[ii]
+		if rr.raw[0] > 128 {
+			ii = int(rr.raw[2])*256 + int(rr.raw[3])
+		}
+		for {
+			lk := fnt.body.ligKern[ii]
+			switch {
+			case lk.raw[2] >= 128:
+				if int(lk.raw[1]) == c1 {
+					rr := lk.nextIndex()
+					kern := fnt.body.kern[rr]
+					return fixed.Int12_20(kern).ToInt26_6()
+				}
+			default:
+				// ok.
+			}
+
+			switch {
+			case lk.raw[0] >= 128:
+				ii = len(fnt.body.ligKern)
+			default:
+				ii += int(lk.raw[0]) + 1
+			}
+
+			if ii >= len(fnt.body.ligKern) {
+				return 0
+			}
+		}
+	}
+
+	// FIXME(sbinet): implement it.
+	return 0
+}
+
+// Metrics returns the metrics for this Face.
+func (fnt *Font) Metrics() font.Metrics {
+	if !fnt.metSet {
+		fnt.metSet = true
+		fnt.computeMetrics()
+	}
+	return fnt.metrics
+}
+
+func (fnt *Font) computeMetrics() {
+	slant := fnt.body.param[0].Float64()
+	slope := slopeFrom(slant)
+
+	var (
+		caph fixed.Int12_20
+		asc  fixed.Int12_20
+		desc fixed.Int12_20
+	)
+	for _, r := range "ABCDEFGHIJKLMNOPQRSTUVWXYZ" {
+		idx := fnt.index(r)
+		if idx < 0 {
+			continue
+		}
+		g := fnt.glyph(idx)
+		h := fnt.body.height[g.ht()]
+		if h >= caph {
+			caph = h
+		}
+	}
+
+	// FIXME(sbinet): ascender and descender do not seem to be properly inferred
+	// when using these heuristics.
+	//	for _, r := range "abcdefghijklmnopqrstuvwxyz" {
+	//		idx := fnt.index(r)
+	//		if idx < 0 {
+	//			continue
+	//		}
+	//		g := fnt.glyph(idx)
+	//		h := fnt.body.height[g.ht()]
+	//		d := fnt.body.depth[g.dp()]
+	//		if h > asc {
+	//			asc = h
+	//		}
+	//		if d > desc {
+	//			desc = d
+	//		}
+	//	}
+
+	fnt.metrics = font.Metrics{
+		Ascent:     asc.ToInt26_6(),
+		Descent:    desc.ToInt26_6(),
+		XHeight:    fnt.body.param[4].ToInt26_6(),
+		CapHeight:  caph.ToInt26_6(),
+		CaretSlope: slope,
+	}
+}
+
+func slopeFrom(slant float64) image.Point {
+	if slant == 0 {
+		return image.Pt(0, 1)
+	}
+	const epsilon = 1e-6
+	var (
+		v = math.Abs(slant)
+		f = 1.0
+	)
+	for i := 0; i < 10; i++ {
+		f = math.Pow10(i)
+		r := math.Trunc(v * f)
+		if math.Abs(r-v*f) < epsilon {
+			break
+		}
+	}
+
+	return image.Pt(int(f*slant), int(f))
 }
 
 func (fnt *Font) readHeader(r *iobuf.Reader) error {
