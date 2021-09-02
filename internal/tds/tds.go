@@ -11,6 +11,8 @@ import "embed"
 //go:embed fonts/pk/ljfour/public/cm/dpi600/*.pk
 //go:embed fonts/tfm/public/cm/*.tfm
 //go:embed fonts/type1/public/amsfonts/cm/*pfb
-//go:embed tex/plain/base/plain.tex
 //go:embed tex/generic/hyphen/hyphen.tex
+//go:embed tex/latex/graphics
+//go:embed tex/latex/xcolor
+//go:embed tex/plain/base/plain.tex
 var FS embed.FS
