@@ -43,9 +43,15 @@ func newState() state {
 	}
 }
 
-func (st *state) reset() {
+func (st *state) reset(xoff, yoff int32, pixels func(v int32) int32) {
 	st.stack = st.stack[:1]
-	st.stack[0] = regs{}
+	st.stack[0] = regs{
+		h: xoff,
+		v: yoff,
+
+		hh: pixels(xoff),
+		vv: pixels(yoff),
+	}
 	st.f = -1
 }
 

@@ -29,6 +29,8 @@ type Machine struct {
 
 	conv     float32 // converts DVI units to pixels
 	trueConv float32 // converts unmagnified DVI units to pixels
+	xoff     int32   // width offset
+	yoff     int32   // height offset
 
 	w   io.Writer
 	buf []byte // 80-col buffer of text
@@ -48,6 +50,9 @@ func NewMachine(opts ...Option) Machine {
 		ktx:   cfg.ctx,
 		rdr:   cfg.rdr,
 		state: newState(),
+
+		xoff: cfg.xoff,
+		yoff: cfg.yoff,
 
 		w:   cfg.out,
 		buf: make([]byte, 0, 80-len("[]\n")),
@@ -116,7 +121,7 @@ func (m *Machine) run(p Program, ip int) error {
 
 	bop := op.cmd().(*CmdBOP)
 	bop.read(p.r)
-	m.state.reset()
+	m.state.reset(m.xoff, m.yoff, m.pixels)
 
 	m.printf(" \n%d: beginning of page %d \n", beg, bop.C0)
 

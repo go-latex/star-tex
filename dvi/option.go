@@ -7,6 +7,7 @@ package dvi
 import (
 	"io"
 
+	"star-tex.org/x/tex/font/fixed"
 	"star-tex.org/x/tex/kpath"
 )
 
@@ -16,6 +17,9 @@ type config struct {
 	ctx kpath.Context
 	rdr Renderer
 	out io.Writer
+
+	xoff int32 // width offset
+	yoff int32 // height offset
 }
 
 func newConfig() *config {
@@ -43,6 +47,20 @@ func WithRenderer(rdr Renderer) Option {
 func WithLogOutput(w io.Writer) Option {
 	return func(cfg *config) error {
 		cfg.out = w
+		return nil
+	}
+}
+
+func WithOffsetX(v fixed.Int12_20) Option {
+	return func(cfg *config) error {
+		cfg.xoff = int32(v)
+		return nil
+	}
+}
+
+func WithOffsetY(v fixed.Int12_20) Option {
+	return func(cfg *config) error {
+		cfg.yoff = int32(v)
 		return nil
 	}
 }
