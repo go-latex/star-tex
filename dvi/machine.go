@@ -920,16 +920,16 @@ func (m *Machine) drawGlyph(op opCode, cmd int32) error {
 
 	cur := m.state.cur()
 
-	face, err := m.face(m.state.f)
+	fnt, err := m.loadFont(m.state.f)
 	if err != nil {
 		return err
 	}
 
-	m.rdr.DrawGlyph(cur.h, cur.v, m.font(), rune(cmd), color.Black)
+	m.rdr.DrawGlyph(cur.h, cur.v, *fnt, rune(cmd), color.Black)
 
-	adv, ok := face.GlyphAdvance(rune(cmd))
+	adv, ok := fnt.advance(rune(cmd))
 	if !ok {
-		return fmt.Errorf("dvi: font %q has no glyph %c", face.Name(), cmd)
+		return fmt.Errorf("dvi: font %q has no glyph %c", fnt.name(), cmd)
 	}
 
 	if op >= opPut1 {
@@ -1052,17 +1052,12 @@ func (m *Machine) defineFont(i int, def fntdef) error {
 	return nil
 }
 
-func (m *Machine) face(i int) (*tfm.Face, error) {
-	fnt := m.state.fonts[i]
-	if fnt.face != nil {
-		return fnt.face, nil
+func (m *Machine) loadFont(i int) (*Font, error) {
+	def := m.state.fonts[i]
+	if def.font != nil {
+		return def.font, nil
 	}
 
-	return m.loadFont(i)
-}
-
-func (m *Machine) loadFont(i int) (*tfm.Face, error) {
-	def := m.state.fonts[i]
 	// FIXME: add support for non-TFM fonts?
 	name, err := m.ktx.Find(def.Name + ".tfm")
 	if err != nil {
@@ -1079,24 +1074,22 @@ func (m *Machine) loadFont(i int) (*tfm.Face, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not parse TFM font %q: %w", def.Name, err)
 	}
-	face := tfm.NewFace(&font, &tfm.FaceOptions{
-		Size: fixed.Int12_20(def.Size),
-	})
-	def.font = &font
-	def.face = &face
+
+	def.font = &Font{
+		font:  font,
+		scale: fixed.Int12_20(def.Size),
+	}
 	m.state.fonts[i] = def
 
-	return def.face, nil
+	return def.font, nil
 }
 
-func (m *Machine) font() Font {
-	face, err := m.face(m.state.f)
+func (m *Machine) font(i int) *Font {
+	fnt, err := m.loadFont(i)
 	if err != nil {
 		panic(err)
 	}
-	return Font{
-		face: face,
-	}
+	return fnt
 }
 
 func (m *Machine) outText(c uint8) {

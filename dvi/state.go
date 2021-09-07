@@ -4,10 +4,6 @@
 
 package dvi
 
-import (
-	"star-tex.org/x/tex/font/tfm"
-)
-
 // regs is the set of DVI registers.
 type regs struct {
 	h int32 // h is the current horizontal position on the page.
@@ -31,8 +27,7 @@ type fntdef struct {
 	Name     string
 
 	mag  int32
-	font *tfm.Font
-	face *tfm.Face
+	font *Font
 }
 
 type state struct {
