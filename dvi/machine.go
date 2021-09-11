@@ -936,7 +936,7 @@ func (m *Machine) drawGlyph(op opCode, cmd int32) error {
 
 	adv, ok := fnt.advance(rune(cmd))
 	if !ok {
-		return fmt.Errorf("dvi: font %q has no glyph %c", fnt.name(), cmd)
+		return fmt.Errorf("dvi: font %q has no glyph %c", fnt.name, cmd)
 	}
 
 	if op >= opPut1 {
@@ -1083,6 +1083,7 @@ func (m *Machine) loadFont(i int) (*Font, error) {
 	}
 
 	def.font = &Font{
+		name:  def.Name,
 		font:  font,
 		scale: fixed.Int12_20(def.Size),
 	}

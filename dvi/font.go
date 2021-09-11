@@ -12,12 +12,25 @@ import (
 // Font describes a DVI font, with TeX Font Metrics and its
 // associated font glyph data.
 type Font struct {
+	name  string
 	font  tfm.Font
 	scale fixed.Int12_20
 }
 
-func (fnt *Font) name() string {
-	return fnt.font.Name()
+// Name returns the name of the DVI font.
+// ex: "cmr10", "cmmi10" or "cmti10".
+func (fnt *Font) Name() string {
+	return fnt.name
+}
+
+// Size returns the DVI font size.
+func (fnt *Font) Size() fixed.Int12_20 {
+	return fnt.scale
+}
+
+// Metrics returns the associated TeX Font Metrics.
+func (fnt *Font) Metrics() *tfm.Font {
+	return &fnt.font
 }
 
 func (fnt *Font) advance(r rune) (fixed.Int12_20, bool) {
