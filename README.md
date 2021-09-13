@@ -15,6 +15,23 @@ $> dvipdf out.dvi
 $> pdf out.pdf
 ```
 
+## cmd/dvi-cnv
+
+`dvi-cnv` converts a DVI file into a (set of) PNG or PDF file(s).
+
+```
+$> dvi-cnv -help
+Usage of dvi-cnv:
+  -o string
+    	path to output file name
+  -texmf string
+    	path to TexMF root
+  -v	enable verbose mode
+
+$> dvi-cnv -o foo.png ./testdata/hello_golden.dvi
+$> open ./foo_1.png
+```
+
 ## cmd/dvi-dump
 
 `dvi-dump` displays the content of a DVI file in a human readable format or JSON.
@@ -22,7 +39,7 @@ $> pdf out.pdf
 The human readable format should be exactly the same than the official [`dvitype`](https://texdoc.org/serve/dvitype/0) command from `TeX Live`.
 
 ```
-$> dvi-dump -h
+$> dvi-dump -help
 Usage of dvi-dump:
   -json
     	enable JSON output
@@ -54,7 +71,7 @@ level 0:(h=0,v=0,w=0,x=0,y=0,z=0,hh=0,vv=0)
 `kpath-find` is a new command that finds files in a `TeX` directory structure:
 
 ```
-$> kpath-find -h
+$> kpath-find -help
 Usage of kpath-find:
   -all
     	display all matches
@@ -71,6 +88,71 @@ $> kpath-find -all -texmf /usr/share/texmf-dist latex
 /usr/share/texmf-dist/tex4ht/ht-fonts/unicode/latex
 ```
 
+## cmd/pk2bm
+
+`pk2bm` display the content of a `pk` font file.
+
+```
+$> pk2bm -help
+Usage of pk2bm:
+  -H int
+    	height of bitmap
+  -W int
+    	width of bitmap
+  -b	generate a bitmap
+  -c string
+    	character to display
+  -h	generate a hexmap
+
+$> pk2bm -b -c a ./internal/tds/fonts/pk/ljfour/public/cm/dpi600/cmr10.pk 
+
+character : 97 (a)
+   height : 39
+    width : 38
+     xoff : -3
+     yoff : 37
+
+  ...........********...................
+  ........**************................
+  ......*****.......******..............
+  .....***............*****.............
+  ....*****............******...........
+  ...*******............******..........
+  ...********...........******..........
+  ...********............******.........
+  ...********............******.........
+  ...********.............******........
+  ....******..............******........
+  .....****...............******........
+  ........................******........
+  ........................******........
+  ........................******........
+  ........................******........
+  .................*************........
+  .............*****************........
+  ..........*********.....******........
+  ........*******.........******........
+  ......*******...........******........
+  ....********............******........
+  ...*******..............******........
+  ..********..............******........
+  .********...............******........
+  .*******................******........
+  .*******................******......**
+  *******.................******......**
+  *******.................******......**
+  *******.................******......**
+  *******................*******......**
+  *******................*******......**
+  ********..............********......**
+  .*******.............***.*****......**
+  .********............**...*****....**.
+  ..********.........****...*****....**.
+  ....*******......****......*********..
+  ......**************........*******...
+  .........********............*****....
+```
+
 ## cmd/tfm2pl
 
 `tfm2pl` converts a TFM file to human-readable property list file or standard output.
@@ -78,7 +160,7 @@ $> kpath-find -all -texmf /usr/share/texmf-dist latex
 
 
 ```
-$> tfm2pl -h
+$> tfm2pl -help
 Usage: tfm2pl [options] file.tfm [file.pl]
 
 tfm2pl converts a TFM file to human-readable property list file or standard output.
