@@ -5,8 +5,8 @@
 package dvi
 
 import (
+	"errors"
 	"fmt"
-	"image/color"
 	"io"
 	"sort"
 	"strings"
@@ -34,6 +34,10 @@ type Machine struct {
 
 	w   io.Writer
 	buf []byte // 80-col buffer of text
+
+	handlers []Handler // list of registered special handlers for CmdXXXn commands.
+
+	color colorHandler // special handling of colors
 }
 
 // NewMachine creates a new DVI machine.
@@ -46,7 +50,7 @@ func NewMachine(opts ...Option) Machine {
 		}
 	}
 
-	return Machine{
+	m := Machine{
 		ktx:   cfg.ctx,
 		rdr:   cfg.rdr,
 		state: newState(),
@@ -56,7 +60,19 @@ func NewMachine(opts ...Option) Machine {
 
 		w:   cfg.out,
 		buf: make([]byte, 0, 80-len("[]\n")),
+
+		handlers: cfg.handlers,
+		color:    nilColorHandler{},
 	}
+
+	for _, h := range m.handlers {
+		if hh, ok := h.(colorHandler); ok {
+			m.color = hh
+			break
+		}
+	}
+
+	return m
 }
 
 // Run executes the whole DVI program on this DVI machine.
@@ -932,7 +948,7 @@ func (m *Machine) drawGlyph(op opCode, cmd int32) error {
 		return err
 	}
 
-	m.rdr.DrawGlyph(cur.h, cur.v, *fnt, rune(cmd), color.Black)
+	m.rdr.DrawGlyph(cur.h, cur.v, *fnt, rune(cmd), m.color.Color())
 
 	adv, ok := fnt.advance(rune(cmd))
 	if !ok {
@@ -959,7 +975,7 @@ func (m *Machine) drawRule(op opCode, height, width int32) error {
 	}
 
 	cur := m.state.cur()
-	m.rdr.DrawRule(cur.h, cur.v, width, height, color.Black)
+	m.rdr.DrawRule(cur.h, cur.v, width, height, m.color.Color())
 
 	if op == opPutRule {
 		return nil
@@ -1145,6 +1161,12 @@ func (m *Machine) outVMove(v int32) int32 {
 }
 
 func (m *Machine) handleSpecial(p []byte) error {
+	for _, h := range m.handlers {
+		err := h.Handle(p)
+		if err == nil || !errors.Is(err, ErrSkipHandler) {
+			return err
+		}
+	}
 	return nil
 }
 

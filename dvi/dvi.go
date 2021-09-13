@@ -11,6 +11,7 @@
 package dvi // import "star-tex.org/x/tex/dvi"
 
 import (
+	"errors"
 	"fmt"
 	"image/color"
 	"io"
@@ -73,3 +74,25 @@ func Dump(r io.Reader, f func(cmd Cmd) error) error {
 
 	return nil
 }
+
+// Handler handles special DVI XXXn commands.
+// Users can customize how a DVI Machine will handle these commands.
+//
+// Special commands are usually written in DVI files with an opaque payload
+// of bytes, starting with a "well known" prefix.
+// Ex:
+//   color push gray 0
+//   color pop
+//   color push  BurntOrange
+//
+// A Handler should return ErrSkipHandler if does not know how to handle a given
+// special command data.
+type Handler interface {
+	// Handle handles a special DVI command.
+	Handle(p []byte) error
+}
+
+// ErrSkipHandler is used as a return value from Handler.Handle to indicate
+// that the Handler should be skipped and is not suited to handle that special
+// command.
+var ErrSkipHandler = errors.New("dvi: skip handler")

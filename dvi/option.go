@@ -20,6 +20,8 @@ type config struct {
 
 	xoff int32 // width offset
 	yoff int32 // height offset
+
+	handlers []Handler
 }
 
 func newConfig() *config {
@@ -61,6 +63,15 @@ func WithOffsetX(v fixed.Int12_20) Option {
 func WithOffsetY(v fixed.Int12_20) Option {
 	return func(cfg *config) error {
 		cfg.yoff = int32(v)
+		return nil
+	}
+}
+
+// WithHandlers specifies a list of Handlers a DVI Machine will use to
+// handle the XXXn special commands.
+func WithHandlers(hs ...Handler) Option {
+	return func(cfg *config) error {
+		cfg.handlers = hs
 		return nil
 	}
 }
