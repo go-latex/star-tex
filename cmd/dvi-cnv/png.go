@@ -225,6 +225,16 @@ func (pr *pngRenderer) face(fnt dvi.Font) (font.Face, bool) {
 
 	tfm := fnt.Metrics()
 
+	if tfm.Checksum() != pk.Checksum() {
+		pr.setErr(fmt.Errorf(
+			"TFM and PK checksum do not match for %q: tfm=0x%x, pk=0x%x",
+			fnt.Name(),
+			tfm.Checksum(),
+			pk.Checksum(),
+		))
+		return nil, false
+	}
+
 	face := pkf.NewFace(pk, tfm, &pkf.FaceOptions{
 		Size: tfm.DesignSize().Float64(),
 		DPI:  float64(pr.dpi),
