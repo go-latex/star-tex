@@ -250,9 +250,16 @@ func (cr *colorReader) hsbi() color.Color {
 	return colorFrom("HSB", data)
 }
 
+var colorFiles = []string{
+	"latex/xcolor/xcolor.sty",
+	"latex/graphics/dvipsnam.def",
+	"latex/xcolor/svgnam.def",
+	"latex/xcolor/x11nam.def",
+}
+
 func newColorNames(ktx kpath.Context, cr *colorReader) map[string]color.Color {
 	names := make(map[string]color.Color)
-	for _, name := range []string{"xcolor.sty", "dvipsnam.def", "svgnam.def", "x11nam.def"} {
+	for _, name := range colorFiles {
 		fname, err := ktx.Find(name)
 		if err != nil {
 			panic(err) // FIXME(sbinet): warn only ?
