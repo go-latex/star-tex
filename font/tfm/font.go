@@ -85,6 +85,11 @@ func (fnt *Font) Name() string {
 	return fnt.body.header.fontID
 }
 
+// Checksum returns the checksum of the TeX font metrics file.
+func (fnt *Font) Checksum() uint32 {
+	return fnt.body.header.chksum
+}
+
 // NumGlyphs returns the number of glyphs in this font.
 func (fnt *Font) NumGlyphs() int {
 	return int(fnt.hdr.ec) + 1 - int(fnt.hdr.bc)
