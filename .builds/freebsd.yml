@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: Unlicense OR MIT
-image: freebsd/11.x
+image: freebsd/latest
 packages:
 sources:
  - https://git.sr.ht/~sbinet/star-tex
