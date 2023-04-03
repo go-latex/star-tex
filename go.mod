@@ -1,6 +1,6 @@
 module star-tex.org/x/tex
 
-go 1.16
+go 1.18
 
 retract (
 	// v0.3.0 had commits missing "sign-off"
