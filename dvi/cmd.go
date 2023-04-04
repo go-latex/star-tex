@@ -978,7 +978,7 @@ type CmdPost struct {
 	Num      int32  `json:"num"`
 	Den      int32  `json:"den"`
 	Mag      int32  `json:"mag"`
-	Height   uint32 `json:"height`
+	Height   uint32 `json:"height"`
 	Width    uint32 `json:"width"`
 	MaxStack uint16 `json:"max_stack"`
 	Pages    uint16 `json:"pages"`
