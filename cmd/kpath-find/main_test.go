@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	stdpath "path"
+	"path"
+	"path/filepath"
 	"reflect"
-	"runtime"
 	"testing"
 
 	"star-tex.org/x/tex/internal/tds"
@@ -23,7 +23,7 @@ func TestProcess(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	dbname := stdpath.Join(dir, "ls-R")
+	dbname := path.Join(dir, "ls-R")
 	err = os.WriteFile(dbname, []byte(`%%
 ./:
 ./dir1:
@@ -40,11 +40,6 @@ file2.tex
 	}
 	db := os.DirFS(dir)
 
-	errNotThere := "no such file or directory"
-	if runtime.GOOS == "windows" {
-		errNotThere = "File not found."
-	}
-
 	for _, tc := range []struct {
 		name string
 		db   fs.FS
@@ -55,15 +50,15 @@ file2.tex
 		{
 			name: "file1.tex",
 			db:   db,
-			want: []string{stdpath.Join(dir, "/dir1/file1.tex")},
+			want: []string{path.Join("dir1", "file1.tex")},
 		},
 		{
 			name: "file2.tex",
 			db:   db,
 			all:  true,
 			want: []string{
-				stdpath.Join(dir, "/dir2/file2.tex"),
-				stdpath.Join(dir, "/dir3/file2.tex"),
+				path.Join("dir2", "file2.tex"),
+				path.Join("dir3", "file2.tex"),
 			},
 		},
 		{
@@ -72,21 +67,18 @@ file2.tex
 			err:  fmt.Errorf(`kpath: too many hits for file "file2.tex" (n=2)`),
 		},
 		{
-			name: "err-no-db-file",
-			db:   os.DirFS(stdpath.Join(dir, "not-there")),
+			name: "err-walk-filesystem",
+			db:   fsErrorTree{},
 			err: fmt.Errorf(
-				`could not create kpath context: `+
-					`kpath: could not walk fs: `+
-					`%[1]s %[2]s/.: %[3]s`,
-				openErr,
-				stdpath.Join(dir, "not-there"),
-				errNotThere,
+				`could not create kpath context: kpath: could not walk fs: no stat`,
 			),
 		},
 		{
 			name: "plain.tex",
 			db:   tds.FS,
-			want: []string{"tex/plain/base/plain.tex"},
+			want: []string{
+				path.Join("tex", "plain", "base", "plain.tex"),
+			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -104,10 +96,40 @@ file2.tex
 			case err == nil && tc.err != nil:
 				t.Fatalf("missing error. expected: %+v", tc.err)
 			}
-
+			got = cleanup(dir, got)
 			if !reflect.DeepEqual(got, tc.want) {
 				t.Fatalf("invalid file named:\ngot= %q\nwant=%q", got, tc.want)
 			}
 		})
 	}
+}
+
+func cleanup(dir string, vs []string) []string {
+	for i, v := range vs {
+		vs[i] = filepath.ToSlash(relto(dir, v))
+	}
+	return vs
+}
+
+func relto(base string, p string) string {
+	v, err := filepath.Rel(base, p)
+	if err != nil {
+		return p
+	}
+	return v
+}
+
+type fsErrorTree struct{}
+
+var (
+	_ fs.FS     = (*fsErrorTree)(nil)
+	_ fs.StatFS = (*fsErrorTree)(nil)
+)
+
+func (fsErrorTree) Open(name string) (fs.File, error) {
+	return nil, fmt.Errorf("no such file %q", name)
+}
+
+func (fsErrorTree) Stat(name string) (fs.FileInfo, error) {
+	return nil, fmt.Errorf("no stat")
 }
