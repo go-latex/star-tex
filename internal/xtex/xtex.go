@@ -17,7 +17,7 @@
 //
 // Version 0 was released in September 1982 after it passed a variety of tests.
 // Version 1 was released in November 1983 after thorough testing.
-// Version 1.1 fixed ``disappearing font identifiers'' et alia (July 1984).
+// Version 1.1 fixed “disappearing font identifiers” et alia (July 1984).
 // Version 1.2 allowed `0' in response to an error, et alia (October 1984).
 // Version 1.3 made memory allocation more flexible and local (November 1984).
 // Version 1.4 fixed accents right after line breaks, et alia (April 1985).
@@ -62,7 +62,7 @@
 // obligation or liability for damages, including but not limited to
 // special, indirect, or consequential damages arising out of or in
 // connection with the use or performance of this software. This work has
-// been a ``labor of love'' and the author hopes that users enjoy it.
+// been a “labor of love” and the author hopes that users enjoy it.
 //
 // Here is TeX material that gets inserted after \input webmac
 package xtex

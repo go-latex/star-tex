@@ -6,8 +6,7 @@
 //
 // More informations about the DVI standard can be found here:
 //
-//  - https://ctan.crest.fr/tex-archive/dviware/driv-standard/level-0/dvistd0.pdf
-//
+//   - https://ctan.crest.fr/tex-archive/dviware/driv-standard/level-0/dvistd0.pdf
 package dvi // import "star-tex.org/x/tex/dvi"
 
 import (
@@ -81,9 +80,10 @@ func Dump(r io.Reader, f func(cmd Cmd) error) error {
 // Special commands are usually written in DVI files with an opaque payload
 // of bytes, starting with a "well known" prefix.
 // Ex:
-//   color push gray 0
-//   color pop
-//   color push  BurntOrange
+//
+//	color push gray 0
+//	color pop
+//	color push  BurntOrange
 //
 // A Handler should return ErrSkipHandler if does not know how to handle a given
 // special command data.

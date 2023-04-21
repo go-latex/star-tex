@@ -5,7 +5,7 @@
 // Package afm implements a decoder for AFM (Adobe Font Metrics) files.
 //
 // See:
-//  - https://adobe-type-tools.github.io/font-tech-notes/pdfs/5004.AFM_Spec.pdf
+//   - https://adobe-type-tools.github.io/font-tech-notes/pdfs/5004.AFM_Spec.pdf
 //
 // for more informations.
 package afm // import "star-tex.org/x/tex/font/afm"

@@ -5,7 +5,7 @@
 // Package kpath provides tools to locate TeX related files.
 //
 // It loosely mimicks Kpathsea, as described in:
-//  - https://texdoc.org/serve/kpathsea/0
+//   - https://texdoc.org/serve/kpathsea/0
 package kpath // import "star-tex.org/x/tex/kpath"
 
 import (
@@ -36,7 +36,7 @@ func New() Context {
 
 // Context holds state to efficiently search for files in a TDS
 // (TeX Directory Structure), as described in:
-//  - http://tug.org/tds/tds.pdf
+//   - https://tug.org/tds/tds.pdf
 type Context struct {
 	exts strset              // known common suffices
 	db   map[string][]string // db of filename->dirs

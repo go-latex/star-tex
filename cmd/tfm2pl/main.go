@@ -7,8 +7,9 @@
 // Usage: tfm2pl [options] file.tfm [file.pl]
 //
 // ex:
-//  $> tfm2pl testdata/simple.tfm
-//  $> tfm2pl testdata/simple.tfm out.pl
+//
+//	$> tfm2pl testdata/simple.tfm
+//	$> tfm2pl testdata/simple.tfm out.pl
 package main // import "star-tex.org/x/tex/cmd/tfm2pl"
 
 import (

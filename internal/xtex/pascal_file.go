@@ -251,9 +251,9 @@ func (f *ioFile) close() {
 //
 // Read (F, X) (for X, a variable) is equivalent to
 //
-// 	begin
-// 		X := F^; Get(F)
-// 	end
+//	begin
+//		X := F^; Get(F)
+//	end
 //
 // Read (F, V1, ... , Vn) is equivalent to the statement
 //
@@ -295,9 +295,10 @@ func (f *ioFile) read(args []interface{}, nl bool) {
 //
 // Write(F, E) (for E, an expresion) is equivalent to
 //
-// 	begin
-// 		F^ := E; Put(F)
-// 	end
+//	begin
+//		F^ := E; Put(F)
+//	end
+//
 // Write (F, E1, ... , En) is equivalent to the statement
 //
 //	begin Write(F,E1); ... ; Write(F,En) end
