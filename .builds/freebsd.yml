@@ -7,9 +7,9 @@ environment:
  GOFLAGS: -mod=readonly
  PATH: /home/build/sdk/go/bin:/bin:/usr/local/bin:/usr/bin
 tasks:
- - install_go1_18: |
+ - install_go1_19: |
      mkdir -p /home/build/sdk
-     curl -L https://golang.org/dl/go1.18.freebsd-amd64.tar.gz | tar -C /home/build/sdk -xzf -
+     curl -L https://golang.org/dl/go1.19.8.freebsd-amd64.tar.gz | tar -C /home/build/sdk -xzf -
  - test_project: |
      cd star-tex
      go test ./...
