@@ -10,7 +10,6 @@ import (
 	"os"
 	stdpath "path"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 )
@@ -286,10 +285,6 @@ func TestFindFromFS(t *testing.T) {
 }
 
 func TestNewFromFS(t *testing.T) {
-	errNotThere := "no such file or directory"
-	if runtime.GOOS == "windows" {
-		errNotThere = "Path not found."
-	}
 
 	dir, err := os.MkdirTemp("", "star-tex-kpath-")
 	if err != nil {
@@ -334,16 +329,13 @@ file2.tex
 	}{
 		{
 			name: "file1.tex",
-			want: stdpath.Join(dir, "dir1", "file1.tex"),
+			want: filepath.ToSlash(stdpath.Join(dir, "dir1", "file1.tex")),
 		},
 		{
 			// test NewFromFS only considered ls-R informations.
 			name: "file2.tex",
-			want: stdpath.Join(dir, "dir2", "file2.tex"),
-			open: fmt.Errorf("open %s: %s",
-				stdpath.Join(dir, "dir2", "file2.tex"),
-				errNotThere,
-			),
+			want: filepath.ToSlash(stdpath.Join(dir, "dir2", "file2.tex")),
+			open: openError(filepath.ToSlash(stdpath.Join(dir, "dir2", "file2.tex"))),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -383,4 +375,12 @@ file2.tex
 			defer f.Close()
 		})
 	}
+}
+
+func openError(name string) error {
+	_, err := os.Open(name)
+	if err == nil {
+		panic(fmt.Errorf("opening %q should have failed", name))
+	}
+	return err
 }

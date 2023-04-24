@@ -14,6 +14,7 @@ import (
 	"io/fs"
 	"os"
 	stdpath "path"
+	"path/filepath"
 	"strings"
 	"sync"
 
@@ -72,7 +73,7 @@ func NewFromDB(r io.Reader) (Context, error) {
 func newFromDB(root fs.FS, r io.Reader) (Context, error) {
 	dir := "/"
 	if f, ok := r.(interface{ Name() string }); ok {
-		dir = stdpath.Dir(f.Name())
+		dir = stdpath.Dir(filepath.ToSlash(f.Name()))
 	}
 	ctx, err := parseDB(dir, r)
 	if err != nil {
@@ -169,7 +170,7 @@ func (ctx Context) FindAll(name string) ([]string, error) {
 	// TODO(sbinet): handle multi-root TEXMFs
 
 	orig := name
-	name = strings.Replace(name, "\\", "/", -1)
+	name = filepath.ToSlash(name)
 	var (
 		subdir = strings.Contains(name, "/")
 		ext    = stdpath.Ext(name)
