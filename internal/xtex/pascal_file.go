@@ -231,7 +231,7 @@ func (f *ioFile) close() {
 	}
 
 	if f.in != nil {
-		if err := f.in.Close; err != nil {
+		if err := f.in.Close(); err != nil {
 			f.erstat = 1
 		}
 		f.eof = true
@@ -239,7 +239,7 @@ func (f *ioFile) close() {
 	}
 
 	if f.out != nil {
-		if err := f.out.Close; err != nil {
+		if err := f.out.Close(); err != nil {
 			f.erstat = 1
 		}
 		f.eof = false
