@@ -117,10 +117,10 @@ type Font struct {
 	stdHW     fixed.Int16_16 // stdHW specifies the dominant width of horizontal stems.
 	stdVW     fixed.Int16_16 // stdVW specifies the dominant width of vertical stems.
 
-	blendAxisTypes       []string
-	blendDesignPositions [][]fixed.Int16_16
-	blendDesignMap       [][][]fixed.Int16_16
-	weightVector         []fixed.Int16_16
+	//	blendAxisTypes       []string
+	//	blendDesignPositions [][]fixed.Int16_16
+	//	blendDesignMap       [][][]fixed.Int16_16
+	//	weightVector         []fixed.Int16_16
 
 	direction   [3]direction
 	charMetrics []charMetric

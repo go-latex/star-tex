@@ -65,9 +65,9 @@ func (pr *pngRenderer) Init(pre *dvi.CmdPre, post *dvi.CmdPost) {
 	pr.tconv = conv
 	pr.conv = conv * float32(pr.pre.Mag) / 1000.0
 
-	conv = 1/(float32(pre.Num)/float32(pre.Den)*
-		(float32(pre.Mag)/1000.0)*
-		(pr.dpi*shrink/254000.0)) + 0.5
+	//	conv = 1/(float32(pre.Num)/float32(pre.Den)*
+	//		(float32(pre.Mag)/1000.0)*
+	//		(pr.dpi*shrink/254000.0)) + 0.5
 
 	if pr.bkg == nil {
 		pr.bkg = color.White
@@ -157,13 +157,6 @@ func (pr *pngRenderer) DrawRule(x, y, w, h int32, c color.Color) {
 	draw.Draw(pr.img, r, image.NewUniform(c), image.Point{}, draw.Over)
 }
 
-func maxI32(a, b int32) int32 {
-	if a > b {
-		return a
-	}
-	return b
-}
-
 func roundF32(v float32) int32 {
 	if v > 0 {
 		return int32(v + 0.5)
@@ -176,13 +169,13 @@ func (pr *pngRenderer) pixels(v int32) int32 {
 	return roundF32(x / shrink)
 }
 
-func (pr *pngRenderer) rulepixels(v int32) int32 {
-	x := int32(pr.conv * float32(v))
-	if float32(x) < pr.conv*float32(v) {
-		return x + 1
-	}
-	return x
-}
+// func (pr *pngRenderer) rulepixels(v int32) int32 {
+// 	x := int32(pr.conv * float32(v))
+// 	if float32(x) < pr.conv*float32(v) {
+// 		return x + 1
+// 	}
+// 	return x
+// }
 
 type fntkey struct {
 	name string

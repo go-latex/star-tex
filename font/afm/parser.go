@@ -176,7 +176,7 @@ func (p *parser) parseDirection(dir *direction) error {
 func (p *parser) parseAxis(fnt *Font) error {
 	// FIXME(sbinet)
 	if true {
-		return fmt.Errorf("Axis section not supported")
+		return fmt.Errorf("axis section not supported")
 	}
 
 	for p.scan() {
@@ -457,9 +457,7 @@ func (p *parser) readFixed(i int) fixed.Int16_16 {
 }
 
 func fixedFrom(v string) fixed.Int16_16 {
-	if strings.Contains(v, ",") {
-		v = strings.Replace(v, ",", ".", 1)
-	}
+	v = strings.Replace(v, ",", ".", 1)
 	o, err := fixed.ParseInt16_16(v)
 	if err != nil {
 		panic(err)

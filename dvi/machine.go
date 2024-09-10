@@ -1063,7 +1063,7 @@ func (m *Machine) defineFont(i int, def fntdef) error {
 		mag = roundF32((1000 * m.conv * float32(scale)) / (m.trueConv * float32(design)))
 	}
 
-	design = roundF32((100 * m.conv * float32(scale)) / (m.trueConv * float32(design)))
+	// design = roundF32((100 * m.conv * float32(scale)) / (m.trueConv * float32(design)))
 
 	def.mag = mag
 	def.Size = scale
@@ -1108,13 +1108,13 @@ func (m *Machine) loadFont(i int) (*Font, error) {
 	return def.font, nil
 }
 
-func (m *Machine) font(i int) *Font {
-	fnt, err := m.loadFont(i)
-	if err != nil {
-		panic(err)
-	}
-	return fnt
-}
+// func (m *Machine) font(i int) *Font {
+// 	fnt, err := m.loadFont(i)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	return fnt
+// }
 
 func (m *Machine) outText(c uint8) {
 	if len(m.buf) == cap(m.buf) {

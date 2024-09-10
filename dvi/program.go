@@ -33,15 +33,16 @@ type Program struct {
 	post  CmdPost
 	ppost int
 
-	npages int
-	pages  []span
-	fonts  map[int]fntdef
+	// npages int
 
-	max struct {
-		width  int
-		height int
-		stack  int
-	}
+	pages []span
+	fonts map[int]fntdef
+
+	// max struct {
+	// 	width  int
+	// 	height int
+	// 	stack  int
+	// }
 }
 
 func Compile(instr []byte) (Program, error) {

@@ -42,12 +42,13 @@ func (x Int16_16) String() string {
 		shift = 16
 		mask  = 1<<shift - 1
 	)
-	if x >= 0 {
-		return fmt.Sprintf("%d:%02d", int32(x>>shift), int32(x&mask))
+	xx := int32(x)
+	if xx >= 0 {
+		return fmt.Sprintf("%d:%02d", int32(xx>>shift), int32(xx&mask))
 	}
-	x = -x
-	if x >= 0 {
-		return fmt.Sprintf("-%d:%02d", int32(x>>shift), int32(x&mask))
+	xx = -xx
+	if xx >= 0 {
+		return fmt.Sprintf("-%d:%02d", int32(xx>>shift), int32(xx&mask))
 	}
 	return "-32768:00" // The minimum value is -(1<<(16-1)).
 }

@@ -39,7 +39,7 @@ func xmain(stdout, stderr io.Writer, args []string) int {
 	msg := log.New(stderr, "star-tex: ", 0)
 
 	fset.Usage = func() {
-		fmt.Fprintf(stderr, usage)
+		fmt.Fprint(stderr, usage)
 		fset.PrintDefaults()
 	}
 

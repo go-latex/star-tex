@@ -28,7 +28,7 @@ const (
 )
 
 var (
-	ascii04 = []byte(" !\"#$%&'()*+,-./0123456789:;<=>?")
+	// ascii04 = []byte(" !\"#$%&'()*+,-./0123456789:;<=>?")
 	ascii10 = []byte("@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_")
 	ascii14 = []byte("`abcdefghijklmnopqrstuvwxyz{|}~ ")
 )
@@ -72,7 +72,7 @@ func (te *textEncoder) dec()   { te.lvl-- }
 
 func (te *textEncoder) line(vs ...string) {
 	te.left()
-	fmt.Fprintf(te.w, strings.Join(vs, " "))
+	fmt.Fprint(te.w, strings.Join(vs, " "))
 	te.right()
 }
 
@@ -169,7 +169,7 @@ func (te *textEncoder) char(v byte) string {
 }
 
 func (te *textEncoder) encodeStr(s string) {
-	fmt.Fprintf(te.w, s)
+	fmt.Fprint(te.w, s)
 }
 
 func (te *textEncoder) encode(fnt *Font) error {

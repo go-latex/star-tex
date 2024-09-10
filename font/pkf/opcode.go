@@ -6,8 +6,8 @@ package pkf
 
 import "fmt"
 
-// pkID is the version of the PK file format.
-const pkID = 89
+// // pkID is the version of the PK file format.
+// const pkID = 89
 
 // opCode is a PK file format command identifier.
 type opCode uint8
