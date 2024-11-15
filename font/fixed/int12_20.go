@@ -30,7 +30,7 @@ func ParseInt12_20(s string) (Int12_20, error) {
 	if err != nil {
 		return 0, err
 	}
-	return Int12_20(f * (1 << 20)), nil
+	return Int12_20(int32(f * (1 << 20))), nil
 }
 
 // Float64 converts the 12.20 fixed-point number to a floating point one.

@@ -28,7 +28,7 @@ func ParseInt16_16(s string) (Int16_16, error) {
 	if err != nil {
 		return 0, err
 	}
-	return Int16_16(f * (1 << 16)), nil
+	return Int16_16(int32(f * (1 << 16))), nil
 }
 
 func (x Int16_16) Float64() float64 {
